@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            TrackerView(rawSelectedDate: .constant(nil))
+            TrackerView()
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
         }
     }
