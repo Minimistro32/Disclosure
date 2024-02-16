@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct LoggerView: View {
+    @Environment(\.modelContext) var context
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var formDate = Date()
     @State private var formIntensity = 5.5
     @State private var formCompulsivity = 5.5
@@ -15,6 +18,7 @@ struct LoggerView: View {
     @State private var formTriggers: [String] = []
     @FocusState private var isNotesFocused: Bool
     @State private var formReminder = false
+    
     var disableForm: Bool {
         formIntensity == 5.5 || formCompulsivity == 5.5
     }
@@ -39,14 +43,14 @@ struct LoggerView: View {
                 if !formReminder {
                     Section("Analyze") {
                         MultipleSelectionList(
-                            items: ["Bored", "Loneliness", "Anger", "Hunger", "Stress", "Tiredness"],
+                            items: Blahst.list,
                             selections: $formTriggers)
                         .tint(.white)
                         TextField("Notes",
                                   text: $formNotes,
-                                  prompt: Text("Notes\n• What were the circumstances?\n• What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
+                                  prompt: Text("Notes\n• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
                                   axis: .vertical)
-                            .lineLimit(5...)
+                            .lineLimit(6...)
                             .focused($isNotesFocused)
                     }
                     .transition(.opacity)
@@ -55,9 +59,18 @@ struct LoggerView: View {
                 
                 //Submit Section
                 Section {
-                    Toggle("Return to analyzing later?", isOn: $formReminder)
+                    Toggle("Finish analyzing later?", isOn: $formReminder)
                     Button {
-                        print(formTriggers)
+                        let relapse = Relapse(
+                            date: formDate,
+                            reminder: formReminder,
+                            intensity: Int(formIntensity),
+                            compulsivity: Int(formCompulsivity),
+                            notes: formNotes,
+                            triggers: formTriggers
+                        )
+                        context.insert(relapse)
+                        dismiss()
                     } label: {
                         HStack {
                             Spacer()

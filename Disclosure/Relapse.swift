@@ -7,23 +7,50 @@
 
 import Foundation
 import SwiftData
-import Charts
 
 @Model //gets me identifiable for free
 class Relapse {
     let date: Date
-    let analyzed: Bool
+    let reminder: Bool
+    let intensity: Int
+    let compulsivity: Int
+    let notes: String
+    let triggers: Blahst
+    let disclosed: Bool
     
-    let intensity: Int?
-    let compulsivity: Int?
-    let notes: String?
-    
-    init(date: Date, analyzed: Bool = false, intensity: Int?, compulsivity: Int?, notes: String? = nil) {
+    init(date: Date, reminder: Bool = false, intensity: Int, compulsivity: Int, notes: String = "", triggers: [String] = [], disclosed: Bool = false) {
         self.date = date
-        self.analyzed = analyzed
+        self.reminder = reminder
         self.intensity = intensity
         self.compulsivity = compulsivity
         self.notes = notes
+        self.triggers = Blahst(triggers)
+        self.disclosed = disclosed
+    }
+}
+
+struct Blahst: Codable, Identifiable {
+    var id = UUID()
+    static let list = ["Bored", "Loneliness", "Anger", "Hunger", "Stress", "Tiredness"]
+    
+    let bored: Bool
+    let loneliness: Bool
+    let anger: Bool
+    let hunger: Bool
+    let stress: Bool
+    let tiredness: Bool
+    
+    var list: [Bool] {
+        return [bored, loneliness, anger, hunger, stress, tiredness]
+    }
+    
+    init(_ triggers: [String]) {
+        self.bored = triggers.contains(Blahst.list[0])
+        self.loneliness = triggers.contains(Blahst.list[1])
+        self.anger = triggers.contains(Blahst.list[2])
+        self.hunger = triggers.contains(Blahst.list[3])
+        self.stress = triggers.contains(Blahst.list[4])
+        self.tiredness = triggers.contains(Blahst.list[5])
     }
 }
 

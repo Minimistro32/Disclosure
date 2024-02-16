@@ -13,11 +13,16 @@ struct TrackerView: View {
     @State private var showLogger = false
     
     var body: some View {
-        ZStack {
+        NavigationStack {
             VStack {
-                Spacer()
-                
-                RelapseChartView()
+                ChartView().padding()
+                HStack {
+                    Spacer()
+                    NavigationLink (destination: LogView(), label: {
+                        Label("More", systemImage: "ellipsis.circle")
+                    })
+                    .padding(.trailing)
+                }
                 
                 Spacer()
                 
@@ -27,6 +32,7 @@ struct TrackerView: View {
                     Label("Log Relapse", systemImage: "arrow.counterclockwise")
                 }
             }
+            .navigationTitle("Tracker")
         }
         .sheet(isPresented: $showLogger) {
             LoggerView()
@@ -38,10 +44,12 @@ struct TrackerView: View {
     TrackerView()
 }
 
-struct RelapseChartView: View {
+
+
+struct ChartView: View {
     //    let data = MockData.liveJanDayView
-        let data = MockData.novemberDayView
-//    let data = MockData.octoberDayView
+    let data = MockData.novemberDayView
+    //    let data = MockData.octoberDayView
     
     @State private var rawSelectedDate: Date? = nil
     

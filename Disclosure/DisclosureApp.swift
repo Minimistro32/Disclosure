@@ -11,22 +11,26 @@ import SwiftData
 @main
 struct DisclosureApp: App {
 
+    let container: ModelContainer
+    init() {
+        let schema = Schema([Relapse.self])
+        let config: [ModelConfiguration] = [] //ModelConfiguration(groupContainer: _) used for integrating with widgets or other deployments
+        do {
+            container = try ModelContainer(for: schema, configurations: config)
+        } catch {
+            fatalError("Could not initialize ModelContainer")
+        }
+    }
+    
     var body: some Scene {
-  
-//        TODO: THIS IS THE COMPLEX WAY
-//        let container: ModelContainer = {
-//            let schema = Schema([Relapse.self])
-//            let config: [ModelConfiguration] = [] //ModelConfiguration(groupContainer: _) used for integrating with widgets or other deployments
-//            let container = try! ModelContainer(for: schema, configurations: config)
-//            return container
-//        }()
+   
         
         WindowGroup {
             ContentView()
         }
-//        TODO: THIS IS THE COMPLEX WAY
-//        .modelContainer(container)
+        .modelContainer(container)
         
-        .modelContainer(for: [Relapse.self])
+
+//        .modelContainer(for: [Relapse.self])      //This is the "easy" way
     }
 }
