@@ -11,16 +11,11 @@ struct LoggerView: View {
     @Environment(\.modelContext) var context
     @Environment(\.dismiss) private var dismiss
     
-    @State private var formDate = Date()
-    @State private var formIntensity = 5.5
-    @State private var formCompulsivity = 5.5
-    @State private var formNotes = ""
-    @State private var formTriggers: [String] = []
+    @Bindable var relapse: Relapse = Relapse()
     @FocusState private var isNotesFocused: Bool
-    @State private var formReminder = false
     
-    var disableForm: Bool {
-        formIntensity == 5.5 || formCompulsivity == 5.5
+    var isValidForm: Bool {
+        relapse.intensity != 0 && relapse.compulsivity != 0
     }
     
     
@@ -33,21 +28,19 @@ struct LoggerView: View {
             
             Form(content: {
                 Section("Relapse") {
-                    DatePicker("Date", selection: $formDate, in: ...Date())
+                    DatePicker("Date", selection: $relapse.date, in: ...Date())
                         .datePickerStyle(.compact)
                         .bold()
-                    IntensitySlider(value: $formIntensity)
-                    CompulsivitySlider(value: $formCompulsivity)
+                    IntensitySlider(value: .convert(from: $relapse.intensity))
+                    CompulsivitySlider(value: .convert(from: $relapse.compulsivity))
                 }
                 
-                if !formReminder {
+                if !relapse.reminder {
                     Section("Analyze") {
-                        MultipleSelectionList(
-                            items: Blahst.list,
-                            selections: $formTriggers)
+                        BlahstSelectionList(selections: $relapse.triggers.array)
                         .tint(.white)
                         TextField("Notes",
-                                  text: $formNotes,
+                                  text: $relapse.notes,
                                   prompt: Text("Notes\n• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
                                   axis: .vertical)
                             .lineLimit(6...)
@@ -59,16 +52,8 @@ struct LoggerView: View {
                 
                 //Submit Section
                 Section {
-                    Toggle("Finish analyzing later?", isOn: $formReminder)
+                    Toggle("Finish analyzing later?", isOn: $relapse.reminder)
                     Button {
-                        let relapse = Relapse(
-                            date: formDate,
-                            reminder: formReminder,
-                            intensity: Int(formIntensity),
-                            compulsivity: Int(formCompulsivity),
-                            notes: formNotes,
-                            triggers: formTriggers
-                        )
                         context.insert(relapse)
                         dismiss()
                     } label: {
@@ -78,7 +63,7 @@ struct LoggerView: View {
                             Spacer()
                         }
                     }
-                    .disabled(disableForm)
+                    .disabled(!isValidForm)
                 }
             })
             
@@ -125,17 +110,11 @@ struct SliderTicks: View {
 
 struct IntensitySlider: View {
     @Binding var value: Double
-    @State private var isEditing = false
+    @State private var isEditing: Bool = false
+    let range: ClosedRange<Double> = 1.0...10.0
     
     private var descriptor: String {
-        if value > 8 {
-            return "New Material"
-        } else if value > 4 {
-            return "Nudity"
-        } else if value > 2 {
-            return "Revealing Clothes"
-        }
-        return "Masturbation"
+        return describeIntensity(Int(value))
     }
     
     
@@ -145,9 +124,9 @@ struct IntensitySlider: View {
                 Text("Intensity")
                     .bold()
                 Spacer()
-                if value.truncatingRemainder(dividingBy: 1) == 0 {
+                if range.contains(value) {
                     if isEditing {
-                        Text("\(Int(value)) - " + descriptor)
+                        Text(descriptor + " - \(Int(value))")
                             .bold()
                             .foregroundStyle(.teal)
                     }   else {
@@ -158,27 +137,45 @@ struct IntensitySlider: View {
             ZStack {
                 //https://stackoverflow.com/questions/65779638/how-to-create-slider-with-tick-marks-using-swiftui
                 SliderTicks()
-                Slider(value: $value,
-                       in: 1.0...10.0,
-                       step: 1.0)
-                .tint(.clear)
-                
-                Slider(value: $value,
-                       in: 1.0...10.0,
+                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
+                       in: range,
                        step: 1.0,
                        onEditingChanged: { editing in
                     isEditing = editing
+                    value = range.contains(value) ? value : 5.5
+                })
+                .tint(.clear)
+                
+                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
+                       in: range,
+                       step: 1.0,
+                       onEditingChanged: { editing in
+                    isEditing = editing
+                    value = range.contains(value) ? value : 5.5
                 })
                 .tint(.teal)
-                .opacity(value / 10)
+                .opacity((range.contains(value) ? value : 5.5) / 10)
                 
             }
         }
     }
 }
 
+func describeIntensity(_ value: Int) -> String {
+    if value > 8 {
+        return "New Material"
+    } else if value > 4 {
+        return "Nudity"
+    } else if value > 2 {
+        return "Revealing Clothes"
+    }
+    return "Masturbation"
+}
+
 struct CompulsivitySlider: View {
     @Binding var value: Double
+    @State private var isEditing = false
+    let range: ClosedRange<Double> = 1.0...10.0
     
     var body: some View {
         VStack {
@@ -186,18 +183,20 @@ struct CompulsivitySlider: View {
                 Text("Compulsive Feeling")
                     .bold()
                 Spacer()
-                if value.truncatingRemainder(dividingBy: 1) == 0 {
+                if range.contains(value) {
                     Text("\(Int(value))")
                 }
             }
             ZStack {
                 SliderTicks()
-                Slider(value: $value,
-                       in: 1.0...10.0,
-                       step: 1.0)
+                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
+                       in: range,
+                       step: 1.0,
+                       onEditingChanged: { editing in
+                    isEditing = editing
+                    value = range.contains(value) ? value : 5.5
+                })
             }
         }
     }
 }
-
-
