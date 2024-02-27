@@ -120,13 +120,14 @@ struct SliderIconView: View {
     
     var body: some View {
         HStack (spacing: 2) {
-            Group {
+//            Group {
                 Image(systemName: "\(intensity).square.fill")
                     .foregroundStyle(.intense)
                 Image(systemName: "\(compulsivity).square.fill")
                     .foregroundStyle(.compulsion)
-            }
-            .opacity(Double(compulsivity) / 12.5 + 0.2)
+//            }
+            //not sure how I feel about this actually
+//            .opacity(Double(compulsivity) / 12.5 + 0.2)
         }
     }
 }

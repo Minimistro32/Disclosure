@@ -23,14 +23,10 @@ struct DisclosureApp: App {
     }
     
     var body: some Scene {
-   
-        
         WindowGroup {
             ContentView()
         }
         .modelContainer(container)
-        
-
 //        .modelContainer(for: [Relapse.self])      //This is the "easy" way
     }
 }

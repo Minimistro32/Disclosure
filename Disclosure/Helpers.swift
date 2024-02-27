@@ -13,6 +13,17 @@ extension Date {
         let components = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
         return Calendar.current.date(from:components)!
     }
+    
+    func isSame(as date: Date, unit: Calendar.Component) -> Bool {
+        let calendar = Calendar.current
+        let comparisonComponents: Set<Calendar.Component> = [.year, .month, unit]
+        let components1 = calendar.dateComponents(comparisonComponents, from: self)
+        let components2 = calendar.dateComponents(comparisonComponents, from: date)
+        
+        return comparisonComponents.reduce(true) { isSame, unit in
+            isSame && components1.value(for: unit) == components2.value(for: unit)
+        }
+    }
 }
 
 extension String {
@@ -22,24 +33,24 @@ extension String {
 }
 
 extension Binding {
-
+    
     static func convert<TInt, TFloat>(from intBinding: Binding<TInt>) -> Binding<TFloat>
     where TInt:   BinaryInteger,
           TFloat: BinaryFloatingPoint{
-
-        Binding<TFloat> (
-            get: { TFloat(intBinding.wrappedValue) },
-            set: { intBinding.wrappedValue = TInt($0) }
-        )
-    }
-
+              
+              Binding<TFloat> (
+                get: { TFloat(intBinding.wrappedValue) },
+                set: { intBinding.wrappedValue = TInt($0) }
+              )
+          }
+    
     static func convert<TFloat, TInt>(from floatBinding: Binding<TFloat>) -> Binding<TInt>
     where TFloat: BinaryFloatingPoint,
           TInt:   BinaryInteger {
-
-        Binding<TInt> (
-            get: { TInt(floatBinding.wrappedValue) },
-            set: { floatBinding.wrappedValue = TFloat($0) }
-        )
-    }
+              
+              Binding<TInt> (
+                get: { TInt(floatBinding.wrappedValue) },
+                set: { floatBinding.wrappedValue = TFloat($0) }
+              )
+          }
 }

@@ -6,17 +6,28 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) var context
+    @Query(sort: \Relapse.date, order: .reverse) var data: [Relapse]
     var body: some View {
         TabView {
-            TrackerView()
+            TrackerView(data: data)
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
         }
+        .onAppear {
+            if data.isEmpty {
+                for relapse in TestData.spreadsheet {
+                    context.insert(relapse)
+                }
+            }
+        }
     }
+    
 }
 
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}
