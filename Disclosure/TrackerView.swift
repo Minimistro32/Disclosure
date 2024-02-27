@@ -71,13 +71,16 @@ struct TrackerView: View {
 struct ChartView: View {
     
     @State private var rawSelectedDate: Date? = nil
-    @State private var scrollPosition: TimeInterval
+//    @State private var scrollPosition: TimeInterval
+    //for the annotation
+    //    @State private var isSelected: Bool = false
+    //    @State private var position: CGSize = CGSize.zero
     var selectionIndex: Int? {
         if let rawSelectedDate {
             return ((
-                    Int(Date.now.addingTimeInterval(scrollPosition).timeIntervalSince1970) - Int(rawSelectedDate.timeIntervalSince1970)
-                    ) / 86400
-                 ) - 8440
+                Int(Date.now.addingTimeInterval(scrollPosition).timeIntervalSince1970) - Int(rawSelectedDate.timeIntervalSince1970)
+            ) / 86400
+            ) //- 8440
         } else {
             return nil
         }
@@ -91,7 +94,6 @@ struct ChartView: View {
     init(scale: ChartScale, data: [Relapse]) {
         self.scale = scale
         self.data = data
-        //        self._rawSelectedDate = State(initialValue: nil)
         
         let scaleDays = switch scale {
         case ChartScale.week:
@@ -111,23 +113,16 @@ struct ChartView: View {
         )
         self.visibleSeconds = 60 * 60 * 24 * Double(visibleDays)
         
-        self._scrollPosition = State(initialValue: Date.now.addingTimeInterval(-1 * visibleSeconds).timeIntervalSinceReferenceDate)
+//        self._scrollPosition = State(initialValue: Date.now.addingTimeInterval(-1 * visibleSeconds).timeIntervalSinceReferenceDate)
+//        print(scrollPosition)
     }
     
     var body: some View {
         ZStack(alignment: .leading) {
-            VStack {
-//                Text("\(CGFloat(visibleDays))")
-                Text(String(selectionIndex ?? -1))
-            }
-            if let rawSelectedDate {
-//                Text("\(scrollPosition)").offset(
-//                    x: (UIScreen.main.bounds.size.width / CGFloat(visibleDays))
-//                    *
-//                    ((rawSelectedDate - scrollPosition).timeIntervalSince1970 / 86400),
-//                    y: chartHeight / -2
-//                )
-            }
+            Text(String(selectionIndex ?? -1)).offset(
+                x: (UIScreen.main.bounds.size.width / CGFloat(visibleDays)),
+                y: chartHeight / -2
+            )
             
             Chart {
                 ForEach(data) { relapse in
@@ -146,27 +141,28 @@ struct ChartView: View {
                     .foregroundStyle(Color.gray.opacity(0.3))
                     .offset(yStart: -10)
                     .zIndex(-1)
-                    //                //broken by chartScrollableAxes(...)
-                    //                .annotation(
-                    //                    position: .top, spacing: 0,
-                    //                    overflowResolution: .init(
-                    //                        x: .fit(to: .chart),
-                    //                        y: .disabled
-                    //                    )
-                    //                ) {
-                    //                    Rectangle().foregroundStyle(.red).frame(width: 150, height:100)
-                    //                }
+                    //broken by chartScrollableAxes(...)
+                    .annotation(
+                        position: .top, spacing: 0,
+                        overflowResolution: .init(
+                            x: .fit(to: .chart),
+                            y: .disabled
+                        )
+                    ) {
+                        Rectangle().foregroundStyle(.red).frame(width: 150, height:100)
+                    }
                 }
             }
             .frame(height: chartHeight)
-            .chartScrollableAxes(.horizontal)
-            .chartXVisibleDomain(length: visibleSeconds)
-            .chartScrollTargetBehavior(
-                .valueAligned(matching: .init(hour: 0),
-                              majorAlignment: .matching(.init(day: 1))
-                             )
-            )
-            .chartScrollPosition(x: $scrollPosition)
+//            .chartScrollableAxes(.horizontal)
+//            .chartScrollPosition(x: $scrollPosition)
+//            .chartScrollTargetBehavior(
+//                .valueAligned(matching: .init(hour: 0),
+//                              majorAlignment: .matching(.init(day: 1))
+//                             )
+//            )
+//            .chartXVisibleDomain(length: visibleSeconds)
+            //might be useful still
             .chartXAxis {
                 if scale == ChartScale.week {
                     AxisMarks(values: .automatic(desiredCount: visibleDays)) { value in
@@ -188,7 +184,23 @@ struct ChartView: View {
                 }
             }
             .chartXSelection(value: $rawSelectedDate)
+            .task(id: scale.rawValue, {
+                scrollPosition = Date.now.addingTimeInterval(-1 * visibleSeconds).timeIntervalSinceReferenceDate
+            })
             .border(.red)
+            
+            //            Color.clear.contentShape(Rectangle())
+            //            .frame(height: chartHeight).gesture(
+            //                DragGesture()
+            //                    .onChanged({ value in
+            //                        position = value.translation
+            //                        isSelected = true
+            //                    })
+            //                    .onEnded({ value in
+            //                        position = .zero
+            //                        isSelected = false
+            //                    })
+            //            )
         }
     }
 }
