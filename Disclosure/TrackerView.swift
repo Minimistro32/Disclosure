@@ -13,7 +13,7 @@ struct TrackerView: View {
     let data: [Relapse]
     @State private var showLogger = false
     @State private var selectedChartScale = ChartScale.week
-    @State private var selectedChartLens = ChartLens.previous//none
+    @State private var selectedChartLens = ChartLens.none
     @State private var rawSelectedDate: Date? = nil
     private var lensPickerWidth: CGFloat {
         switch selectedChartLens {
@@ -27,14 +27,16 @@ struct TrackerView: View {
     }
     private var averageStreak: Int {
         //three month average streak
+        
+        
         let rollingThreeMonthCount = data.filter {
-            ChartScale.threeMonth.containsDate($0.date)
+            $0.date >= Date.now.addingTimeInterval(ChartScale.month.timeInterval * -3)
         }.count
         
         if rollingThreeMonthCount == 0 {
             return 0
         } else {
-            return ChartScale.threeMonth.domain / rollingThreeMonthCount
+            return (ChartScale.month.dayDomain * 3) / rollingThreeMonthCount
         }
     }
     private var currentStreak: Int {
@@ -53,9 +55,9 @@ struct TrackerView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
+                .opacity(rawSelectedDate == nil ? 1.0 : 0.0) // to remove disappear for graded (|| selectedChartLens.isGraded)
                 
-                ChartView(rawSelectedDate: $rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
+                ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
                 HStack {
                     Picker(selection: $selectedChartLens) {
                         ForEach(ChartLens.allCases) { lens in

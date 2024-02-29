@@ -14,25 +14,26 @@ enum ChartScale: String, CaseIterable, Identifiable {
     case threeMonth = "3 Months"
     case year = "Year"
     
-    var domain: Int {
+    var dayDomain: Int {
         switch self {
         case ChartScale.week:
             7
         case ChartScale.month:
+//            Int(Date.monthsAgoThe1st(count: 1).timeIntervalSinceNow / (-89600*2))
             31
         case ChartScale.threeMonth:
-            30*3
+            Int(Date.monthsAgoThe1st(count: 2).timeIntervalSinceNow / -89600)
         case ChartScale.year:
             365
         }
     }
     
-    func calendarUnit(for lens: ChartLens) -> Calendar.Component {
+    func calendarUnit() -> Calendar.Component {
         switch self {
         case ChartScale.week:
             Calendar.Component.weekday
         case ChartScale.month:
-            Calendar.Component.weekOfMonth
+            Calendar.Component.weekOfYear
 //            lens == .previous ? Calendar.Component.weekOfMonth : Calendar.Component.day
         case ChartScale.threeMonth:
             Calendar.Component.month
@@ -42,7 +43,26 @@ enum ChartScale: String, CaseIterable, Identifiable {
         }
     }
     
-    func formatDate(_ date: Date, for lens: ChartLens) -> String {
+    func formatDate(_ date: Date) -> String {
+        if self == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6" {
+            print(date)
+            print(dayDomain)
+        }
+        return switch self {
+        case ChartScale.week:
+            date.formatted(.dateTime.weekday())
+        case ChartScale.month:
+            "Week " + date.formatted(.dateTime.week(.weekOfMonth))
+        case ChartScale.threeMonth:
+            "Month " + String((
+                    Date.now.month - (date.month > Date.now.month ? date.month - 12 : date.month)
+                ) % 3 + 1)
+        case ChartScale.year:
+            date.formatted(.dateTime.month(.abbreviated))
+        }
+    }
+    
+    func formatAnnotationDate(_ date: Date, for lens: ChartLens) -> String {
         if lens == .previous {
             return switch self {
             case ChartScale.week:
@@ -83,7 +103,7 @@ enum ChartScale: String, CaseIterable, Identifiable {
     }
     
     var timeInterval: TimeInterval {
-        TimeInterval(domain * 24 * 60 * 60)
+        TimeInterval(dayDomain * 24 * 60 * 60)
     }
      
     func containsDate(_ date: Date) -> Bool {
@@ -95,6 +115,10 @@ enum ChartScale: String, CaseIterable, Identifiable {
     }
     
     var previousDate: Date {
-        Date.now.addingTimeInterval(-2 * timeInterval)
+        if self == .threeMonth {
+            return Date.monthsAgoThe1st(count: 5)
+        } else {
+            return Date.now.addingTimeInterval(-2 * timeInterval)
+        }
     }
 }

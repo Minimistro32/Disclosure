@@ -17,8 +17,9 @@ class Relapse {
     var notes: String
     var triggers: Blahst
     var disclosed: Bool
+    var dummy: Bool
     
-    init(date: Date = Date(), reminder: Bool = false, intensity: Int = 0, compulsivity: Int = 0, notes: String = "", triggers: [String] = [], disclosed: Bool = false) {
+    init(date: Date = Date(), reminder: Bool = false, intensity: Int = 0, compulsivity: Int = 0, notes: String = "", triggers: [String] = [], disclosed: Bool = false, dummy: Bool = false) {
         self.date = date
         self.reminder = reminder
         self.intensity = intensity
@@ -26,6 +27,7 @@ class Relapse {
         self.notes = notes
         self.triggers = Blahst(triggers)
         self.disclosed = disclosed
+        self.dummy = dummy
     }
 }
 
@@ -79,7 +81,6 @@ struct TestData {
         Relapse(date: Date.from(year: 2024, month: 1, day: 10), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2024, month: 1, day: 18), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2024, month: 1, day: 26), intensity: 5, compulsivity: Int.random(in: 1...10)),
-        Relapse(date: Date.from(year: 1900, month: 1, day: 0), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 12, day: 6), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 12, day: 9), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 12, day: 13), intensity: 5, compulsivity: Int.random(in: 1...10)),
@@ -121,9 +122,6 @@ struct TestData {
         Relapse(date: Date.from(year: 2023, month: 6, day: 25), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 6, day: 26), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 6, day: 30), intensity: 5, compulsivity: Int.random(in: 1...10)),
-        Relapse(date: Date.from(year: 2024, month: 1, day: 10), intensity: 5, compulsivity: Int.random(in: 1...10)),
-        Relapse(date: Date.from(year: 2024, month: 1, day: 18), intensity: 5, compulsivity: Int.random(in: 1...10)),
-        Relapse(date: Date.from(year: 2024, month: 1, day: 26), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 5, day: 1), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 5, day: 8), intensity: 5, compulsivity: Int.random(in: 1...10)),
         Relapse(date: Date.from(year: 2023, month: 5, day: 9), intensity: 5, compulsivity: Int.random(in: 1...10)),

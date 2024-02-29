@@ -14,6 +14,23 @@ extension Date {
         return Calendar.current.date(from:components)!.addingTimeInterval(TimeInterval(timeZoneOffset * 60 * 60))
     }
     
+    var month: Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.month], from: self)
+        return components.month!
+    }
+    
+    static func monthsAgoThe1st(count months: Int) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: Date.now)
+        let month = components.month! - months
+        let year = components.year!
+        
+        return Date.from(year: year - Int(month.signum() > 0 ? 0 : 1),
+                         month: month.signum() > 0 ? month : 12 + month,
+                         day: 1)
+    }
+    
     func isSame(as date: Date, unit: Calendar.Component) -> Bool {
         let calendar = Calendar.current
         let comparisonComponents: Set<Calendar.Component> = [.year, .month, unit]
@@ -54,8 +71,12 @@ extension Binding {
           }
 }
 
-//extension TimeInterval {
-//    func clampToDay() -> TimeInterval {
-//        return self - self.truncatingRemainder(dividingBy: 24 * 60 * 60)
-//    }
-//}
+extension View {
+    @ViewBuilder
+    func `if`<Transform: View>(_ condition: Bool, transform: (Self) -> Transform) -> some View {
+        if condition { transform(self) }
+        else { self }
+    }
+}
+
+
