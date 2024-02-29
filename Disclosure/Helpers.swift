@@ -9,9 +9,9 @@ import SwiftUI
 
 // MARK: - Extensions
 extension Date {
-    static func from(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil) -> Date {
+    static func from(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil, timeZoneOffset: Int = 7) -> Date {
         let components = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
-        return Calendar.current.date(from:components)!
+        return Calendar.current.date(from:components)!.addingTimeInterval(TimeInterval(timeZoneOffset * 60 * 60))
     }
     
     func isSame(as date: Date, unit: Calendar.Component) -> Bool {
@@ -33,7 +33,6 @@ extension String {
 }
 
 extension Binding {
-    
     static func convert<TInt, TFloat>(from intBinding: Binding<TInt>) -> Binding<TFloat>
     where TInt:   BinaryInteger,
           TFloat: BinaryFloatingPoint{
@@ -54,3 +53,9 @@ extension Binding {
               )
           }
 }
+
+//extension TimeInterval {
+//    func clampToDay() -> TimeInterval {
+//        return self - self.truncatingRemainder(dividingBy: 24 * 60 * 60)
+//    }
+//}

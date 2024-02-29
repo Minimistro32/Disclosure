@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D61282BA2B90369A00CB5642 /* Scrap.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D61282B92B90369A00CB5642 /* Scrap.rtf */; };
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
 		D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* UIKit.swift */; };
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D61282B92B90369A00CB5642 /* Scrap.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Scrap.rtf; sourceTree = "<group>"; };
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
 		D6448CF82B74A0DD00C3DB72 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 		D6C81F0F2B6869D50010CFED /* Disclosure */ = {
 			isa = PBXGroup;
 			children = (
+				D61282B92B90369A00CB5642 /* Scrap.rtf */,
 				D6C81F102B6869D50010CFED /* DisclosureApp.swift */,
 				D6448CF82B74A0DD00C3DB72 /* UIKit.swift */,
 				D6C81F122B6869D50010CFED /* ContentView.swift */,
@@ -170,6 +173,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D61282BA2B90369A00CB5642 /* Scrap.rtf in Resources */,
 				D6C81F1B2B6869D60010CFED /* Preview Assets.xcassets in Resources */,
 				D6C81F172B6869D60010CFED /* Assets.xcassets in Resources */,
 			);

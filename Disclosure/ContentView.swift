@@ -15,6 +15,9 @@ struct ContentView: View {
         TabView {
             TrackerView(data: data)
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
+            Rectangle()
+                .fill(.background)
+                .tabItem { Label("Team", systemImage: "person.3.sequence") }
         }
         .onAppear {
             if data.isEmpty {

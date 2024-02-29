@@ -13,8 +13,33 @@ struct TrackerView: View {
     let data: [Relapse]
     @State private var showLogger = false
     @State private var selectedChartScale = ChartScale.week
-    @State private var selectedChartLens = ChartLens.none
+    @State private var selectedChartLens = ChartLens.previous//none
     @State private var rawSelectedDate: Date? = nil
+    private var lensPickerWidth: CGFloat {
+        switch selectedChartLens {
+        case .none:
+            108.0
+        case .compulsion:
+            155.0
+        default:
+            130.0
+        }
+    }
+    private var averageStreak: Int {
+        //three month average streak
+        let rollingThreeMonthCount = data.filter {
+            ChartScale.threeMonth.containsDate($0.date)
+        }.count
+        
+        if rollingThreeMonthCount == 0 {
+            return 0
+        } else {
+            return ChartScale.threeMonth.domain / rollingThreeMonthCount
+        }
+    }
+    private var currentStreak: Int {
+        return Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0) / (-24*60*60))
+    }
     
     var body: some View {
         NavigationStack {
@@ -41,7 +66,7 @@ struct TrackerView: View {
                     }
                     .pickerStyle(.navigationLink)
                     .padding(.leading)
-                    .frame(maxWidth: 170)
+                    .frame(maxWidth: lensPickerWidth)
                     
                     Spacer()
                     
@@ -53,16 +78,47 @@ struct TrackerView: View {
                 
                 Spacer()
                 
+                HStack {
+                    MetricView(count: averageStreak,
+                               name: "Average Streak")
+                        .padding(.leading, 40)
+                    Spacer()
+                    MetricView(count: currentStreak, name: "Days Sober")
+                        .padding(.trailing, 40)
+                }
+                
+                Spacer()
+                
                 Button {
                     showLogger.toggle()
                 } label: {
                     Label("Log Relapse", systemImage: "arrow.counterclockwise")
                 }
+                .buttonStyle(.borderedProminent)
+                .padding()
+                
             }
             .navigationTitle("Tracker")
         }
         .sheet(isPresented: $showLogger) {
             LoggerView()
+        }
+    }
+}
+
+struct MetricView: View {
+    let count: Int
+    let name: String
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text(String(count))
+                    .font(.system(size: 70))
+                Text("Days")
+            }
+            Text(name)
+                .multilineTextAlignment(.center)
         }
     }
 }
