@@ -10,22 +10,14 @@ import SwiftUI
 struct LoggerView: View {
     @Environment(\.modelContext) var context
     @Environment(\.dismiss) private var dismiss
-    
     @Bindable var relapse: Relapse = Relapse()
     @FocusState private var isNotesFocused: Bool
-    
     var isValidForm: Bool {
         relapse.intensity != 0 && relapse.compulsivity != 0
     }
     
-    
     var body: some View {
-        VStack {
-            
-            //                        Label("Log a Relapse", systemImage: "arrow.counterclockwise")
-            //                        Text("Log a Relapse")
-            //                            .padding(.top)
-            
+        NavigationStack {
             Form(content: {
                 Section("Relapse") {
                     DatePicker("Date", selection: $relapse.date, in: ...Date())
@@ -66,6 +58,11 @@ struct LoggerView: View {
                     .disabled(!isValidForm)
                 }
             })
+            .toolbar {
+                Button("Add Person", systemImage: "xmark") {
+                    dismiss()
+                }
+            }
             
             //Keyboard Dismiss Button
             if isNotesFocused {
@@ -86,7 +83,6 @@ struct LoggerView: View {
 #Preview {
     LoggerView()
 }
-
 
 
 struct SliderTicks: View {

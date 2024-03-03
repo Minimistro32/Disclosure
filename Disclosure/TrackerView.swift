@@ -27,8 +27,6 @@ struct TrackerView: View {
     }
     private var averageStreak: Int {
         //three month average streak
-        
-        
         let rollingThreeMonthCount = data.filter {
             $0.date >= Date.now.addingTimeInterval(ChartScale.month.timeInterval * -3)
         }.count
@@ -36,7 +34,8 @@ struct TrackerView: View {
         if rollingThreeMonthCount == 0 {
             return 0
         } else {
-            return (ChartScale.month.dayDomain * 3) / rollingThreeMonthCount
+            // either rolling or the furthest the data goes
+            return min(ChartScale.month.domain * 3, Int(data.last!.date.timeIntervalSinceNow / -89600)) / rollingThreeMonthCount
         }
     }
     private var currentStreak: Int {
@@ -72,7 +71,7 @@ struct TrackerView: View {
                     
                     Spacer()
                     
-                    NavigationLink (destination: LogView(), label: {
+                    NavigationLink (destination: LogView(relapses: data), label: {
                         Label("More", systemImage: "ellipsis.circle")
                     })
                     .padding(.trailing)
@@ -102,7 +101,7 @@ struct TrackerView: View {
             }
             .navigationTitle("Tracker")
         }
-        .sheet(isPresented: $showLogger) {
+        .fullScreenCover(isPresented: $showLogger) {
             LoggerView()
         }
     }

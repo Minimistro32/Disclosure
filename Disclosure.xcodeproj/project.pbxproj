@@ -7,7 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D6111E822B9418C1003F0801 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E812B9418C1003F0801 /* TeamView.swift */; };
+		D6111E852B941B07003F0801 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E842B941B07003F0801 /* Person.swift */; };
+		D6111E872B941BA0003F0801 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E862B941BA0003F0801 /* Relation.swift */; };
+		D6111E8A2B941D7D003F0801 /* iPhoneNumberField in Frameworks */ = {isa = PBXBuildFile; productRef = D6111E892B941D7D003F0801 /* iPhoneNumberField */; };
+		D6111E8C2B941E22003F0801 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E8B2B941E22003F0801 /* AddPersonView.swift */; };
+		D6111E8E2B941FAA003F0801 /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E8D2B941FAA003F0801 /* TestData.swift */; };
 		D61282BA2B90369A00CB5642 /* Scrap.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D61282B92B90369A00CB5642 /* Scrap.rtf */; };
+		D630B6C22B947509000F1169 /* DisclosureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C12B947509000F1169 /* DisclosureView.swift */; };
+		D630B6C42B947D37000F1169 /* Blahst.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C32B947D37000F1169 /* Blahst.swift */; };
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
 		D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* UIKit.swift */; };
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
@@ -24,7 +32,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D6111E812B9418C1003F0801 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
+		D6111E842B941B07003F0801 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		D6111E862B941BA0003F0801 /* Relation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
+		D6111E8B2B941E22003F0801 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
+		D6111E8D2B941FAA003F0801 /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		D61282B92B90369A00CB5642 /* Scrap.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Scrap.rtf; sourceTree = "<group>"; };
+		D630B6C12B947509000F1169 /* DisclosureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureView.swift; sourceTree = "<group>"; };
+		D630B6C32B947D37000F1169 /* Blahst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blahst.swift; sourceTree = "<group>"; };
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
 		D6448CF82B74A0DD00C3DB72 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
@@ -47,12 +62,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6111E8A2B941D7D003F0801 /* iPhoneNumberField in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D6111E832B9418CB003F0801 /* Tab 1 */ = {
+			isa = PBXGroup;
+			children = (
+				D6111E812B9418C1003F0801 /* TeamView.swift */,
+				D6111E8B2B941E22003F0801 /* AddPersonView.swift */,
+			);
+			name = "Tab 1";
+			sourceTree = "<group>";
+		};
 		D6C81F042B6869D50010CFED = {
 			isa = PBXGroup;
 			children = (
@@ -76,7 +101,9 @@
 				D6C81F102B6869D50010CFED /* DisclosureApp.swift */,
 				D6448CF82B74A0DD00C3DB72 /* UIKit.swift */,
 				D6C81F122B6869D50010CFED /* ContentView.swift */,
-				D6FD923B2B7F2752006B74D3 /* Tab 1 */,
+				D6111E832B9418CB003F0801 /* Tab 1 */,
+				D6FD923B2B7F2752006B74D3 /* Tab 2 */,
+				D630B6C12B947509000F1169 /* DisclosureView.swift */,
 				D6FD923D2B7F278A006B74D3 /* Model */,
 				D6FD92402B7FF49B006B74D3 /* Helpers.swift */,
 				D6C81F162B6869D60010CFED /* Assets.xcassets */,
@@ -94,7 +121,7 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		D6FD923B2B7F2752006B74D3 /* Tab 1 */ = {
+		D6FD923B2B7F2752006B74D3 /* Tab 2 */ = {
 			isa = PBXGroup;
 			children = (
 				D698D2412B6F108F00904A59 /* TrackerView.swift */,
@@ -102,15 +129,19 @@
 				D6FD923E2B7F30B0006B74D3 /* LogView.swift */,
 				D6448CF62B745CBF00C3DB72 /* LoggerView.swift */,
 			);
-			name = "Tab 1";
+			name = "Tab 2";
 			sourceTree = "<group>";
 		};
 		D6FD923D2B7F278A006B74D3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D6111E8D2B941FAA003F0801 /* TestData.swift */,
+				D698D23F2B6F0BFC00904A59 /* Relapse.swift */,
+				D630B6C32B947D37000F1169 /* Blahst.swift */,
+				D6111E842B941B07003F0801 /* Person.swift */,
+				D6111E862B941BA0003F0801 /* Relation.swift */,
 				D6E2A01E2B8DC1E900354BE5 /* ChartScale.swift */,
 				D6E2A0222B8DC9E800354BE5 /* ChartLens.swift */,
-				D698D23F2B6F0BFC00904A59 /* Relapse.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -131,6 +162,9 @@
 			dependencies = (
 			);
 			name = Disclosure;
+			packageProductDependencies = (
+				D6111E892B941D7D003F0801 /* iPhoneNumberField */,
+			);
 			productName = Disclosure;
 			productReference = D6C81F0D2B6869D50010CFED /* Disclosure.app */;
 			productType = "com.apple.product-type.application";
@@ -159,6 +193,9 @@
 				Base,
 			);
 			mainGroup = D6C81F042B6869D50010CFED;
+			packageReferences = (
+				D6111E882B941D7D003F0801 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */,
+			);
 			productRefGroup = D6C81F0E2B6869D50010CFED /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -188,7 +225,12 @@
 			files = (
 				D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */,
 				D6C81F132B6869D50010CFED /* ContentView.swift in Sources */,
+				D6111E8C2B941E22003F0801 /* AddPersonView.swift in Sources */,
+				D630B6C22B947509000F1169 /* DisclosureView.swift in Sources */,
+				D6111E8E2B941FAA003F0801 /* TestData.swift in Sources */,
 				D6E2A01F2B8DC1E900354BE5 /* ChartScale.swift in Sources */,
+				D6111E872B941BA0003F0801 /* Relation.swift in Sources */,
+				D630B6C42B947D37000F1169 /* Blahst.swift in Sources */,
 				D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
@@ -196,7 +238,9 @@
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,
 				D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */,
 				D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */,
+				D6111E852B941B07003F0801 /* Person.swift in Sources */,
 				D6FD923F2B7F30B0006B74D3 /* LogView.swift in Sources */,
+				D6111E822B9418C1003F0801 /* TeamView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +457,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D6111E882B941D7D003F0801 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MojtabaHs/iPhoneNumberField.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D6111E892B941D7D003F0801 /* iPhoneNumberField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D6111E882B941D7D003F0801 /* XCRemoteSwiftPackageReference "iPhoneNumberField" */;
+			productName = iPhoneNumberField;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D6C81F052B6869D50010CFED /* Project object */;
 }

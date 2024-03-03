@@ -14,12 +14,11 @@ enum ChartScale: String, CaseIterable, Identifiable {
     case threeMonth = "3 Months"
     case year = "Year"
     
-    var dayDomain: Int {
+    var domain: Int {
         switch self {
         case ChartScale.week:
             7
         case ChartScale.month:
-//            Int(Date.monthsAgoThe1st(count: 1).timeIntervalSinceNow / (-89600*2))
             31
         case ChartScale.threeMonth:
             Int(Date.monthsAgoThe1st(count: 2).timeIntervalSinceNow / -89600)
@@ -34,10 +33,8 @@ enum ChartScale: String, CaseIterable, Identifiable {
             Calendar.Component.weekday
         case ChartScale.month:
             Calendar.Component.weekOfYear
-//            lens == .previous ? Calendar.Component.weekOfMonth : Calendar.Component.day
         case ChartScale.threeMonth:
             Calendar.Component.month
-//            lens == .previous ? Calendar.Component.month : Calendar.Component.weekOfMonth
         case ChartScale.year:
             Calendar.Component.month
         }
@@ -46,7 +43,7 @@ enum ChartScale: String, CaseIterable, Identifiable {
     func formatDate(_ date: Date) -> String {
         if self == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6" {
             print(date)
-            print(dayDomain)
+            print(domain)
         }
         return switch self {
         case ChartScale.week:
@@ -103,7 +100,7 @@ enum ChartScale: String, CaseIterable, Identifiable {
     }
     
     var timeInterval: TimeInterval {
-        TimeInterval(dayDomain * 24 * 60 * 60)
+        TimeInterval(domain * 24 * 60 * 60)
     }
      
     func containsDate(_ date: Date) -> Bool {

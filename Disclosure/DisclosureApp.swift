@@ -13,7 +13,7 @@ struct DisclosureApp: App {
 
     let container: ModelContainer
     init() {
-        let schema = Schema([Relapse.self])
+        let schema = Schema([Relapse.self, Person.self])
         let config: [ModelConfiguration] = [] //ModelConfiguration(groupContainer: _) used for integrating with widgets or other deployments
         do {
             container = try ModelContainer(for: schema, configurations: config)

@@ -10,28 +10,28 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) var context
-    @Query(sort: \Relapse.date, order: .reverse) var data: [Relapse]
-    
+    @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse]
+    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.checkInDate)]) var team: [Person]
+        
     var body: some View {
         TabView {
-            TrackerView(data: data)
+            TeamView(data: team)
+                .tabItem { Label("Team", systemImage: "person.3") }
+            TrackerView(data: relapses)
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
-            Rectangle()
-                .fill(.background)
-                .tabItem { Label("Team", systemImage: "person.3.sequence") }
-                .onAppear {
-                    if data.isEmpty {
-                        for relapse in TestData.spreadsheet {
-                            context.insert(relapse)
-                        }
-                    }
+        }
+        .onAppear {
+            if relapses.isEmpty {
+                for relapse in TestData.spreadsheet {
+                    context.insert(relapse)
                 }
+            }
+            if team.isEmpty {
+                for person in TestData.myTeam {
+                    context.insert(person)
+                }
+            }
         }
     }
     
 }
-
-
-//#Preview {
-//    ContentView()
-//}

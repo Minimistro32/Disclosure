@@ -67,7 +67,7 @@ struct ChartView: View {
                 )
                 .if(scale == ChartScale.week && lens != .previous) {
                     $0.chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: scale.dayDomain)) { value in
+                        AxisMarks(values: .automatic(desiredCount: scale.domain)) { value in
                             AxisValueLabel(format: .dateTime.weekday(.abbreviated))
                             AxisGridLine()
                             AxisTick()

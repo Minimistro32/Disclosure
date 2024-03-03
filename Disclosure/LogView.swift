@@ -12,43 +12,63 @@ struct LogView: View {
     
     @Environment(\.modelContext) var context
     @State private var showLogger = false
-    @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse] = []
+    @State private var showTeam = false
     @State private var relapseToEdit: Relapse?
+    //    @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse] = []
+    let relapses: [Relapse]
     
     var body: some View {
-        List {
-            ForEach(relapses) { relapse in
-                LogCell(relapse: relapse)
-                    .onTapGesture {
-                        relapseToEdit = relapse
+        VStack (spacing: 0) {
+            List {
+                ForEach(relapses) { relapse in
+                    LogCell(relapse: relapse)
+                        .onTapGesture {
+                            relapseToEdit = relapse
+                        }
+                    
+                    //TODO: Make this dynamic and functional
+                    //also make separate sections for relapses to disclose or analyze
+                    
+                    //Section (header: Text("February 2024")) {
+                    //  LogCell(relapse: relapse)
+                    //}
+                    
+                }
+                .onDelete { indexSet in
+                    for index in indexSet {
+                        context.delete(relapses[index])
                     }
-                
-                //TODO: Make this dynamic and functional
-                //also make separate sections for relapses to disclose or analyze
-                
-                //Section (header: Text("February 2024")) {
-                //  LogCell(relapse: relapse)
-                //}
-                
-            }
-            .onDelete { indexSet in
-                for index in indexSet {
-                    context.delete(relapses[index])
                 }
             }
+            .navigationTitle("Logs")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                if !relapses.isEmpty {
+                    Button("Log Relapse", systemImage: "plus") {
+                        showLogger = true
+                    }
+                }
+            }
+            
+            if !relapses.isEmpty {
+                Divider()
+                Button {
+                    showTeam.toggle()
+                } label: {
+                    Label("Disclose Latest", systemImage: "person.3")
+                }
+                .buttonStyle(.borderedProminent)
+                .padding()
+//                Divider()
+            }
         }
-        .navigationTitle("Logs")
-        .navigationBarTitleDisplayMode(.large)
-        .sheet(isPresented: $showLogger) { LoggerView() }
-        .sheet(item: $relapseToEdit) { relapse in
+        .background(.debugGray6)
+        .fullScreenCover(isPresented: $showLogger) { LoggerView() }
+        .fullScreenCover(item: $relapseToEdit) { relapse in
             LoggerView(relapse: relapse)
         }
-        .toolbar {
-            if !relapses.isEmpty {
-                Button("Log Relapse", systemImage: "plus") {
-                    showLogger = true
-                }
-            }
+        .fullScreenCover(isPresented: $showTeam) {
+            DisclosureView(relapse: relapses.first!)
         }
         .overlay {
             if relapses.isEmpty {
@@ -69,26 +89,19 @@ struct LogView: View {
 
 
 struct LogCell: View {
-    
     let relapse: Relapse
     
     var body: some View {
-        //            VStack (spacing: 5) {
-        //                if relapse.reminder {
-        //                    Image(systemName: "bell.fill")
-        //                        .foregroundStyle(.red)
-        //                }
-        //                if !relapse.disclosed {
-        //                    Image(systemName: "phone.fill")
-        //                        .foregroundStyle(.green)
-        //                }
-        //            }
-        VStack (alignment: .leading, spacing: 4) {
+        VStack (alignment: .leading, spacing: 5) {
             HStack {
                 relapseDateView(date: relapse.date)
+                if relapse.reminder {
+                    Image(systemName: "bell.fill")
+                        .foregroundStyle(.accent)
+                }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    SliderIconView(intensity: relapse.intensity, compulsivity: relapse.compulsivity)
+                    
                     BlahstIconView(selections: relapse.triggers.array)
                 }
             }
@@ -96,7 +109,7 @@ struct LogCell: View {
             if !relapse.notes.isEmpty {
                 Text(relapse.notes)
                     .opacity(0.5)
-                    .lineLimit(2)
+                    .lineLimit(3)
             }
         }
     }
@@ -114,23 +127,24 @@ struct relapseDateView: View {
     }
 }
 
-struct SliderIconView: View {
-    let intensity: Int
-    let compulsivity: Int
-    
-    var body: some View {
-        HStack (spacing: 2) {
-//            Group {
-                Image(systemName: "\(intensity).square.fill")
-                    .foregroundStyle(.intense)
-                Image(systemName: "\(compulsivity).square.fill")
-                    .foregroundStyle(.compulsion)
-//            }
-            //not sure how I feel about this actually
-//            .opacity(Double(compulsivity) / 12.5 + 0.2)
-        }
-    }
-}
+//currently unused
+//struct SliderIconView: View {
+//    let intensity: Int
+//    let compulsivity: Int
+//    
+//    var body: some View {
+//        HStack (spacing: 2) {
+////            Group {
+//                Image(systemName: "\(intensity).square.fill")
+//                    .foregroundStyle(.intense)
+//                Image(systemName: "\(compulsivity).square.fill")
+//                    .foregroundStyle(.compulsion)
+////            }
+//            //not sure how I feel about this actually
+////            .opacity(Double(compulsivity) / 12.5 + 0.2)
+//        }
+//    }
+//}
 
 struct BlahstIconView: View {
     let selections: [Bool]
@@ -148,5 +162,5 @@ struct BlahstIconView: View {
 
 
 #Preview {
-    LogView()
+    LogView(relapses: TestData.spreadsheet)
 }
