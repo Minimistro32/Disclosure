@@ -9,22 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct DisclosureView: View {
-    @Environment(\.dismiss) private var dismiss
     @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.checkInDate)]) var team: [Person] = []
+    @Binding var path: NavigationPath
     let relapse: Relapse
+    let fromLogger: Bool
+    
+//    init(path: NavigationPath, relapse: Relapse, fromLogger: Bool) {
+//        self.path = path
+//        self.relapse = relapse
+//        self.fromLogger = fromLogger
+//    }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                TeamListView(data: team, toEdit: .constant(nil), editEnabled: false, daysSinceCheckIn: nil)
-            }
-            .navigationTitle("Disclose To")
-            .toolbar {
-                Button("Cancel", systemImage: "xmark") {
-                    dismiss()
-                }
-            }
-        }
+        TeamListView(data: team, path: $path, editEnabled: false, daysSinceCheckIn: nil)
+            .navigationTitle("Disclose " + (fromLogger ? "To" : "Latest"))
     }
 }
 

@@ -8,22 +8,23 @@
 import SwiftUI
 import SwiftData
 
+fileprivate enum Segue {
+    case loggerView
+}
+
 struct LogView: View {
     
     @Environment(\.modelContext) var context
-    @State private var showLogger = false
-    @State private var showTeam = false
-    @State private var relapseToEdit: Relapse?
-    //    @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse] = []
+    @Binding var path: NavigationPath
     let relapses: [Relapse]
     
     var body: some View {
-        VStack (spacing: 0) {
+        VStack {
             List {
                 ForEach(relapses) { relapse in
                     LogCell(relapse: relapse)
                         .onTapGesture {
-                            relapseToEdit = relapse
+                            path.append(relapse)
                         }
                     
                     //TODO: Make this dynamic and functional
@@ -41,35 +42,30 @@ struct LogView: View {
                 }
             }
             .navigationTitle("Logs")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationDestination(for: Segue.self) { _ in
+                LoggerView(path: $path)
+            }
             .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    if !relapses.isEmpty {
+                        Button("Log Relapse", systemImage: "plus") {
+                            path.append(Segue.loggerView)
+                        }
+                    }
+                }
+                
                 if !relapses.isEmpty {
-                    Button("Log Relapse", systemImage: "plus") {
-                        showLogger = true
+                    ToolbarItem(placement: .navigation) {
+                        Button {
+                            path.append(relapses.first!)
+                        } label: {
+                            Label("Disclose Latest", systemImage: "person.3")
+                        }
                     }
                 }
             }
-            
-            if !relapses.isEmpty {
-                Divider()
-                Button {
-                    showTeam.toggle()
-                } label: {
-                    Label("Disclose Latest", systemImage: "person.3")
-                }
-                .buttonStyle(.borderedProminent)
-                .padding()
-                //                Divider()
-            }
         }
         .background(.debugGray6)
-        .fullScreenCover(isPresented: $showLogger) { LoggerView() }
-        .fullScreenCover(item: $relapseToEdit) { relapse in
-            LoggerView(relapse: relapse)
-        }
-        .fullScreenCover(isPresented: $showTeam) {
-            DisclosureView(relapse: relapses.first!)
-        }
         .overlay {
             if relapses.isEmpty {
                 ContentUnavailableView(label: {
@@ -77,7 +73,9 @@ struct LogView: View {
                 }, description: {
                     Text("Log a relapse to see it here.")
                 }, actions: {
-                    Button("Log Relapse") { showLogger = true }
+                    Button("Log Relapse") {
+                        path.append(Relapse())
+                    }
                 })
                 .offset(y: -60)
             }
@@ -160,7 +158,7 @@ struct BlahstIconView: View {
 }
 
 
-
-#Preview {
-    LogView(relapses: TestData.spreadsheet)
-}
+//
+//#Preview {
+//    LogView(relapses: TestData.spreadsheet)
+//}

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoggerView: View {
     @Environment(\.modelContext) var context
-    @Environment(\.dismiss) private var dismiss
+    @Binding var path: NavigationPath
     @Bindable var relapse: Relapse = Relapse()
     @FocusState private var isNotesFocused: Bool
     var isValidForm: Bool {
@@ -17,72 +17,66 @@ struct LoggerView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            Form(content: {
-                Section("Relapse") {
-                    DatePicker("Date", selection: $relapse.date, in: ...Date())
-                        .datePickerStyle(.compact)
-                        .bold()
-                    IntensitySlider(value: .convert(from: $relapse.intensity))
-                    CompulsivitySlider(value: .convert(from: $relapse.compulsivity))
-                }
-                
-                if !relapse.reminder {
-                    Section("Analyze") {
-                        BlahstSelectionList(selections: $relapse.triggers.array)
+        Form(content: {
+            Section("Relapse") {
+                DatePicker("Date", selection: $relapse.date, in: ...Date())
+                    .datePickerStyle(.compact)
+                    .bold()
+                IntensitySlider(value: .convert(from: $relapse.intensity))
+                CompulsivitySlider(value: .convert(from: $relapse.compulsivity))
+            }
+            
+            if !relapse.reminder {
+                Section("Analyze") {
+                    BlahstSelectionList(selections: $relapse.triggers.array)
                         .tint(.white)
-                        TextField("Notes",
-                                  text: $relapse.notes,
-                                  prompt: Text("Notes\n• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
-                                  axis: .vertical)
-                            .lineLimit(6...)
-                            .focused($isNotesFocused)
-                    }
-                    .transition(.opacity)
-
+                    TextField("Notes",
+                              text: $relapse.notes,
+                              prompt: Text("Notes\n• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
+                              axis: .vertical)
+                    .lineLimit(6...)
+                    .focused($isNotesFocused)
                 }
+                .transition(.opacity)
                 
-                //Submit Section
-                Section {
-                    Toggle("Finish analyzing later?", isOn: $relapse.reminder)
-                    Button {
-                        context.insert(relapse)
-                        dismiss()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("Submit")
-                            Spacer()
-                        }
-                    }
-                    .disabled(!isValidForm)
-                }
-            })
-            .toolbar {
-                Button("Add Person", systemImage: "xmark") {
-                    dismiss()
-                }
             }
             
-            //Keyboard Dismiss Button
-            if isNotesFocused {
-                HStack {
-                    Spacer()
-                    Button("Dismiss") {
-                        isNotesFocused = false
+            //Submit Section
+            Section {
+                Toggle("Finish analyzing later?", isOn: $relapse.reminder)
+                Button {
+                    context.insert(relapse)
+                    path.removeLast(path.count)
+                    path.append(relapse)
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("Submit")
+                        Spacer()
                     }
-                    .padding(.trailing, 10)
                 }
-                .padding(.bottom, 10)
+                .disabled(!isValidForm)
             }
-            
+        })
+        .navigationTitle("Logger")
+        
+        //Keyboard Dismiss Button
+        if isNotesFocused {
+            HStack {
+                Spacer()
+                Button("Dismiss") {
+                    isNotesFocused = false
+                }
+                .padding(.trailing, 10)
+            }
+            .padding(.bottom, 10)
         }
     }
 }
 
-#Preview {
-    LoggerView()
-}
+//#Preview {
+//    LoggerView()
+//}
 
 
 struct SliderTicks: View {

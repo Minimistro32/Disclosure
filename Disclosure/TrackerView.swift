@@ -8,13 +8,40 @@
 import SwiftUI
 import SwiftData
 
+fileprivate enum Segue {
+    case loggerView
+    case logView
+}
 
 struct TrackerView: View {
     let data: [Relapse]
-    @State private var showLogger = false
+    @State private var path = NavigationPath()
+    
+    var body: some View {
+        NavigationStack (path: $path) {
+            InsideTrackerView(data: data, path: $path)
+                .navigationTitle("Tracker")
+                .navigationDestination(for: Segue.self) {
+                    switch $0 {
+                    case .logView:
+                        LogView(path: $path, relapses: data)
+                    case .loggerView:
+                        LoggerView(path: $path)
+                    }
+                }
+                .navigationDestination(for: Relapse.self) {
+                    DisclosureView(path: $path, relapse: $0, fromLogger: false)
+                }
+        }
+    }
+}
+
+struct InsideTrackerView: View {
+    let data: [Relapse]
     @State private var selectedChartScale = ChartScale.week
     @State private var selectedChartLens = ChartLens.none
     @State private var rawSelectedDate: Date? = nil
+    @Binding var path: NavigationPath
     private var lensPickerWidth: CGFloat {
         switch selectedChartLens {
         case .none:
@@ -43,66 +70,62 @@ struct TrackerView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                Picker(selection: $selectedChartScale) {
-                    ForEach(ChartScale.allCases) { interval in
-                        Text(interval.rawValue)
+        VStack {
+            Picker(selection: $selectedChartScale) {
+                ForEach(ChartScale.allCases) { interval in
+                    Text(interval.rawValue)
+                }
+            } label: {
+                Text("Time Interval for Chart")
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            .opacity(rawSelectedDate == nil ? 1.0 : 0.0) // to remove disappear for graded (|| selectedChartLens.isGraded)
+            
+            ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
+            HStack {
+                Picker(selection: $selectedChartLens) {
+                    ForEach(ChartLens.allCases) { lens in
+                        Text(lens.rawValue)
                     }
                 } label: {
-                    Text("Time Interval for Chart")
+                    Text("View")
                 }
-                .pickerStyle(.segmented)
-                .padding()
-                .opacity(rawSelectedDate == nil ? 1.0 : 0.0) // to remove disappear for graded (|| selectedChartLens.isGraded)
-                
-                ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
-                HStack {
-                    Picker(selection: $selectedChartLens) {
-                        ForEach(ChartLens.allCases) { lens in
-                            Text(lens.rawValue)
-                        }
-                    } label: {
-                        Text("View")
-                    }
-                    .pickerStyle(.navigationLink)
-                    .padding(.leading)
-                    .frame(maxWidth: lensPickerWidth)
-                    
-                    Spacer()
-                    
-                    NavigationLink (destination: LogView(relapses: data), label: {
-                        Label("More", systemImage: "ellipsis.circle")
-                    })
-                    .padding(.trailing)
-                }
-                
-                Spacer()
-                
-                HStack {
-                    MetricView(count: averageStreak,
-                               name: "Average Streak")
-                        .padding(.leading, 40)
-                    Spacer()
-                    MetricView(count: currentStreak, name: "Days Sober")
-                        .padding(.trailing, 40)
-                }
+                .pickerStyle(.navigationLink)
+                .padding(.leading)
+                .frame(maxWidth: lensPickerWidth)
                 
                 Spacer()
                 
                 Button {
-                    showLogger.toggle()
+                    path.append(Segue.logView)
                 } label: {
-                    Label("Log Relapse", systemImage: "arrow.counterclockwise")
+                    Label("More", systemImage: "ellipsis.circle")
                 }
-                .buttonStyle(.borderedProminent)
-                .padding()
-                
+                .padding(.trailing)
             }
-            .navigationTitle("Tracker")
-        }
-        .fullScreenCover(isPresented: $showLogger) {
-            LoggerView()
+            
+            Spacer()
+            
+            HStack {
+                MetricView(count: averageStreak,
+                           name: "Average Streak")
+                .padding(.leading, 40)
+                Spacer()
+                MetricView(count: currentStreak, name: "Days Sober")
+                    .padding(.trailing, 40)
+            }
+            
+            Spacer()
+            
+            Button {
+                path.append(Segue.loggerView)
+            } label: {
+                Label("Log Relapse", systemImage: "arrow.counterclockwise")
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
+            
         }
     }
 }

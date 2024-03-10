@@ -15,6 +15,7 @@ struct TeamView: View {
     var daysSinceCheckIn: Int? {
         data.min { $0.daysSinceCheckIn ?? Int.max < $1.daysSinceCheckIn ?? Int.max}?.daysSinceCheckIn
     }
+    @State private var path = NavigationPath()
     @State private var showAddPerson = false
     @State private var personToEdit: Person?
     
@@ -31,12 +32,11 @@ struct TeamView: View {
                             }
                     }
                     if !data.isEmpty {
-                        TeamListView(data: data, toEdit: $personToEdit, daysSinceCheckIn: daysSinceCheckIn)
+                        TeamListView(data: data, path: $path, daysSinceCheckIn: daysSinceCheckIn)
                     }
                 }
             }
             .navigationTitle("Team")
-            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 if !data.isEmpty {
                     Button("Add Person", systemImage: "plus") {
@@ -48,10 +48,11 @@ struct TeamView: View {
                 AddPersonView()
                     .presentationDetents([.medium])
             }
-            .fullScreenCover(item: $personToEdit) { person in
-                AddPersonView(person: person)
-                    .presentationDetents([.medium])
+            .navigationDestination(for: Person.self) {
+                AddPersonView(person: $0)
             }
+//            .fullScreenCover(item: $personToEdit) { person in
+//            }
             
             if data.isEmpty {
                 ContentUnavailableView(label: {
@@ -71,7 +72,7 @@ struct TeamView: View {
 struct TeamListView: View {
     @Environment(\.modelContext) var context
     let data: [Person]
-    @Binding var toEdit: Person?
+    @Binding var path: NavigationPath
     var editEnabled: Bool = true
     let daysSinceCheckIn: Int?
     
@@ -82,10 +83,10 @@ struct TeamListView: View {
                 if !relationData.isEmpty {
                     Section(header: Text(relation.rawValue)) {
                         ForEach(relationData) { person in
-                            PersonView(person: person, daysSinceCheckIn: daysSinceCheckIn)
+                            PersonView(path: $path, person: person, daysSinceCheckIn: daysSinceCheckIn)
                                 .onTapGesture {
                                     if editEnabled {
-                                        toEdit = person
+                                        path.append(person)
                                     }
                                 }
                         }
@@ -114,6 +115,8 @@ fileprivate func daysSinceToString(_ days: Int) -> String {
 }
 
 struct PersonView: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var path: NavigationPath
     let person: Person
     let daysSinceCheckIn: Int?
     private let messageComposeDelegate = MessageComposerDelegate()
@@ -125,8 +128,6 @@ struct PersonView: View {
                     .bold()
                 if let daysSince = person.daysSinceCheckIn {
                     Text(daysSinceToString(daysSince))
-                    //TODO: ask around what people prefer on this
-//                        .foregroundStyle(.accent)
                 }
             }
             Spacer()
@@ -148,6 +149,9 @@ struct PersonView: View {
                         guard let url = URL(string: "tel://" + person.phone) else { return }
                         UIApplication.shared.open(url)
                         person.checkInDate = Date.now
+                        if path.count > 0 {
+                            dismiss()
+                        }
                     }
                     .if(daysSinceCheckIn != 0) {
                         $0.bold()
@@ -165,9 +169,9 @@ struct PersonView: View {
 #Preview("Empty TeamView") {
     TeamView(data: [])
 }
-#Preview("TeamListView") {
-    TeamListView(data: TestData.myTeam, toEdit: .constant(nil), daysSinceCheckIn: 0)
-}
+//#Preview("TeamListView") {
+//    TeamListView(data: TestData.myTeam, daysSinceCheckIn: 0)
+//}
 
 // MARK: The message extension
 extension PersonView {
