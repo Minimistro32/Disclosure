@@ -59,7 +59,7 @@ struct LogView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding()
-//                Divider()
+                //                Divider()
             }
         }
         .background(.debugGray6)
@@ -100,10 +100,10 @@ struct LogCell: View {
                         .foregroundStyle(.accent)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    
-                    BlahstIconView(selections: relapse.triggers.array)
-                }
+                BlahstIconView(selections: relapse.triggers.array)
+                    .if(relapse.notes.isEmpty) {
+                        $0.padding(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    }
             }
             
             if !relapse.notes.isEmpty {
@@ -131,7 +131,7 @@ struct relapseDateView: View {
 //struct SliderIconView: View {
 //    let intensity: Int
 //    let compulsivity: Int
-//    
+//
 //    var body: some View {
 //        HStack (spacing: 2) {
 ////            Group {

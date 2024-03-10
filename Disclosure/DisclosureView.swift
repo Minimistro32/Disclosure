@@ -16,7 +16,7 @@ struct DisclosureView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TeamListView(data: team, toEdit: .constant(nil), editEnabled: false)
+                TeamListView(data: team, toEdit: .constant(nil), editEnabled: false, daysSinceCheckIn: nil)
             }
             .navigationTitle("Disclose To")
             .toolbar {

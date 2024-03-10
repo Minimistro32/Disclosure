@@ -33,6 +33,12 @@ struct AddPersonView: View {
                             .focused($isPhoneFocused)
                     }
                     
+                    if person.checkInDate != nil {
+                        Section {
+                            DatePicker("Last Call", selection: $person.checkInDate ?? Date.now, in: ...Date())
+                        }
+                    }
+                    
                     //Submit Section
                     Section {
                         Button {

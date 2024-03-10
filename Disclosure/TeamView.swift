@@ -25,9 +25,13 @@ struct TeamView: View {
                     if let daysSinceCheckIn {
                         Text("Checked In " + daysSinceToString(daysSinceCheckIn))
                             .padding(.leading)
+                            .if(daysSinceCheckIn != 0) {
+                                $0.bold()
+                                .foregroundStyle(.accent)
+                            }
                     }
                     if !data.isEmpty {
-                        TeamListView(data: data, toEdit: $personToEdit)
+                        TeamListView(data: data, toEdit: $personToEdit, daysSinceCheckIn: daysSinceCheckIn)
                     }
                 }
             }
@@ -69,6 +73,7 @@ struct TeamListView: View {
     let data: [Person]
     @Binding var toEdit: Person?
     var editEnabled: Bool = true
+    let daysSinceCheckIn: Int?
     
     var body: some View {
         List {
@@ -77,7 +82,7 @@ struct TeamListView: View {
                 if !relationData.isEmpty {
                     Section(header: Text(relation.rawValue)) {
                         ForEach(relationData) { person in
-                            PersonView(person: person)
+                            PersonView(person: person, daysSinceCheckIn: daysSinceCheckIn)
                                 .onTapGesture {
                                     if editEnabled {
                                         toEdit = person
@@ -110,6 +115,7 @@ fileprivate func daysSinceToString(_ days: Int) -> String {
 
 struct PersonView: View {
     let person: Person
+    let daysSinceCheckIn: Int?
     private let messageComposeDelegate = MessageComposerDelegate()
     
     var body: some View {
@@ -143,6 +149,10 @@ struct PersonView: View {
                         UIApplication.shared.open(url)
                         person.checkInDate = Date.now
                     }
+                    .if(daysSinceCheckIn != 0) {
+                        $0.bold()
+                        .foregroundStyle(.accent)
+                    }
             }
             .frame(width: 30)
         }
@@ -156,7 +166,7 @@ struct PersonView: View {
     TeamView(data: [])
 }
 #Preview("TeamListView") {
-    TeamListView(data: TestData.myTeam, toEdit: .constant(nil))
+    TeamListView(data: TestData.myTeam, toEdit: .constant(nil), daysSinceCheckIn: 0)
 }
 
 // MARK: The message extension
