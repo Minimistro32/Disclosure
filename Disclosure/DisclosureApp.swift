@@ -10,7 +10,6 @@ import SwiftData
 
 @main
 struct DisclosureApp: App {
-
     let container: ModelContainer
     init() {
         let schema = Schema([Relapse.self, Person.self])
@@ -18,12 +17,12 @@ struct DisclosureApp: App {
         do {
             container = try ModelContainer(for: schema, configurations: config)
         } catch {
-            fatalError("Could not initialize ModelContainer")
+             fatalError("Could not initialize ModelContainer")
         }
     }
     
     var body: some Scene {
-        WindowGroup {
+        WindowGroup() {
             ContentView()
         }
         .modelContainer(container)

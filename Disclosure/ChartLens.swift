@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum ChartLens: String, CaseIterable, Identifiable {
-    var id: Self { return self}
+    var id: Self { return self }
     case none = "Count"
     case previous = "Previous"
     case intensity = "Intensity"

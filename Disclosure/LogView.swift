@@ -8,12 +8,7 @@
 import SwiftUI
 import SwiftData
 
-fileprivate enum Segue {
-    case loggerView
-}
-
 struct LogView: View {
-    
     @Environment(\.modelContext) var context
     @Binding var path: NavigationPath
     let relapses: [Relapse]
@@ -24,7 +19,7 @@ struct LogView: View {
                 ForEach(relapses) { relapse in
                     LogCell(relapse: relapse)
                         .onTapGesture {
-                            path.append(relapse)
+                            path.append(Segue(to: .loggerView, payload: relapse))
                         }
                     
                     //TODO: Make this dynamic and functional
@@ -42,22 +37,19 @@ struct LogView: View {
                 }
             }
             .navigationTitle("Logs")
-            .navigationDestination(for: Segue.self) { _ in
-                LoggerView(path: $path)
-            }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     if !relapses.isEmpty {
                         Button("Log Relapse", systemImage: "plus") {
-                            path.append(Segue.loggerView)
+                            path.append(Segue(to: .loggerView))
                         }
                     }
                 }
                 
                 if !relapses.isEmpty {
-                    ToolbarItem(placement: .navigation) {
+                    ToolbarItem(placement: .secondaryAction) {
                         Button {
-                            path.append(relapses.first!)
+                            path.append(Segue(to: .disclosureView, payload: relapses.first!))
                         } label: {
                             Label("Disclose Latest", systemImage: "person.3")
                         }
@@ -74,7 +66,7 @@ struct LogView: View {
                     Text("Log a relapse to see it here.")
                 }, actions: {
                     Button("Log Relapse") {
-                        path.append(Relapse())
+                        path.append(Segue(to: .loggerView))
                     }
                 })
                 .offset(y: -60)

@@ -8,11 +8,6 @@
 import SwiftUI
 import SwiftData
 
-fileprivate enum Segue {
-    case loggerView
-    case logView
-}
-
 struct TrackerView: View {
     let data: [Relapse]
     @State private var path = NavigationPath()
@@ -20,17 +15,24 @@ struct TrackerView: View {
     var body: some View {
         NavigationStack (path: $path) {
             InsideTrackerView(data: data, path: $path)
+#if !os(macOS)
                 .navigationTitle("Tracker")
+#endif
                 .navigationDestination(for: Segue.self) {
-                    switch $0 {
+                    switch $0.destination {
                     case .logView:
                         LogView(path: $path, relapses: data)
                     case .loggerView:
-                        LoggerView(path: $path)
+                        if let relapse = $0.payload as? Relapse {
+                            LoggerView(path: $path, relapse: relapse, relapseReminderProxy: relapse.reminder)
+                        } else {
+                            LoggerView(path: $path)
+                        }
+                    case .disclosureView:
+                        DisclosureView(path: $path, relapse: $0.payload as! Relapse)
+                    default:
+                        ErrorView(description: "Unaccounted Segue To \($0.destination) ")
                     }
-                }
-                .navigationDestination(for: Relapse.self) {
-                    DisclosureView(path: $path, relapse: $0, fromLogger: false)
                 }
         }
     }
@@ -45,11 +47,11 @@ struct InsideTrackerView: View {
     private var lensPickerWidth: CGFloat {
         switch selectedChartLens {
         case .none:
-            108.0
+            108.0 + 10
         case .compulsion:
-            155.0
+            155.0 + 10
         default:
-            130.0
+            130.0 + 10
         }
     }
     private var averageStreak: Int {
@@ -66,7 +68,11 @@ struct InsideTrackerView: View {
         }
     }
     private var currentStreak: Int {
-        return Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0) / (-24*60*60))
+        Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0) / (-24*60*60))
+    }
+    
+    private var reminderCount: Int {
+        data.filter { $0.reminder }.count
     }
     
     var body: some View {
@@ -91,18 +97,34 @@ struct InsideTrackerView: View {
                 } label: {
                     Text("View")
                 }
+#if os(macOS)
+                .pickerStyle(.radioGroup)
+#else
                 .pickerStyle(.navigationLink)
-                .padding(.leading)
                 .frame(maxWidth: lensPickerWidth)
+#endif
+                .padding(.init(top: 7, leading: 10, bottom: 7, trailing: 10))
+                .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
+                .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
+                .padding(.leading, 15)
                 
                 Spacer()
                 
-                Button {
-                    path.append(Segue.logView)
-                } label: {
-                    Label("More", systemImage: "ellipsis.circle")
+                ZStack {
+                    LinkButton(title: "More", systemImage: "ellipsis.circle") {
+                        path.append(Segue(to: .logView))
+                    }
+                    
+                    if reminderCount > 0 {
+                        Image(systemName: "\(reminderCount > 50 ? 50 : reminderCount).circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(.accent)
+                            .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
+                            .offset(x: 40, y: -13)
+                    }
                 }
-                .padding(.trailing)
+                .padding(.trailing, 15 + (reminderCount > 0 ? 5 : 0))
             }
             
             Spacer()
@@ -119,7 +141,7 @@ struct InsideTrackerView: View {
             Spacer()
             
             Button {
-                path.append(Segue.loggerView)
+                path.append(Segue(to: .loggerView))
             } label: {
                 Label("Log Relapse", systemImage: "arrow.counterclockwise")
             }

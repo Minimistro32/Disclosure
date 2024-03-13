@@ -8,7 +8,7 @@
 import Foundation
 
 enum Relation: String, Codable, CaseIterable, Identifiable {
-    var id: Self { return self}
+    var id: Self { return self }
     case sponsor = "Sponsor"
     case group = "Group"
     case other = "Other"

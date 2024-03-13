@@ -9,15 +9,16 @@ import Foundation
 
 struct TestData {
     static let myTeam: [Person] = [
-        Person(name: "Ippo Makunouchi", relation: Relation.sponsor, phone: "11231231234", checkInDate: Date.from(year: 2024, month: 2, day: 3)),
+        Person(name: "Ippo Makunouchi", relation: Relation.sponsor, phone: "11231231234", latestCall: Date.from(year: 2024, month: 2, day: 3)),
         Person(name: "Barbie Doll", relation: Relation.group, phone: "11231231234"),
         Person(name: "Ken Doll", relation: Relation.group, phone: "11231231234"),
-        Person(name: "Mom", relation: Relation.other, phone: "11231231234", checkInDate: Date.from(year: 2024, month: 3, day: 1)),
+        Person(name: "Mom", relation: Relation.other, phone: "11231231234", latestCall: Date.from(year: 2024, month: 3, day: 1)),
         Person(name: "Sister", relation: Relation.other, phone: "11231231234"),
-        Person(name: "Father-in-Law", relation: Relation.other, phone: "11231231234", checkInDate: Date.from(year: 2023, month: 3, day: 2))
+        Person(name: "Father-in-Law", relation: Relation.other, phone: "11231231234", latestCall: Date.from(year: 2023, month: 3, day: 2))
     ]
     
     static let spreadsheet: [Relapse] = [
+        Relapse(date: Date.from(year: 2024, month: 3, day: 2), intensity: 1, compulsivity: 4, notes: "I think I was just tired, 7 or 6 hours instead of the ideal 9. Low shame, just got to keep moving forward. Chances are good Mar will be much better than Feb.", triggers: ["Tiredness", "Hunger"]),
         Relapse(date: Date.from(year: 2024, month: 3, day: 2), reminder: true, intensity: 5, compulsivity: 3, notes: "I was a little hungry, just finished taxes. Low compulsion, I just wanted to more than I didn’t. (TikTok)", triggers: ["Bored", "Hunger"]),
         Relapse(date: Date.from(year: 2024, month: 3, day: 2), intensity: 7, compulsivity: 5, notes: "I had eaten. Just shame I think.", triggers: ["Anger"]),
         //February

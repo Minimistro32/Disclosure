@@ -10,6 +10,7 @@ import Foundation
 struct Blahst: Codable, Identifiable {
     var id = UUID()
     static let expansion = ["Bored", "Loneliness", "Anger", "Hunger", "Stress", "Tiredness"]
+    private static let stativeExpansion = ["bored", "lonely", "angry", "hungry", "stressed", "tired"]
     
     var bored: Bool
     var loneliness: Bool
@@ -29,6 +30,31 @@ struct Blahst: Codable, Identifiable {
             self.hunger = triggers[3]
             self.stress = triggers[4]
             self.tiredness = triggers[5]
+        }
+    }
+    
+    var count: Int {
+        self.array.filter({$0}).count
+    }
+    
+    func toString() -> String {
+        let triggers = zip(self.array, Blahst.stativeExpansion).compactMap { trigger in
+            return trigger.0 ? trigger.1 : nil
+        }
+        
+        switch self.count {
+        case 1:
+            return triggers.first!
+        case 2:
+            return triggers.first! + " and " + triggers.last!
+        default:
+            return triggers.reversed().reduce("", { builder, trigger in
+                if builder.isEmpty {
+                    return "and " + trigger
+                } else {
+                    return trigger + ", "
+                }
+            })
         }
     }
     

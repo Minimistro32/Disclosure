@@ -12,6 +12,10 @@ struct LoggerView: View {
     @Binding var path: NavigationPath
     @Bindable var relapse: Relapse = Relapse()
     @FocusState private var isNotesFocused: Bool
+    @State var relapseReminderProxy: Bool = false
+    //https://stackoverflow.com/questions/69397644/updating-tabview-badge-reloads-all-views-when-using-swiftui-3-badge-modifier
+    //use value of `relapse.reminder` on init. This field circumvents a bug updating the badge on the tracker tab bar icon. If the analyze toggle is changed to update the badge the navigationStack path reloads.
+    
     var isValidForm: Bool {
         relapse.intensity != 0 && relapse.compulsivity != 0
     }
@@ -26,7 +30,7 @@ struct LoggerView: View {
                 CompulsivitySlider(value: .convert(from: $relapse.compulsivity))
             }
             
-            if !relapse.reminder {
+            if !relapseReminderProxy {
                 Section("Analyze") {
                     BlahstSelectionList(selections: $relapse.triggers.array)
                         .tint(.white)
@@ -43,11 +47,11 @@ struct LoggerView: View {
             
             //Submit Section
             Section {
-                Toggle("Finish analyzing later?", isOn: $relapse.reminder)
+                Toggle("Finish analyzing later?", isOn: $relapseReminderProxy)
                 Button {
+                    relapse.reminder = relapseReminderProxy
                     context.insert(relapse)
-                    path.removeLast(path.count)
-                    path.append(relapse)
+                    path.append(Segue(to: .disclosureView, payload: relapse))
                 } label: {
                     HStack {
                         Spacer()
@@ -59,17 +63,17 @@ struct LoggerView: View {
             }
         })
         .navigationTitle("Logger")
-        
-        //Keyboard Dismiss Button
-        if isNotesFocused {
-            HStack {
-                Spacer()
-                Button("Dismiss") {
-                    isNotesFocused = false
+        .toolbar {
+            if isNotesFocused {
+                ToolbarItem(placement: .keyboard) {
+                    HStack{
+                        Spacer()
+                        Button("Dismiss") {
+                            isNotesFocused = false
+                        }
+                    }
                 }
-                .padding(.trailing, 10)
             }
-            .padding(.bottom, 10)
         }
     }
 }

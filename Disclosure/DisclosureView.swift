@@ -9,20 +9,25 @@ import SwiftUI
 import SwiftData
 
 struct DisclosureView: View {
-    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.checkInDate)]) var team: [Person] = []
+    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) var team: [Person] = []
     @Binding var path: NavigationPath
     let relapse: Relapse
-    let fromLogger: Bool
-    
-//    init(path: NavigationPath, relapse: Relapse, fromLogger: Bool) {
-//        self.path = path
-//        self.relapse = relapse
-//        self.fromLogger = fromLogger
-//    }
     
     var body: some View {
-        TeamListView(data: team, path: $path, editEnabled: false, daysSinceCheckIn: nil)
-            .navigationTitle("Disclose " + (fromLogger ? "To" : "Latest"))
+        TeamListView(data: team, path: $path, relapse: relapse, editEnabled: false, daysSinceCheckIn: nil)
+            .navigationTitle("Disclose Latest")
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { //was topBarLeading before mac interop was enabled
+                    Button {
+                        path.removeLast(2)
+                    } label: {
+                        Image(systemName: "chevron.left")
+                        Text("Tracker")
+                            .foregroundStyle(.accent)
+                    }
+                }
+            }
     }
 }
 
