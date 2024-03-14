@@ -32,28 +32,39 @@ struct TeamView: View {
         NavigationStack(path: $path) {
             ZStack {
                 VStack (alignment: .leading) {
-                    if let daysSinceCheckIn {
-                        Text("Checked In " + daysSinceToString(daysSinceCheckIn))
-                            .padding(.leading)
-                            .if(daysSinceCheckIn != 0) {
-                                $0.bold()
-                                    .foregroundStyle(.accent)
+                    HStack (alignment: .bottom) {
+                        if let daysSinceCheckIn {
+                            Text("Checked In " + daysSinceToString(daysSinceCheckIn))
+#if os(macOS)
+                                .font(.largeTitle)
+                                .padding(.top)
+#else
+                                .padding(.leading)
+#endif
+                                .if(daysSinceCheckIn != 0) {
+                                    $0.bold()
+                                        .foregroundStyle(.accent)
+                                }
+                        }
+                        
+#if os(macOS)
+                        Spacer()
+                        if !data.isEmpty {
+                            LinkButton(title: "Add Person", systemImage: "plus") {
+                                path.append(Segue(to: .addPersonView))
                             }
+                        }
+#endif
                     }
+                    
                     if !data.isEmpty {
                         TeamListView(data: data, path: $path, relapse: nil, daysSinceCheckIn: daysSinceCheckIn)
                     }
                 }
-#if os(macOS)
-                if !data.isEmpty {
-                    LinkButton(title: "Add Person", systemImage: "plus") {
-                        path.append(Segue(to: .addPersonView))
-                    }
-                }
-#endif
-                
             }
-#if !os(macOS)
+#if os(macOS)
+            .frame(maxWidth: 425)
+#else
             .navigationTitle("Team")
             .toolbar {
                 if !data.isEmpty {
@@ -65,7 +76,7 @@ struct TeamView: View {
 #endif
             .navigationDestination(for: Segue.self) {
                 if let person = $0.payload as? Person {
-                    AddPersonView(path: $path, person: person)
+                    AddPersonView(path: $path, person: person, personLatestCallProxy: person.latestCall)
                 } else {
                     AddPersonView(path: $path)
                 }
@@ -106,23 +117,47 @@ struct TeamListView: View {
                 }
             }
         }
+#if os(macOS)
+        .listStyle(.bordered)
+#endif
+        .contextMenu(forSelectionType: Person.ID.self) { ids in
+            if ids.isEmpty {
+                Button("New Person", systemImage: "plus") {
+                    Segue.perform(with: &path, to: .addPersonView)
+                }
+            } else {
+                let people = data.filter { ids.contains($0.id) }
+                if ids.count == 1 {
+                    Button("Edit", systemImage: "pencil") {
+                        Segue.perform(with: &path, to: .addPersonView, payload: people.first!)
+                    }
+                    Button("Delete", systemImage: "trash", role: .destructive) {
+                        context.delete(people.first!)
+                    }
+                } else {
+                    Button("Delete Selected", systemImage: "trash", role: .destructive) {
+                        for person in people {
+                            context.delete(person)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func teamRow(relation: Relation, relationData: [Person]) -> some View {
-        return VStack {
-            ForEach(relationData) { person in
-                PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn)
-                    .onTapGesture {
-                        if editEnabled {
-                            Segue.perform(with: &path, to: .addPersonView, payload: person)
-                        }
+        return ForEach(relationData) { person in
+            PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn)
+                .onTapGesture {
+                    if editEnabled {
+                        Segue.perform(with: &path, to: .addPersonView, payload: person)
                     }
-            }
-            .if(editEnabled) {
-                $0.onDelete { indexSet in
-                    for index in indexSet {
-                        context.delete(data.filter { $0.relation == relation }[index])
-                    }
+                }
+        }
+        .if(editEnabled) {
+            $0.onDelete { indexSet in
+                for index in indexSet {
+                    context.delete(data.filter { $0.relation == relation }[index])
                 }
             }
         }
@@ -136,13 +171,56 @@ struct PersonView: View {
     let person: Person
     let relapse: Relapse?
     let daysSinceCheckIn: Int?
-#if !os(macOS)
+    
+#if os(macOS)
+    var body: some View {
+        HStack (spacing: 25) {
+            Text(person.name)
+                .bold()
+                .contextMenu {
+                    Button("Edit", systemImage: "pencil") {
+                        Segue.perform(with: &path, to: .addPersonView, payload: person)
+                    }
+                    Button("Delete", systemImage: "trash", role: .destructive) {
+                        context.delete(person)
+                    }
+                }
+            
+            Spacer()
+            
+            if let daysSince = person.daysSinceCall {
+                Text(daysSinceToString(daysSince))
+            }
+            
+//            Group {
+//                if person.canText {
+//                    Image(systemName: "message.fill")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                }
+//                Image(systemName: "phone.fill")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .padding(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
+//                    .if(daysSinceCheckIn != 0) {
+//                        $0.bold()
+//                            .foregroundStyle(.accent)
+//                    }
+//            }
+//            .frame(width: 30)
+        }
+        .if(person.daysSinceCall == nil) {
+            $0.padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+        }
+        .padding(.init(top: 5, leading: 15, bottom: 5, trailing: 15))
+    }
+#else
     private let messageComposeDelegate = MessageComposerDelegate()
-#endif
     
     var body: some View {
         HStack (spacing: 25) {
             VStack (alignment: .leading) {
+                
                 Text(person.name)
                     .bold()
                     .contextMenu {
@@ -159,9 +237,8 @@ struct PersonView: View {
                 }
             }
             Spacer()
-#if !os(macOS)
             Group {
-                if person.relation == .sponsor {
+                if person.canText {
                     Image(systemName: "message.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -188,9 +265,9 @@ struct PersonView: View {
                     }
             }
             .frame(width: 30)
-#endif
         }
     }
+#endif
 }
 
 #Preview {
@@ -231,28 +308,3 @@ extension PersonView {
 }
 #endif
 
-
-/*
- .contextMenu(forSelectionType: Person.ID.self) { ids in
-     if ids.isEmpty {
-         Button("New Person", systemImage: "plus") {
-             Segue.perform(with: &path, to: .addPersonView)
-         }
-     } else {
-         let people = data.filter { ids.contains($0.id) }
-         if ids.count == 1 {
-             Button("Edit", systemImage: "pencil") {
-                 Segue.perform(with: &path, to: .addPersonView, payload: people.first!)
-             }
-             Button("Delete", systemImage: "trash", role: .destructive) {
-                 context.delete(people.first!)
-             }
-         } else {
-             Button("Delete Selected", systemImage: "trash", role: .destructive) {
-                 for person in people {
-                     context.delete(person)
-                 }
-             }
-         }
-     }
- */

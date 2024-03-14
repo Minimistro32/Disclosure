@@ -17,7 +17,17 @@ class Person {
         }
     }
     var sortValue: Int //for sorting an Enum using SwiftData
-    var phone: String
+    private var rawPhone: String
+    var phone: String {
+        get {
+            self.rawPhone
+        }
+        set {
+            self.rawPhone = newValue.components(separatedBy: CharacterSet.decimalDigits.inverted)
+                .joined()
+        }
+    }
+    
     var latestCall: Date?
     var daysSinceCall: Int? {
         if let latestCall {
@@ -62,7 +72,8 @@ class Person {
     init(name: String = "", relation: Relation = .sponsor, phone: String = "", latestCall: Date? = nil, canText: Bool? = nil, codeWord: String = "", textMsgOverride: String = "") {
         self.name = name
         self.relation = relation
-        self.phone = phone
+        self.rawPhone = phone.components(separatedBy: CharacterSet.decimalDigits.inverted)
+            .joined()
         self.sortValue = relation.sortValue
         self.latestCall = latestCall
         self.canText = canText ?? false

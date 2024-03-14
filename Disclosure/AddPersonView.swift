@@ -41,7 +41,10 @@ struct AddPersonView: View {
                             Text(relation.rawValue)
                         }
                     }
-#if !os(macOS)
+#if os(macOS)
+                    TextField("Phone", text: $person.phone)
+                        .focused($isFocused)
+#else
                     iPhoneNumberField("Phone", text: $person.phone)
                         .focused($isFocused)
 #endif
@@ -87,6 +90,24 @@ struct AddPersonView: View {
                         }
                     }
                     
+#if os(macOS)
+                    HStack(alignment: .center) {
+                        Button {
+                            person.latestCall = personLatestCallProxy
+                            context.insert(person)
+                            path.removeLast()
+                        } label: {
+                            Text("Submit")
+                                .frame(maxWidth: .infinity)
+                        }
+                        Button {
+                            path.removeLast()
+                        } label: {
+                            Text("Cancel")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+#else
                     Button {
                         person.latestCall = personLatestCallProxy
                         context.insert(person)
@@ -98,11 +119,18 @@ struct AddPersonView: View {
                             Spacer()
                         }
                     }
+#endif
                 }
             }
+#if os(macOS)
+            .formStyle(.grouped)
+            .navigationBarBackButtonHidden(true)
+#else
             .navigationTitle("Add Person")
+#endif
             
-            //            Keyboard Dismiss Button
+#if !os(macOS)
+            //Keyboard Dismiss Button
             Group {
                 if isFocused {
                     HStack {
@@ -112,8 +140,14 @@ struct AddPersonView: View {
                     .padding(.init(top: 7, leading: 0, bottom: 15, trailing: 25))
                 }
             }
+#endif
         }
+#if os(macOS)
+        .frame(width: 350)
+        .padding()
+#else
         .background(.debugGray6)
+#endif
         
     }
 }
@@ -129,9 +163,6 @@ struct PreviewTextView: View {
         TextField("Code Word", text: $rawCodeWord, prompt: Text("Code Word")) //🦁☠️
             .focused($isFocused)
         VStack (alignment: .leading) {
-            //            Text("Preview")
-            //                .font(.headline)
-            //                .padding(.bottom, 1)
             Text(person.draftText(relapse: relapse))
                 .opacity(0.8)
         }

@@ -10,6 +10,8 @@ import SwiftData
 
 @main
 struct DisclosureApp: App {
+    static let RELOAD_MODEL = true
+    
     let container: ModelContainer
     init() {
         let schema = Schema([Relapse.self, Person.self])

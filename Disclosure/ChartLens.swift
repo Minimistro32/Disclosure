@@ -21,11 +21,11 @@ enum ChartLens: String, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case ChartLens.none:
-            Color.indigo
+            Color.accent
         case ChartLens.previous:
             ChartLens.none.color.opacity(0.35)
         case ChartLens.intensity:
-            Color.teal
+            Color.intense
         case ChartLens.compulsion:
             Color.purple
         }

@@ -19,15 +19,85 @@ struct LoggerView: View {
     var isValidForm: Bool {
         relapse.intensity != 0 && relapse.compulsivity != 0
     }
-    
+#if os(macOS)
+    var body: some View { //macOS
+        HStack(alignment: .center) {
+            Spacer()
+            
+            Form(content: {
+                Section("Relapse") {
+                    DatePicker("Date", selection: $relapse.date, in: ...Date())
+                        .datePickerStyle(.compact)
+                    
+                    RelapseSlider(type: .intensity, value: .convert(from: $relapse.intensity))
+                    RelapseSlider(type: .compulsivity, value: .convert(from: $relapse.compulsivity))
+                }
+                
+                if !relapseReminderProxy {
+                    Section("Analyze") {
+                        Group {
+                            Toggle("Bored", isOn: $relapse.triggers.bored)
+                            Toggle("Loneliness", isOn: $relapse.triggers.loneliness)
+                            Toggle("Anger", isOn: $relapse.triggers.anger)
+                            Toggle("Hunger", isOn: $relapse.triggers.hunger)
+                            Toggle("Stress", isOn: $relapse.triggers.stress)
+                            Toggle("Tiredness", isOn: $relapse.triggers.tiredness)
+                        }
+                        .toggleStyle(.checkbox)
+                        ZStack {
+                            if relapse.notes.isEmpty {
+                                Text("• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?")
+                                    .opacity(0.6)
+                                    .offset(x: 25, y:-15)
+                                    .padding(25)
+                            }
+                            TextField("Notes",
+                                      text: $relapse.notes,
+                                      axis: .vertical)
+                            .lineLimit(6...)
+                        }
+                    }
+                }
+                
+                
+                //Submit Section
+                Section {
+                    Toggle("Finish analyzing later?", isOn: $relapseReminderProxy)
+                    HStack(alignment: .center) {
+                        Button {
+                            relapse.reminder = relapseReminderProxy
+                            context.insert(relapse)
+                        } label: {
+                            Text("Submit")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .disabled(!isValidForm)
+                        Button {
+                            path.removeLast()
+                        } label: {
+                            Text("Cancel")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            })
+            .formStyle(.grouped)
+            .navigationBarBackButtonHidden(true)
+            .frame(width: 350)
+            .padding()
+            
+            Spacer()
+        }
+    }
+#else
     var body: some View {
         Form(content: {
             Section("Relapse") {
                 DatePicker("Date", selection: $relapse.date, in: ...Date())
                     .datePickerStyle(.compact)
                     .bold()
-                IntensitySlider(value: .convert(from: $relapse.intensity))
-                CompulsivitySlider(value: .convert(from: $relapse.compulsivity))
+                RelapseSlider(type: .intensity, value: .convert(from: $relapse.intensity))
+                RelapseSlider(type: .compulsivity, value: .convert(from: $relapse.compulsivity))
             }
             
             if !relapseReminderProxy {
@@ -44,6 +114,7 @@ struct LoggerView: View {
                 .transition(.opacity)
                 
             }
+            
             
             //Submit Section
             Section {
@@ -76,6 +147,7 @@ struct LoggerView: View {
             }
         }
     }
+#endif
 }
 
 //#Preview {
@@ -83,7 +155,86 @@ struct LoggerView: View {
 //}
 
 
+struct RelapseSlider: View {
+    let type: SliderType
+    @Binding var value: Double
+    @State private var isEditing = false
+    
+    public enum SliderType: String {
+        case intensity = "Intensity"
+        case compulsivity = "Compulsive Feeling"
+    }
+    
+    private var categoricalIntensity: String {
+        if value > 8 {
+            return "New Material"
+        } else if value > 4 {
+            return "Nudity"
+        } else if value > 2 {
+            return "Revealing Clothes"
+        }
+        return "Masturbation"
+    }
+    
+    private let range: ClosedRange<Double> = 1.0...10.0
+    func slider1to10() -> some View {
+        Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
+               in: range,
+               step: 1.0,
+               onEditingChanged: { editing in
+            isEditing = editing
+            value = range.contains(value) ? value : 5.5
+        })
+    }
+    
+    var body: some View {
+        VStack {
+            HStack{
+                Text(type.rawValue)
+#if !os(macOS)
+                    .bold()
+#endif
+                Spacer()
+                if range.contains(value) {
+                    if isEditing && type == .intensity {
+                        Text(categoricalIntensity + " - \(Int(value))")
+#if !os(macOS)
+                            .bold()
+                            .foregroundStyle(.intense)
+#endif
+                    }   else {
+                        Text("\(Int(value))")
+                    }
+                }
+            }
+            
+#if os(macOS)
+            slider1to10()
+#else
+            if type == .compulsivity {
+                ZStack {
+                    SliderTicks()
+                    slider1to10()
+                }
+            } else {
+                ZStack {
+                    
+                    SliderTicks()
+                    slider1to10()
+                        .tint(.clear)
+                    
+                    slider1to10()
+                        .tint(.teal)
+                        .opacity((range.contains(value) ? value : 5.5) / 10)
+                }
+            }
+#endif
+        }
+    }
+}
+
 struct SliderTicks: View {
+    //https://stackoverflow.com/questions/65779638/how-to-create-slider-with-tick-marks-using-swiftui
     var body: some View {
         HStack(spacing: 0) {
             ForEach(0..<10) { index in
@@ -99,98 +250,5 @@ struct SliderTicks: View {
             }
         }
         .padding(.horizontal, 12)
-    }
-}
-
-struct IntensitySlider: View {
-    @Binding var value: Double
-    @State private var isEditing: Bool = false
-    let range: ClosedRange<Double> = 1.0...10.0
-    
-    private var descriptor: String {
-        return describeIntensity(Int(value))
-    }
-    
-    
-    var body: some View {
-        VStack {
-            HStack{
-                Text("Intensity")
-                    .bold()
-                Spacer()
-                if range.contains(value) {
-                    if isEditing {
-                        Text(descriptor + " - \(Int(value))")
-                            .bold()
-                            .foregroundStyle(.teal)
-                    }   else {
-                        Text("\(Int(value))")
-                    }
-                }
-            }
-            ZStack {
-                //https://stackoverflow.com/questions/65779638/how-to-create-slider-with-tick-marks-using-swiftui
-                SliderTicks()
-                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
-                       in: range,
-                       step: 1.0,
-                       onEditingChanged: { editing in
-                    isEditing = editing
-                    value = range.contains(value) ? value : 5.5
-                })
-                .tint(.clear)
-                
-                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
-                       in: range,
-                       step: 1.0,
-                       onEditingChanged: { editing in
-                    isEditing = editing
-                    value = range.contains(value) ? value : 5.5
-                })
-                .tint(.teal)
-                .opacity((range.contains(value) ? value : 5.5) / 10)
-                
-            }
-        }
-    }
-}
-
-func describeIntensity(_ value: Int) -> String {
-    if value > 8 {
-        return "New Material"
-    } else if value > 4 {
-        return "Nudity"
-    } else if value > 2 {
-        return "Revealing Clothes"
-    }
-    return "Masturbation"
-}
-
-struct CompulsivitySlider: View {
-    @Binding var value: Double
-    @State private var isEditing = false
-    let range: ClosedRange<Double> = 1.0...10.0
-    
-    var body: some View {
-        VStack {
-            HStack{
-                Text("Compulsive Feeling")
-                    .bold()
-                Spacer()
-                if range.contains(value) {
-                    Text("\(Int(value))")
-                }
-            }
-            ZStack {
-                SliderTicks()
-                Slider(value: range.contains(value) || isEditing ? $value : .constant(5.5),
-                       in: range,
-                       step: 1.0,
-                       onEditingChanged: { editing in
-                    isEditing = editing
-                    value = range.contains(value) ? value : 5.5
-                })
-            }
-        }
     }
 }

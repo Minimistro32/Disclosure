@@ -67,8 +67,9 @@ public struct CustomTabView: View {
             }
             
             tabViews[selection]
-                .padding(0)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(minWidth: 650, maxWidth: 1400)
+                .padding(.leading)
+                .padding(.trailing)
             
             if (self.tabBarPosition == .bottom) {
                 tabBar

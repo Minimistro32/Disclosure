@@ -75,11 +75,11 @@ struct ChartView: View {
                     }
                     .chartXScale(domain: [scale.startDate, Date.now])
                 }
-//                .if(lens == .previous) {
-//                    $0.chartXAxis {
-//                        AxisMarks(values: AxisMarkValues())
-//                    }
-//                }
+                //                .if(lens == .previous) {
+                //                    $0.chartXAxis {
+                //                        AxisMarks(values: AxisMarkValues())
+                //                    }
+                //                }
                 .if(lens == .previous) {
                     $0.chartForegroundStyleScale([
                         "Current": ChartLens.none.color,
@@ -93,7 +93,9 @@ struct ChartView: View {
                 ContentUnavailableView("Relapse Free", systemImage: "chart.line.uptrend.xyaxis", description: Text("What made \(scale == ChartScale.threeMonth ? "these" : "this") \(scale.rawValue.lowercased()) a success?"))
             }
         }
+#if !os(macOS)
         .frame(height: chartHeight)
+#endif
     }
 }
 
@@ -202,7 +204,11 @@ struct AnnotationView: View {
             }
         }
         .padding()
+#if os(macOS)
+        .background(Color(hue: 1, saturation: 0, brightness: 0.82))
+#else
         .background(.debugGray6)
+#endif
         .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
     }
 }

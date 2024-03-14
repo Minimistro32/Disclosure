@@ -19,25 +19,14 @@ struct ContentView: View {
     }
 #endif
     
-    var body: some View {
+    @ViewBuilder
+    private var OSTolerantTabView: some View {
 #if os(macOS)
-        CustomTabView(tabBarPosition: .bottom, content: [
-//            ("Journal", "book.pages", AnyView(JournalView())), wip
-            ("Team", "person.3", AnyView(TeamView(data: team))), //currently has a lot of problems
-            ("Tracker", "chart.line.uptrend.xyaxis", AnyView(TrackerView(data: relapses)))
+        CustomTabView(tabBarPosition: .top, content: [
+            //            ("Journal", "book.pages", AnyView(JournalView())), wip
+            ("Tracker", "chart.line.uptrend.xyaxis", AnyView(TrackerView(data: relapses))),
+            ("Team", "person.3", AnyView(TeamView(data: team)))
         ])
-        .onAppear {
-            if relapses.isEmpty {
-                for relapse in TestData.spreadsheet {
-                    context.insert(relapse)
-                }
-            }
-            if team.isEmpty {
-                for person in TestData.myTeam {
-                    context.insert(person)
-                }
-            }
-        }
 #else
         TabView {
             JournalView()
@@ -51,19 +40,31 @@ struct ContentView: View {
             TrackerView(data: relapses)
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
         }
-        .onAppear {
-            if relapses.isEmpty {
-                for relapse in TestData.spreadsheet {
-                    context.insert(relapse)
-                }
-            }
-            if team.isEmpty {
-                for person in TestData.myTeam {
-                    context.insert(person)
-                }
-            }
-        }
 #endif
+    }
+    
+    var body: some View {
+        OSTolerantTabView
+            .onAppear {
+                if DisclosureApp.RELOAD_MODEL || relapses.isEmpty || team.isEmpty {
+                    do {
+                        try context.delete(model: Relapse.self)
+                    } catch {
+                        print("Failed to delete relapses.")
+                    }
+                    for relapse in TestData.spreadsheet {
+                        context.insert(relapse)
+                    }
+                    do {
+                        try context.delete(model: Person.self)
+                    } catch {
+                        print("Failed to delete relapses.")
+                    }
+                    for person in TestData.myTeam {
+                        context.insert(person)
+                    }
+                }
+            }
     }
     
 }

@@ -16,6 +16,7 @@ struct LinkButton: View {
         Button(title, systemImage: systemImage, action: action)
 #if os(macOS)
             .buttonStyle(.link)
+            .foregroundStyle(.accent)
 #endif
             .padding(.init(top: 7, leading: 10, bottom: 7, trailing: 10))
             .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))

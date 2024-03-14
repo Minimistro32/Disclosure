@@ -14,7 +14,7 @@ struct TrackerView: View {
     
     var body: some View {
         NavigationStack (path: $path) {
-            InsideTrackerView(data: data, path: $path)
+            DashboardView(data: data, path: $path)
 #if !os(macOS)
                 .navigationTitle("Tracker")
 #endif
@@ -38,7 +38,7 @@ struct TrackerView: View {
     }
 }
 
-struct InsideTrackerView: View {
+struct DashboardView: View {
     let data: [Relapse]
     @State private var selectedChartScale = ChartScale.week
     @State private var selectedChartLens = ChartLens.none
@@ -75,7 +75,56 @@ struct InsideTrackerView: View {
         data.filter { $0.reminder }.count
     }
     
-    var body: some View {
+#if os(macOS)
+    var body: some View { //macOS
+        VStack {
+            HStack {
+                Picker(selection: $selectedChartScale) {
+                    ForEach(ChartScale.allCases) { interval in
+                        Text(interval.rawValue)
+                    }
+                } label: {
+                    Text("Time Interval for Chart")
+                }
+                .pickerStyle(.segmented)
+                .padding()
+                .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
+             
+                LinkButton(title: "Log Relapse", systemImage: "arrow.counterclockwise") {
+                    path.append(Segue(to: .loggerView))
+                }
+                BadgeButton(path: $path, count: reminderCount)
+            }
+            
+            HStack(alignment: .bottom) {
+                VStack (alignment: .center) {
+                    Spacer()
+                    StreakView(average: averageStreak, current: currentStreak, padding: 0)
+                    Spacer()
+                    
+                    Picker(selection: $selectedChartLens) {
+                        ForEach(ChartLens.allCases) { lens in
+                            Text(lens.rawValue)
+                        }
+                    } label: {
+                        Text("View")
+                    }
+                    .padding(.init(top: 7, leading: 10, bottom: 7, trailing: 10))
+                    .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
+                    .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
+                    .padding(.leading, 15)
+                    .pickerStyle(.radioGroup)
+                    .padding(.bottom, 30)
+                    Spacer()
+                }
+                
+                ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
+            }
+            
+        }
+    }
+#else
+    var body: some View { //iOS
         VStack {
             Picker(selection: $selectedChartScale) {
                 ForEach(ChartScale.allCases) { interval in
@@ -89,7 +138,8 @@ struct InsideTrackerView: View {
             .opacity(rawSelectedDate == nil ? 1.0 : 0.0) // to remove disappear for graded (|| selectedChartLens.isGraded)
             
             ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
-            HStack {
+            
+            HStack(alignment: .bottom) {
                 Picker(selection: $selectedChartLens) {
                     ForEach(ChartLens.allCases) { lens in
                         Text(lens.rawValue)
@@ -97,45 +147,21 @@ struct InsideTrackerView: View {
                 } label: {
                     Text("View")
                 }
-#if os(macOS)
-                .pickerStyle(.radioGroup)
-#else
                 .pickerStyle(.navigationLink)
                 .frame(maxWidth: lensPickerWidth)
-#endif
                 .padding(.init(top: 7, leading: 10, bottom: 7, trailing: 10))
                 .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
                 .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
                 .padding(.leading, 15)
                 
                 Spacer()
-                
-                ZStack {
-                    LinkButton(title: "More", systemImage: "ellipsis.circle") {
-                        path.append(Segue(to: .logView))
-                    }
-                    
-                    if reminderCount > 0 {
-                        Image(systemName: "\(reminderCount > 50 ? 50 : reminderCount).circle.fill")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.accent)
-                            .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
-                            .offset(x: 40, y: -13)
-                    }
-                }
-                .padding(.trailing, 15 + (reminderCount > 0 ? 5 : 0))
+                BadgeButton(path: $path, count: reminderCount)
             }
             
             Spacer()
             
             HStack {
-                MetricView(count: averageStreak,
-                           name: "Average Streak")
-                .padding(.leading, 40)
-                Spacer()
-                MetricView(count: currentStreak, name: "Days Sober")
-                    .padding(.trailing, 40)
+                StreakView(average: averageStreak, current: currentStreak, padding: 40)
             }
             
             Spacer()
@@ -149,6 +175,44 @@ struct InsideTrackerView: View {
             .padding()
             
         }
+    }
+#endif
+}
+
+struct StreakView: View {
+    let average: Int
+    let current: Int
+    let padding: CGFloat
+    
+    var body: some View {
+        MetricView(count: average,
+                   name: "Average Streak")
+        .padding(.leading, padding)
+        Spacer()
+        MetricView(count: current, name: "Days Sober")
+            .padding(.trailing, padding)
+    }
+}
+
+struct BadgeButton: View {
+    @Binding var path: NavigationPath
+    let count: Int
+    var body: some View {
+        ZStack {
+            LinkButton(title: "More", systemImage: "ellipsis.circle") {
+                path.append(Segue(to: .logView))
+            }
+            
+            if count > 0 {
+                Image(systemName: "\(count > 50 ? 50 : count).circle.fill")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.accent)
+                    .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
+                    .offset(x: 40, y: -13)
+            }
+        }
+        .padding(.trailing, 15 + (count > 0 ? 5 : 0))
     }
 }
 
