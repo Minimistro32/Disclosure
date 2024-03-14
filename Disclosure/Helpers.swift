@@ -78,6 +78,10 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
     )
 }
 
+func Double(_ boolean: Bool) -> Double {
+    boolean ? 1.0 : 0.0
+}
+
 extension View {
     @ViewBuilder
     func `if`<Transform: View>(_ condition: Bool, transform: (Self) -> Transform) -> some View {

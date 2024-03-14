@@ -17,6 +17,13 @@ struct TrackerView: View {
             DashboardView(data: data, path: $path)
 #if !os(macOS)
                 .navigationTitle("Tracker")
+                .toolbar {
+                    Button {
+                        path.append(Segue(to: .loggerView))
+                    } label: {
+                        Label("Log Relapse", systemImage: "plus")
+                    }
+                }
 #endif
                 .navigationDestination(for: Segue.self) {
                     switch $0.destination {
@@ -160,9 +167,7 @@ struct DashboardView: View {
             
             Spacer()
             
-            HStack {
-                StreakView(average: averageStreak, current: currentStreak, padding: 40)
-            }
+            StreakView(average: averageStreak, current: currentStreak)
             
             Spacer()
             
@@ -170,10 +175,11 @@ struct DashboardView: View {
                 path.append(Segue(to: .loggerView))
             } label: {
                 Label("Log Relapse", systemImage: "arrow.counterclockwise")
+                    .frame(width: 240)
             }
             .buttonStyle(.borderedProminent)
-            .padding()
             
+            Spacer()
         }
     }
 #endif
@@ -182,15 +188,16 @@ struct DashboardView: View {
 struct StreakView: View {
     let average: Int
     let current: Int
-    let padding: CGFloat
     
     var body: some View {
-        MetricView(count: average,
-                   name: "Average Streak")
-        .padding(.leading, padding)
-        Spacer()
-        MetricView(count: current, name: "Days Sober")
-            .padding(.trailing, padding)
+        HStack {
+            Spacer()
+            MetricView(count: average,
+                       name: "Average Streak")
+            Spacer()
+            MetricView(count: current, name: "Days Sober")
+            Spacer()
+        }
     }
 }
 

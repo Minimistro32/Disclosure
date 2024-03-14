@@ -18,8 +18,9 @@ struct DisclosureView: View {
             .navigationTitle("Disclose Latest")
             .navigationBarBackButtonHidden()
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { //was topBarLeading before mac interop was enabled
+                ToolbarItem(placement: .cancellationAction) {
                     Button {
+                        //TODO: back button has problems if you hit the disclosure button on log view. Needs to go back one view instead of two.
                         path.removeLast(2)
                     } label: {
                         Image(systemName: "chevron.left")

@@ -122,7 +122,11 @@ struct LoggerView: View {
                 Button {
                     relapse.reminder = relapseReminderProxy
                     context.insert(relapse)
-                    path.append(Segue(to: .disclosureView, payload: relapse))
+                    if relapse.date.isSame(as: Date.now, unit: .day) {
+                        path.append(Segue(to: .disclosureView, payload: relapse))
+                    } else {
+                        path.removeLast()
+                    }
                 } label: {
                     HStack {
                         Spacer()

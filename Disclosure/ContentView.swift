@@ -20,16 +20,16 @@ struct ContentView: View {
 #endif
     
     @ViewBuilder
-    private var OSTolerantTabView: some View {
+    private var PlatformManagedTabView: some View {
 #if os(macOS)
         CustomTabView(tabBarPosition: .top, content: [
-            //            ("Journal", "book.pages", AnyView(JournalView())), wip
+            ("Journal", "book.pages", AnyView(JournalView(data: relapses))),
             ("Tracker", "chart.line.uptrend.xyaxis", AnyView(TrackerView(data: relapses))),
             ("Team", "person.3", AnyView(TeamView(data: team)))
         ])
 #else
         TabView {
-            JournalView()
+            JournalView(data: relapses)
                 .tabItem { Label("Journal", systemImage: "book.pages") }
             TeamView(data: team)
                 .tabItem { Label("Team", systemImage: "person.3") }
@@ -44,7 +44,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        OSTolerantTabView
+        PlatformManagedTabView
             .onAppear {
                 if DisclosureApp.RELOAD_MODEL || relapses.isEmpty || team.isEmpty {
                     do {

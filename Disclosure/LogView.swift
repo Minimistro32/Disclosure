@@ -15,6 +15,7 @@ struct LogView: View {
     
     var body: some View {
         VStack {
+#if os(macOS)
             HStack {
                 Text("Logs")
                     .font(.largeTitle)
@@ -28,6 +29,7 @@ struct LogView: View {
                 }
             }
             .padding(.top)
+#endif
             
             List {
                 ForEach(relapses) { relapse in
@@ -55,20 +57,20 @@ struct LogView: View {
 #else
             .navigationTitle("Logs")
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    if !relapses.isEmpty {
-                        Button("Log Relapse", systemImage: "plus") {
-                            path.append(Segue(to: .loggerView))
-                        }
-                    }
-                }
-                
                 if !relapses.isEmpty {
-                    ToolbarItem(placement: .secondaryAction) {
+                    ToolbarItem(placement: .primaryAction) {
                         Button {
                             path.append(Segue(to: .disclosureView, payload: relapses.first!))
                         } label: {
                             Label("Disclose Latest", systemImage: "person.3")
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .primaryAction) {
+                    if !relapses.isEmpty {
+                        Button("Log Relapse", systemImage: "plus") {
+                            path.append(Segue(to: .loggerView))
                         }
                     }
                 }
