@@ -8,26 +8,65 @@
 import SwiftUI
 
 struct JournalView: View {
-    let data: [Relapse]
+    @Environment(\.modelContext) var context
+    let relapses: [Relapse]
+    let entries: [Entry]
     
     private var rollingThreeMonths: [Relapse] {
-        data.filter {
+        relapses.filter {
             $0.date >= Date.now.addingTimeInterval(ChartScale.month.timeInterval * -3)
+        }
+    }
+    private var entriesByRelavance: [Entry] {
+        if let latestGoalIndex = entries.firstIndex(where: { $0.isGoal }) {
+            var mutableEntries = entries
+            let latestGoal = mutableEntries.remove(at: latestGoalIndex)
+            mutableEntries.insert(latestGoal, at: 0)
+            return mutableEntries
+        } else {
+            return entries
         }
     }
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if !rollingThreeMonths.isEmpty {
-                    PodiumView(data: rollingThreeMonths)
-                    Spacer()
-                }
+            VStack(spacing: 0) {
                 List {
-                    JournalEntry(isGoal: true)
-                    JournalEntry(isGoal: false)
+                    ForEach(entriesByRelavance) { entry in
+                        JournalEntry(entry: entry)
+                    }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            context.delete(entriesByRelavance[index])
+                        }
+                    }
                 }
                 .listStyle(.inset)
+                .overlay {
+                    if entries.isEmpty {
+                        ContentUnavailableView(label: {
+                            Label("No Entries", systemImage: "doc")
+                        }, description: {
+                            Text("Add goals or write entries to see them here.")
+                        }, actions: {
+                            HStack(spacing: 40) {
+                                Button("New Goal") {
+                                    //                                path.append(Segue(to: .loggerView))
+                                }
+                                Button("New Entry") {
+                                    //                                path.append(Segue(to: .loggerView))
+                                }
+                            }
+                        })
+                        .offset(y: -30)
+                    }
+                }
+                
+                if !rollingThreeMonths.isEmpty {
+                    Divider()
+                    PodiumView(data: rollingThreeMonths)
+                        .padding(.bottom, 15)
+                }
             }
 #if !os(macOS)
             .navigationTitle("Journal")
@@ -35,11 +74,13 @@ struct JournalView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Goal", image: ImageResource(name:"flag.fill.badge.plus", bundle: Bundle.main)) {
                         print("new entry")
+                        context.insert(Entry(title: "MyGoal", body: "Goal", isGoal: true))
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Entry", systemImage: "plus") {
                         print("new")
+                        context.insert(Entry(title: "MyNote", body: "Note"))
                     }
                 }
             }
@@ -49,21 +90,30 @@ struct JournalView: View {
 }
 
 struct JournalEntry: View {
-    let isGoal: Bool
+    @Environment(\.modelContext) var context
+    let entry: Entry
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("Goal Title")
+                Text(entry.title)
                     .font(.headline)
+                    .contextMenu {
+                        Button("Edit", systemImage: "pencil") {
+//                            Segue.perform(with: &path, to: .addPersonView, payload: person)
+                        }
+                        Button("Delete", systemImage: "trash", role: .destructive) {
+                            context.delete(entry)
+                        }
+                    }
                 Spacer()
-                Text(Date.now.formatted(.dateTime.month().day().year()))
+                Text(entry.date.formatted(.dateTime.month().day().year()))
                     .font(.caption)
             }
-            Text("Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum Other entries loreum ipsum ")
+            Text(entry.body)
         }
         .padding()
-        .if(isGoal) {
+        .if(entry.isGoal) {
             $0.overlay(
                 RoundedRectangle(cornerRadius: 10, style: .circular).stroke(.accent, lineWidth: 3)
             )
@@ -113,7 +163,8 @@ struct PodiumView: View {
     
     var body: some View {
         VStack {
-            HStack (spacing: 25) {
+            HStack {
+                Spacer()
                 ForEach(0..<3) { i in
                     HStack {
                         Image(systemName: "\(i + 1).circle.fill")
@@ -121,23 +172,28 @@ struct PodiumView: View {
                             .frame(width: 30, height: 30)
                         Text(triggersBySalience[i])
                     }
+                    Spacer()
                 }
             }
             .padding(.top)
             Text(selectedLens == .frequency ? "These triggers appear most frequently." : "These triggers are correlated with strong urges.")
                 .font(.caption)
                 .padding(.bottom, 5)
-            Picker("Ranked by", selection: $selectedLens) {
-                ForEach(PodiumLens.allCases) { lens in
-                    Text(lens.rawValue)
+            HStack(spacing: 0) {
+                Spacer()
+                Text("Ranked by")
+                Picker("Ranked by", selection: $selectedLens) {
+                    ForEach(PodiumLens.allCases) { lens in
+                        Text(lens.rawValue)
+                    }
                 }
+                .pickerStyle(.menu)
+                Spacer()
             }
-            .pickerStyle(.navigationLink)
-            .frame(width: 190)
         }
     }
 }
 
 #Preview {
-    JournalView(data: TestData.spreadsheet)
+    JournalView(relapses: TestData.spreadsheet, entries: [])
 }

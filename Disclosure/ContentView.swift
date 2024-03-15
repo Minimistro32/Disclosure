@@ -12,6 +12,7 @@ struct ContentView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse]
     @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) var team: [Person]
+    @Query(sort: \Entry.date, order: .reverse) var entries: [Entry]
     
 #if !os(macOS)
     init() {
@@ -23,13 +24,13 @@ struct ContentView: View {
     private var PlatformManagedTabView: some View {
 #if os(macOS)
         CustomTabView(tabBarPosition: .top, content: [
-            ("Journal", "book.pages", AnyView(JournalView(data: relapses))),
+            ("Journal", "book.pages", AnyView(JournalView(relapses: relapses, entries: entries))),
             ("Tracker", "chart.line.uptrend.xyaxis", AnyView(TrackerView(data: relapses))),
             ("Team", "person.3", AnyView(TeamView(data: team)))
         ])
 #else
         TabView {
-            JournalView(data: relapses)
+            JournalView(relapses: relapses, entries: entries)
                 .tabItem { Label("Journal", systemImage: "book.pages") }
             TeamView(data: team)
                 .tabItem { Label("Team", systemImage: "person.3") }

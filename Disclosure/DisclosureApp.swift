@@ -10,11 +10,11 @@ import SwiftData
 
 @main
 struct DisclosureApp: App {
-    static let RELOAD_MODEL = true
+    static let RELOAD_MODEL = false
     
     let container: ModelContainer
     init() {
-        let schema = Schema([Relapse.self, Person.self])
+        let schema = Schema([Relapse.self, Person.self, Entry.self])
         let config: [ModelConfiguration] = [] //ModelConfiguration(groupContainer: _) used for integrating with widgets or other deployments
         do {
             container = try ModelContainer(for: schema, configurations: config)

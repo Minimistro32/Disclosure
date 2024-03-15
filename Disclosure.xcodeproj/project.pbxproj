@@ -18,6 +18,7 @@
 		D630B6C42B947D37000F1169 /* Blahst.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C32B947D37000F1169 /* Blahst.swift */; };
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
 		D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* UIKit.swift */; };
+		D650F7F02BA40ED000A90081 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D650F7EF2BA40ED000A90081 /* Entry.swift */; };
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
 		D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D2412B6F108F00904A59 /* TrackerView.swift */; };
 		D69D71392B9FF809000B8E9E /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D71382B9FF809000B8E9E /* JournalView.swift */; };
@@ -46,6 +47,7 @@
 		D630B6C32B947D37000F1169 /* Blahst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blahst.swift; sourceTree = "<group>"; };
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
 		D6448CF82B74A0DD00C3DB72 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
+		D650F7EF2BA40ED000A90081 /* Entry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
 		D69D71382B9FF809000B8E9E /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 				D6CF2A702B9F77FD00CB5F32 /* Relapse */,
 				D6CF2A712B9F783000CB5F32 /* Person */,
 				D6CF2A722B9F784300CB5F32 /* Chart */,
+				D650F7EF2BA40ED000A90081 /* Entry.swift */,
 				D6CF2A732B9F786A00CB5F32 /* Segue.swift */,
 			);
 			name = Model;
@@ -272,6 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D650F7F02BA40ED000A90081 /* Entry.swift in Sources */,
 				D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */,
 				D6C81F132B6869D50010CFED /* ContentView.swift in Sources */,
 				D6111E8C2B941E22003F0801 /* AddPersonView.swift in Sources */,
