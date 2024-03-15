@@ -22,8 +22,4 @@ struct Segue: Hashable {
         self.destination = destination
         self.payload = payload
     }
-    
-    static func perform(with path: inout NavigationPath, to destination: Segue.destinationView, payload: AnyHashable? = nil) -> Void {
-        path.append(Segue(to: destination, payload: payload))
-    }
 }

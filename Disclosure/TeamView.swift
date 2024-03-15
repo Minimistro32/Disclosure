@@ -51,7 +51,7 @@ struct TeamView: View {
                         Spacer()
                         if !data.isEmpty {
                             LinkButton(title: "Add Person", systemImage: "plus") {
-                                path.append(Segue(to: .addPersonView))
+                                path.segue(to: .addPersonView)
                             }
                         }
 #endif
@@ -69,7 +69,7 @@ struct TeamView: View {
             .toolbar {
                 if !data.isEmpty {
                     Button("Add Person", systemImage: "plus") {
-                        path.append(Segue(to: .addPersonView))
+                        path.segue(to: .addPersonView)
                     }
                 }
             }
@@ -88,7 +88,7 @@ struct TeamView: View {
                 }, description: {
                     Text("Disclosure intends to make reaching out\nto your team easier. People added here won't be contacted except by you.")
                 }, actions: {
-                    Button("Add a Trusted Person") { path.append(Segue(to: .addPersonView)) }
+                    Button("Add a Trusted Person") { path.segue(to: .addPersonView) }
                 })
                 .offset(y: -60)
             }
@@ -123,13 +123,13 @@ struct TeamListView: View {
         .contextMenu(forSelectionType: Person.ID.self) { ids in
             if ids.isEmpty {
                 Button("New Person", systemImage: "plus") {
-                    Segue.perform(with: &path, to: .addPersonView)
+                    path.segue(to: .addPersonView)
                 }
             } else {
                 let people = data.filter { ids.contains($0.id) }
                 if ids.count == 1 {
                     Button("Edit", systemImage: "pencil") {
-                        Segue.perform(with: &path, to: .addPersonView, payload: people.first!)
+                        path.segue(to: .addPersonView, payload: people.first!)
                     }
                     Button("Delete", systemImage: "trash", role: .destructive) {
                         context.delete(people.first!)
@@ -150,7 +150,7 @@ struct TeamListView: View {
             PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn)
                 .onTapGesture {
                     if editEnabled {
-                        Segue.perform(with: &path, to: .addPersonView, payload: person)
+                        path.segue(to: .addPersonView, payload: person)
                     }
                 }
         }
@@ -225,7 +225,7 @@ struct PersonView: View {
                     .bold()
                     .contextMenu {
                         Button("Edit", systemImage: "pencil") {
-                            Segue.perform(with: &path, to: .addPersonView, payload: person)
+                            path.segue(to: .addPersonView, payload: person)
                         }
                         Button("Delete", systemImage: "trash", role: .destructive) {
                             context.delete(person)

@@ -25,7 +25,7 @@ struct LogView: View {
                     path.removeLast()
                 }
                 LinkButton(title: "Log Relapse", systemImage: "plus") {
-                    path.append(Segue(to: .loggerView))
+                    path.segue(to: .loggerView)
                 }
             }
             .padding(.top)
@@ -34,8 +34,18 @@ struct LogView: View {
             List {
                 ForEach(relapses) { relapse in
                     LogCell(relapse: relapse)
+                    #if !os(macOS)
                         .onTapGesture {
-                            path.append(Segue(to: .loggerView, payload: relapse))
+                            path.segue(to: .loggerView, payload: relapse)
+                        }
+                    #endif
+                        .contextMenu {
+                            Button("Edit", systemImage: "pencil") {
+                                path.segue(to: .loggerView, payload: relapse)
+                            }
+                            Button("Delete", systemImage: "trash", role: .destructive) {
+                                context.delete(relapse)
+                            }
                         }
                     
                     //TODO: Make this dynamic and functional
@@ -60,7 +70,9 @@ struct LogView: View {
                 if !relapses.isEmpty {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
-                            path.append(Segue(to: .disclosureView, payload: relapses.first!))
+                            //duplicated on purpose so that the disclosureView back button always works
+                            path.segue(to: .disclosureView, payload: relapses.first!)
+                            path.segue(to: .disclosureView, payload: relapses.first!)
                         } label: {
                             Label("Disclose Latest", systemImage: "person.3")
                         }
@@ -70,7 +82,7 @@ struct LogView: View {
                 ToolbarItem(placement: .primaryAction) {
                     if !relapses.isEmpty {
                         Button("Log Relapse", systemImage: "plus") {
-                            path.append(Segue(to: .loggerView))
+                            path.segue(to: .loggerView)
                         }
                     }
                 }
@@ -88,7 +100,7 @@ struct LogView: View {
                     Text("Log a relapse to see it here.")
                 }, actions: {
                     Button("Log Relapse") {
-                        path.append(Segue(to: .loggerView))
+                        path.segue(to: .loggerView)
                     }
                 })
                 .offset(y: -60)
@@ -116,10 +128,10 @@ struct LogCell: View {
                         .foregroundStyle(.accent)
                 }
                 
-                
                 BlahstIconView(selections: relapse.triggers.array, size: 25)
                     .padding(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
             }
+            
             if !relapse.notes.isEmpty {
                 Text(relapse.notes)
                     .lineLimit(5)

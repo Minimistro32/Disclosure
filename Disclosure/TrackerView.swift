@@ -19,7 +19,7 @@ struct TrackerView: View {
                 .navigationTitle("Tracker")
                 .toolbar {
                     Button {
-                        path.append(Segue(to: .loggerView))
+                        path.segue(to: .loggerView)
                     } label: {
                         Label("Log Relapse", systemImage: "plus")
                     }
@@ -98,7 +98,7 @@ struct DashboardView: View {
                 .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
              
                 LinkButton(title: "Log Relapse", systemImage: "arrow.counterclockwise") {
-                    path.append(Segue(to: .loggerView))
+                    path.segue(to: .loggerView)
                 }
                 BadgeButton(path: $path, count: reminderCount)
             }
@@ -106,7 +106,7 @@ struct DashboardView: View {
             HStack(alignment: .bottom) {
                 VStack (alignment: .center) {
                     Spacer()
-                    StreakView(average: averageStreak, current: currentStreak, padding: 0)
+                    StreakView(average: averageStreak, current: currentStreak)
                     Spacer()
                     
                     Picker(selection: $selectedChartLens) {
@@ -167,12 +167,14 @@ struct DashboardView: View {
             
             Spacer()
             
-            StreakView(average: averageStreak, current: currentStreak)
+            HStack {
+                StreakView(average: averageStreak, current: currentStreak)
+            }
             
             Spacer()
             
             Button {
-                path.append(Segue(to: .loggerView))
+                path.segue(to: .loggerView)
             } label: {
                 Label("Log Relapse", systemImage: "arrow.counterclockwise")
                     .frame(width: 240)
@@ -190,14 +192,12 @@ struct StreakView: View {
     let current: Int
     
     var body: some View {
-        HStack {
-            Spacer()
-            MetricView(count: average,
-                       name: "Average Streak")
-            Spacer()
-            MetricView(count: current, name: "Days Sober")
-            Spacer()
-        }
+        Spacer()
+        MetricView(count: average,
+                   name: "Average Streak")
+        Spacer()
+        MetricView(count: current, name: "Days Sober")
+        Spacer()
     }
 }
 
@@ -207,7 +207,7 @@ struct BadgeButton: View {
     var body: some View {
         ZStack {
             LinkButton(title: "More", systemImage: "ellipsis.circle") {
-                path.append(Segue(to: .logView))
+                path.segue(to: .logView)
             }
             
             if count > 0 {

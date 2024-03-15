@@ -51,10 +51,10 @@ struct JournalView: View {
                         }, actions: {
                             HStack(spacing: 40) {
                                 Button("New Goal") {
-                                    //                                path.append(Segue(to: .loggerView))
+                                    //                                path.segue(to: .loggerView)
                                 }
                                 Button("New Entry") {
-                                    //                                path.append(Segue(to: .loggerView))
+                                    //                                path.segue(to: .loggerView)
                                 }
                             }
                         })
@@ -153,12 +153,7 @@ struct PodiumView: View {
     }
     
     private var triggersBySalience: [String] {
-        print()
-        print(valuatedTriggers)
-        print(Blahst.expansion)
-        let result = zip(Blahst.expansion, valuatedTriggers).sorted { $0.1 > $1.1 }.map { $0.0 }
-        print(result)
-        return result
+        zip(Blahst.expansion, valuatedTriggers).sorted { $0.1 > $1.1 }.map { $0.0 }
     }
     
     var body: some View {
