@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct DisclosureApp: App {
-    static let RELOAD_MODEL = false
+    static let RELOAD_MODEL = true
     
     let container: ModelContainer
     init() {

@@ -9,10 +9,11 @@ import SwiftUI
 
 struct Segue: Hashable {
     enum destinationView: String {
-        case addPersonView = "addPersonView"
-        case logView = "logView"
-        case loggerView = "loggerView"
-        case disclosureView = "disclosureView"
+        case addPersonView = "AddPersonView"
+        case logView = "LogView"
+        case loggerView = "LoggerView"
+        case disclosureView = "DisclosureView"
+        case addEntryView = "AddEntryView"
     }
     
     let destination: destinationView

@@ -146,8 +146,8 @@ struct TeamListView: View {
     }
     
     func teamRow(relation: Relation, relationData: [Person]) -> some View {
-        return ForEach(relationData) { person in
-            PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn)
+        return ForEach(Array(zip(relationData.indices, relationData)), id: \.0) { index, person in
+            PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn, isFirst: index == 0)
                 .onTapGesture {
                     if editEnabled {
                         path.segue(to: .addPersonView, payload: person)
@@ -171,6 +171,7 @@ struct PersonView: View {
     let person: Person
     let relapse: Relapse?
     let daysSinceCheckIn: Int?
+    let isFirst: Bool
     
 #if os(macOS)
     var body: some View {
@@ -217,10 +218,46 @@ struct PersonView: View {
 #else
     private let messageComposeDelegate = MessageComposerDelegate()
     
+    private enum RattlePhases: Double, CaseIterable {
+        case ring = 6
+        case shake = -6
+        case settle = 0.0001
+        case rest = 0
+    }
+    
+    private let RattleAnimation: [RattlePhases] = [.ring, .shake, .ring, .shake, .settle, .rest]
+    
+    func phone() -> some View {
+        Image(systemName: "phone.fill")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .padding(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
+            .onTapGesture {
+                guard let url = URL(string: "tel://" + person.phone) else { return }
+                UIApplication.shared.open(url)
+                person.latestCall = Date.now
+                if path.count > 0 {
+                    path.removeLast(2)
+                }
+            }
+            .if(daysSinceCheckIn != 0 && isFirst) {
+                $0.bold()
+                    .foregroundStyle(.accent)
+                    .phaseAnimator(RattleAnimation) { content, phase in
+                        content.rotationEffect(.degrees(phase.rawValue+135)) //+135
+                        
+                    } animation: { phase in
+                        switch phase {
+                        case .rest: .snappy(duration: 2.5)
+                        default: .spring(duration: 0.3, bounce: 0.7)
+                        }
+                    }
+            }
+    }
+    
     var body: some View {
-        HStack (spacing: 25) {
+        HStack (spacing: 20) {
             VStack (alignment: .leading) {
-                
                 Text(person.name)
                     .bold()
                     .contextMenu {
@@ -239,7 +276,7 @@ struct PersonView: View {
             Spacer()
             Group {
                 if person.canText {
-                    Image(systemName: "message.fill")
+                    Image(systemName: "message")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .onTapGesture {
@@ -247,24 +284,9 @@ struct PersonView: View {
                         }
                     
                 }
-                Image(systemName: "phone.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
-                    .onTapGesture {
-                        guard let url = URL(string: "tel://" + person.phone) else { return }
-                        UIApplication.shared.open(url)
-                        person.latestCall = Date.now
-                        if path.count > 0 {
-                            path.removeLast(2)
-                        }
-                    }
-                    .if(daysSinceCheckIn != 0) {
-                        $0.bold()
-                            .foregroundStyle(.accent)
-                    }
+                phone()
             }
-            .frame(width: 30)
+            .frame(width: 40)
         }
     }
 #endif

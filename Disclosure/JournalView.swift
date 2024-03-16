@@ -9,6 +9,7 @@ import SwiftUI
 
 struct JournalView: View {
     @Environment(\.modelContext) var context
+    @State private var path = NavigationPath()
     let relapses: [Relapse]
     let entries: [Entry]
     
@@ -29,11 +30,16 @@ struct JournalView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack (path: $path) {
             VStack(spacing: 0) {
                 List {
                     ForEach(entriesByRelavance) { entry in
-                        JournalEntry(entry: entry)
+                        JournalEntry(path: $path, entry: entry)
+                        #if !os(macOS)
+                            .onTapGesture {
+                                path.segue(to: .addEntryView, payload: entry)
+                            }
+                        #endif
                     }
                     .onDelete { indexSet in
                         for index in indexSet {
@@ -51,10 +57,10 @@ struct JournalView: View {
                         }, actions: {
                             HStack(spacing: 40) {
                                 Button("New Goal") {
-                                    //                                path.segue(to: .loggerView)
+                                    path.segue(to: .addEntryView, payload: Entry(isGoal: true))
                                 }
                                 Button("New Entry") {
-                                    //                                path.segue(to: .loggerView)
+                                    path.segue(to: .addEntryView, payload: Entry(isGoal: false))
                                 }
                             }
                         })
@@ -63,9 +69,7 @@ struct JournalView: View {
                 }
                 
                 if !rollingThreeMonths.isEmpty {
-                    Divider()
                     PodiumView(data: rollingThreeMonths)
-                        .padding(.bottom, 15)
                 }
             }
 #if !os(macOS)
@@ -73,15 +77,21 @@ struct JournalView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Goal", image: ImageResource(name:"flag.fill.badge.plus", bundle: Bundle.main)) {
-                        print("new entry")
-                        context.insert(Entry(title: "MyGoal", body: "Goal", isGoal: true))
+                        path.segue(to: .addEntryView, payload: Entry(isGoal: true))
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Entry", systemImage: "plus") {
-                        print("new")
-                        context.insert(Entry(title: "MyNote", body: "Note"))
+                        path.segue(to: .addEntryView, payload: Entry(isGoal: false))
                     }
+                }
+            }
+            .navigationDestination(for: Segue.self) {
+                switch $0.destination {
+                case .addEntryView:
+                    AddEntryView(path: $path, data: rollingThreeMonths, entry: $0.payload as! Entry)
+                default:
+                    ErrorView(description: "Unaccounted Segue To \($0.destination) ")
                 }
             }
 #endif
@@ -91,16 +101,17 @@ struct JournalView: View {
 
 struct JournalEntry: View {
     @Environment(\.modelContext) var context
+    @Binding var path: NavigationPath
     let entry: Entry
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text(entry.title)
+                Text(entry.title.isEmpty ? entry.type : entry.title)
                     .font(.headline)
                     .contextMenu {
                         Button("Edit", systemImage: "pencil") {
-//                            Segue.perform(with: &path, to: .addPersonView, payload: person)
+                            path.segue(to: .addEntryView, payload: entry)
                         }
                         Button("Delete", systemImage: "trash", role: .destructive) {
                             context.delete(entry)
@@ -117,74 +128,6 @@ struct JournalEntry: View {
             $0.overlay(
                 RoundedRectangle(cornerRadius: 10, style: .circular).stroke(.accent, lineWidth: 3)
             )
-        }
-    }
-}
-
-struct PodiumView: View {
-    @State var selectedLens: PodiumLens = .frequency
-    let data: [Relapse]
-    
-    enum PodiumLens: String, CaseIterable, Identifiable {
-        var id: Self { return self }
-        case frequency = "Frequency"
-        case compulsivity = "Compulsivity"
-    }
-    
-    private func aggregateTriggers(by: PodiumLens) -> [Double] {
-        data.map { relapse in
-            relapse.triggers.array.map { trigger in
-                Double(trigger) * (by == .compulsivity ? Double(relapse.compulsivity) : 1) //map triggers to integer values
-            }
-        }.reduce(.init(repeating: 0, count: Blahst.expansion.count)) { prevResult, triggers in
-            zip(prevResult, triggers).map { $0.0 + $0.1 } //sum up
-        }
-    }
-    
-    private var valuatedTriggers: [Double] {
-        switch selectedLens {
-        case .compulsivity: //average compulsivity
-            zip(aggregateTriggers(by: .compulsivity), aggregateTriggers(by: .frequency)).map({
-                $0.0 / ($0.1 == 0 ? 1 : $0.1)
-            })
-        default: //total occurences
-            aggregateTriggers(by: .frequency)
-        }
-    }
-    
-    private var triggersBySalience: [String] {
-        zip(Blahst.expansion, valuatedTriggers).sorted { $0.1 > $1.1 }.map { $0.0 }
-    }
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                ForEach(0..<3) { i in
-                    HStack {
-                        Image(systemName: "\(i + 1).circle.fill")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                        Text(triggersBySalience[i])
-                    }
-                    Spacer()
-                }
-            }
-            .padding(.top)
-            Text(selectedLens == .frequency ? "These triggers appear most frequently." : "These triggers are correlated with strong urges.")
-                .font(.caption)
-                .padding(.bottom, 5)
-            HStack(spacing: 0) {
-                Spacer()
-                Text("Ranked by")
-                Picker("Ranked by", selection: $selectedLens) {
-                    ForEach(PodiumLens.allCases) { lens in
-                        Text(lens.rawValue)
-                    }
-                }
-                .pickerStyle(.menu)
-                Spacer()
-            }
         }
     }
 }

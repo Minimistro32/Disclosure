@@ -10,17 +10,18 @@ import SwiftData
 
 @Model
 class Entry {
-    static var instanceCount: Int = 0
-    let title: String
-    let body: String
-    let isGoal: Bool
-    let date: Date
+    let isGoal: Bool //could be an enum, but they don't play nice with SwiftData
+    let type: String
+    var title: String
+    var body: String
+    var date: Date
     
-    init(title: String, body: String, isGoal: Bool = false, date: Date = Date.now) {
-        self.title = title + String(Self.instanceCount)
-        self.body = body
+    init(isGoal: Bool, title: String = "", body: String = "", date: Date = Date.now) {
+        let type = isGoal ? "Goal" : "Note"
         self.isGoal = isGoal
+        self.type = type
+        self.title = title
+        self.body = body
         self.date = date
-        Self.instanceCount += 1
     }
 }

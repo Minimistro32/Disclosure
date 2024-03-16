@@ -27,6 +27,8 @@
 		D6C81F172B6869D60010CFED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6C81F162B6869D60010CFED /* Assets.xcassets */; };
 		D6CF2A742B9F786A00CB5F32 /* Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A732B9F786A00CB5F32 /* Segue.swift */; };
 		D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */; };
+		D6D9C22D2BA4F53A007973A0 /* AddEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */; };
+		D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9C22E2BA4FDE4007973A0 /* PodiumView.swift */; };
 		D6E2A01F2B8DC1E900354BE5 /* ChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E2A01E2B8DC1E900354BE5 /* ChartScale.swift */; };
 		D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E2A0202B8DC23C00354BE5 /* ChartView.swift */; };
 		D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E2A0222B8DC9E800354BE5 /* ChartLens.swift */; };
@@ -57,6 +59,8 @@
 		D6C81F162B6869D60010CFED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D6CF2A732B9F786A00CB5F32 /* Segue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segue.swift; sourceTree = "<group>"; };
 		D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEntryView.swift; sourceTree = "<group>"; };
+		D6D9C22E2BA4FDE4007973A0 /* PodiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodiumView.swift; sourceTree = "<group>"; };
 		D6E2A01E2B8DC1E900354BE5 /* ChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartScale.swift; sourceTree = "<group>"; };
 		D6E2A0202B8DC23C00354BE5 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		D6E2A0222B8DC9E800354BE5 /* ChartLens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLens.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 			isa = PBXGroup;
 			children = (
 				D69D71382B9FF809000B8E9E /* JournalView.swift */,
+				D6D9C22E2BA4FDE4007973A0 /* PodiumView.swift */,
+				D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */,
 			);
 			name = "Tab 3";
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D650F7F02BA40ED000A90081 /* Entry.swift in Sources */,
+				D6D9C22D2BA4F53A007973A0 /* AddEntryView.swift in Sources */,
 				D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */,
 				D6C81F132B6869D50010CFED /* ContentView.swift in Sources */,
 				D6111E8C2B941E22003F0801 /* AddPersonView.swift in Sources */,
@@ -286,6 +293,7 @@
 				D6FAC87B2BA22F3E0023227E /* CustomTabView.swift in Sources */,
 				D630B6C42B947D37000F1169 /* Blahst.swift in Sources */,
 				D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */,
+				D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,

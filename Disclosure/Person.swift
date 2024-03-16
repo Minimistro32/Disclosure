@@ -40,9 +40,8 @@ class Person {
     //texting
     var canText: Bool
     var rawCodeWord: String
-    static var defaultCodeWord: String = "I relapsed"
     var codeWord: String {
-        rawCodeWord.isEmpty ? Self.defaultCodeWord : rawCodeWord
+        rawCodeWord.isEmpty ? "I relapsed" : rawCodeWord
     }
     var textOverride: String = ""
     

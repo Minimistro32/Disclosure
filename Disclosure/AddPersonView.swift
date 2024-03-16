@@ -130,7 +130,7 @@ struct AddPersonView: View {
 #endif
             
 #if !os(macOS)
-            //Keyboard Dismiss Button
+            //Keyboard Dismiss Button: Simulating toolbar because of iPhoneNumberField
             Group {
                 if isFocused {
                     HStack {

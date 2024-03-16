@@ -16,7 +16,7 @@ class Relapse {
     var compulsivity: Int //how strong the urges were
     var notes: String
     var triggers: Blahst
-    var dummy: Bool
+    let dummy: Bool
     
     init(date: Date = Date(), reminder: Bool = false, intensity: Int = 0, compulsivity: Int = 0, notes: String = "", triggers: [String] = [], dummy: Bool = false) {
         self.date = date

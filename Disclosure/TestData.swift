@@ -8,13 +8,20 @@
 import Foundation
 
 struct TestData {
+    static let journal: [Entry] = [
+        Entry(isGoal: true, title: "I need to", body: "Go to sleep\nAnd stop “screening” my needs", date: Date.from(year: 2023, month: 12, day: 11)),
+        Entry(isGoal: false, title: "'I know what I need you to do. Just trust me and go along with it ❤️' - God", body: "In fast and testimony meeting 3/3/24", date: Date.from(year: 2024, month: 3, day: 3)),
+        Entry(isGoal: true, title: "The Plan:", body: "Alma 22:18\n“I will give away all my sins to know thee”\n\nB\nL\nA\nS ⭐️\nT ⭐️ (no safari on phone)\nH ⭐️\nO\n- feeling stuck\n- Slacking at work (escape patterns) ⭐️⭐️⭐️ (figure this out next)\n- Overwhelm (exhaustion)\n\nStudy Christ’s saving power\n\nWww.anxietycoach.com\nSelf help stuff\nGlance through the anxiety disorders", date: Date.from(year: 2023, month: 10, day: 10)),
+        Entry(isGoal: false, title: "Fun is Need Realization", body: "Why do I slack off at work?\n- hate my job\n- Tired\n- Hungry\n\nI think my real problem is having fun. What most other people like to do isn’t fun for me. Whitney works more. \n\nFun:\n- Playfulness\n- Connection\n- Flow\n\nFun Factors:\n- Outdoors\n- Anticipation\n- Small groups\n- Learning/trying new things\n- Fandoms\n- Food\n\nFun Times:\n- Riding horses with Whitney\n- First birthday with Whitney\n- Camping\n- Rock climbing \n- National Parks\n- Cheesecake Dates with myself\n- Playmill Theater with Whitney\n- Mesa Falls\n- Indiana Jones Movie\n- Biking with Amber in the Rain and Mud to Raising Cane’s. \n- Going to Conference with Whitney and getting Raising Cane’s. Talking the whole way home. \n", date: Date.from(year: 2023, month: 11, day: 2))
+    ]
+    
     static let myTeam: [Person] = [
-        Person(name: "Ippo Makunouchi", relation: Relation.sponsor, phone: "11231231234", latestCall: Date.from(year: 2024, month: 2, day: 3)),
+        Person(name: "Ippo Makunouchi", relation: Relation.sponsor, phone: "11231231234", latestCall: Date.from(year: 2024, month: 2, day: 3), canText: true),
         Person(name: "Barbie Doll", relation: Relation.group, phone: "11231231234"),
         Person(name: "Ken Doll", relation: Relation.group, phone: "11231231234"),
         Person(name: "Mom", relation: Relation.other, phone: "11231231234", latestCall: Date.from(year: 2024, month: 3, day: 1)),
-        Person(name: "Sister", relation: Relation.other, phone: "11231231234"),
-        Person(name: "Father-in-Law", relation: Relation.other, phone: "11231231234", latestCall: Date.from(year: 2023, month: 3, day: 2))
+        Person(name: "Sister", relation: Relation.other, phone: "11231231234", canText: true),
+        Person(name: "Father-in-Law", relation: Relation.other, phone: "11231231234", latestCall: Date.from(year: 2023, month: 3, day: 2), canText: true)
     ]
     
     static let spreadsheet: [Relapse] = [

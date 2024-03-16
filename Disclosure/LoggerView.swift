@@ -11,7 +11,7 @@ struct LoggerView: View {
     @Environment(\.modelContext) var context
     @Binding var path: NavigationPath
     @Bindable var relapse: Relapse = Relapse()
-    @FocusState private var isNotesFocused: Bool
+    @FocusState private var isFocused: Bool
     @State var relapseReminderProxy: Bool = false
     //https://stackoverflow.com/questions/69397644/updating-tabview-badge-reloads-all-views-when-using-swiftui-3-badge-modifier
     //use value of `relapse.reminder` on init. This field circumvents a bug updating the badge on the tracker tab bar icon. If the analyze toggle is changed to update the badge the navigationStack path reloads.
@@ -91,7 +91,7 @@ struct LoggerView: View {
         }
     }
 #else
-    var body: some View {
+    var body: some View { //iOS
         Form(content: {
             Section("Relapse") {
                 DatePicker("Date", selection: $relapse.date, in: ...Date())
@@ -110,7 +110,7 @@ struct LoggerView: View {
                               prompt: Text("Notes\n• Any other triggers?\n• Describe the situation. What was unmet or unmanaged?\n• If you could rewind time, what would you do differently?"), //
                               axis: .vertical)
                     .lineLimit(6...)
-                    .focused($isNotesFocused)
+                    .focused($isFocused)
                 }
                 .transition(.opacity)
                 
@@ -140,14 +140,10 @@ struct LoggerView: View {
         })
         .navigationTitle("Logger")
         .toolbar {
-            if isNotesFocused {
-                ToolbarItem(placement: .keyboard) {
-                    HStack{
-                        Spacer()
-                        Button("Dismiss") {
-                            isNotesFocused = false
-                        }
-                    }
+            ToolbarItem(placement: .keyboard) {
+                HStack{
+                    Spacer()
+                    Button("Dismiss") { isFocused = false }
                 }
             }
         }
