@@ -28,6 +28,7 @@ struct ChartView: View {
         var visibleData = data.filter { relapse in
             relapse.date > (lens == .previous ? scale.previousDate : scale.startDate)
         }
+        
         if lens.isGraded {
             return visibleData.sorted {
                 if lens == .intensity {
@@ -38,11 +39,11 @@ struct ChartView: View {
             }
         }
         if lens == .previous {
-            for date in stride(from: scale.previousDate, to: scale.startDate, by: 24*60*60) {
-                if !(scale == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6") {
-                    visibleData.append(Relapse(date: date, dummy: true))
-                }
-            }
+            //            for date in stride(from: scale.previousDate, to: scale.startDate, by: 24*60*60) {
+            //                if !(scale == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6") {
+            //                    visibleData.append(Relapse(date: date, dummy: true))
+            //                }
+            //            }
             
             return visibleData.sorted {
                 if scale.containsDate($0.date) != scale.containsDate($1.date) && !$0.dummy{
@@ -56,6 +57,13 @@ struct ChartView: View {
         return visibleData
     }
     
+    var weekBucketMax: Int {
+        let test = Dictionary(grouping: chartData, by: { $0.date.endOfDay })
+        print(test)
+        return max(test
+            .map { (date, relapses) in relapses.count }.max() ?? 0, 2)
+    }
+    
     var body: some View {
         Group {
             if chartData.count != 0 {
@@ -65,15 +73,32 @@ struct ChartView: View {
                     scale: scale,
                     lens: lens
                 )
+                .if(scale == .month) {
+                    $0.chartXAxis {
+                        AxisMarks(values: AxisMarkValues.stride(by: .day, count: 7)) { value in
+                            if let date = value.as(Date.self) {
+                                Date.now.weekOfYear - date.weekOfYear == 0 ?
+                                AxisValueLabel("This Week")
+                                : Date.now.weekOfYear - date.weekOfYear == 1 ?
+                                AxisValueLabel("Last Week")
+                                :
+                                AxisValueLabel(date.formatted(.dateTime.month(.abbreviated).day()))
+                            }
+                            AxisGridLine()
+                            AxisTick()
+                        }
+                    }
+                }
                 .if(scale == ChartScale.week && lens != .previous) {
                     $0.chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: scale.domain)) { value in
+                        AxisMarks(values: AxisMarkValues.stride(by: .day)) { value in
                             AxisValueLabel(format: .dateTime.weekday(.abbreviated))
                             AxisGridLine()
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [scale.startDate, Date.now])
+                    .chartXScale(domain: [scale.startDate.endOfDay!, Date.now.endOfDay!])
+                    .chartYScale(domain: [0, weekBucketMax])
                 }
                 //                .if(lens == .previous) {
                 //                    $0.chartXAxis {
@@ -111,7 +136,7 @@ struct InsideChartView: View {
                 ForEach(data) { relapse in
                     BarMark(
                         x: .value("Day", relapse.date, unit: scale.calendarUnit()),
-                        y: .value("Count", 1)
+                        y: .value("Count", relapse.dummy ? 0 : 1)
                     )
                     .foregroundStyle(
                         lens.isGraded ? lens.color.opacity(Double(
@@ -179,7 +204,8 @@ struct AnnotationView: View {
     
     var body: some View {
         VStack {
-            Text(scale.formatAnnotationDate(date, for: lens))
+            Text(date.formatted(.dateTime.day().month().year()))
+            //            Text(scale.formatAnnotationDate(date, for: lens))
                 .bold()
             if lens == .previous {
                 HStack (spacing: 5) {
@@ -216,13 +242,13 @@ struct AnnotationView: View {
 #Preview("Chart") {
     ChartView(rawSelectedDate: nil,
               data: TestData.spreadsheet,
-              scale: ChartScale.week,
+              scale: ChartScale.month,
               lens: ChartLens.previous)
 }
 
 #Preview("Annotation") {
     AnnotationView(data: TestData.spreadsheet,
-                   scale: ChartScale.week,
+                   scale: ChartScale.month,
                    lens: ChartLens.previous,
                    date: Date.now)
 }

@@ -19,7 +19,7 @@ enum ChartScale: String, CaseIterable, Identifiable {
         case ChartScale.week:
             7
         case ChartScale.month:
-            31
+            Int(Date.monthsAgoSunday(count: 1).timeIntervalSinceNow / -89600)
         case ChartScale.threeMonth:
             Int(Date.monthsAgoThe1st(count: 2).timeIntervalSinceNow / -89600)
         case ChartScale.year:
@@ -32,7 +32,7 @@ enum ChartScale: String, CaseIterable, Identifiable {
         case ChartScale.week:
             Calendar.Component.weekday
         case ChartScale.month:
-            Calendar.Component.weekOfYear
+            Calendar.Component.weekOfMonth
         case ChartScale.threeMonth:
             Calendar.Component.month
         case ChartScale.year:
@@ -108,11 +108,19 @@ enum ChartScale: String, CaseIterable, Identifiable {
     }
     
     var startDate: Date {
-        Date.now.addingTimeInterval(-timeInterval)
+        if self == .month {
+            return Date.monthsAgoSunday(count: 1)
+        } else if self == .threeMonth {
+            return Date.monthsAgoThe1st(count: 2)
+        } else {
+            return Date.now.addingTimeInterval(-timeInterval)
+        }
     }
     
     var previousDate: Date {
-        if self == .threeMonth {
+        if self == .month {
+            return Date.monthsAgoSunday(count: 2)
+        } else if self == .threeMonth {
             return Date.monthsAgoThe1st(count: 5)
         } else {
             return Date.now.addingTimeInterval(-2 * timeInterval)

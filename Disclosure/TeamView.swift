@@ -225,7 +225,7 @@ struct PersonView: View {
         case rest = 0
     }
     
-    private let RattleAnimation: [RattlePhases] = [.ring, .shake, .ring, .shake, .settle, .rest]
+    private let RattleAnimation: [RattlePhases] = [.rest, .ring, .shake, .ring, .shake, .settle]
     
     func phone() -> some View {
         Image(systemName: "phone.fill")
@@ -244,7 +244,7 @@ struct PersonView: View {
                 $0.bold()
                     .foregroundStyle(.accent)
                     .phaseAnimator(RattleAnimation) { content, phase in
-                        content.rotationEffect(.degrees(phase.rawValue+135)) //+135
+                        content.rotationEffect(.degrees(phase.rawValue+135))
                         
                     } animation: { phase in
                         switch phase {

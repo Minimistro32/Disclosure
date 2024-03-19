@@ -47,7 +47,7 @@ struct TrackerView: View {
 
 struct DashboardView: View {
     let data: [Relapse]
-    @State private var selectedChartScale = ChartScale.week
+    @State private var selectedChartScale = ChartScale.month
     @State private var selectedChartLens = ChartLens.none
     @State private var rawSelectedDate: Date? = nil
     @Binding var path: NavigationPath

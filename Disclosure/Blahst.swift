@@ -48,11 +48,11 @@ struct Blahst: Codable, Identifiable {
         case 2:
             return triggers.first! + " and " + triggers.last!
         default:
-            return triggers.reversed().reduce("", { builder, trigger in
+            return triggers.reduce("", { builder, trigger in
                 if builder.isEmpty {
                     return "and " + trigger
                 } else {
-                    return trigger + ", "
+                    return trigger + ", " + builder
                 }
             })
         }

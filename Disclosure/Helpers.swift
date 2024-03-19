@@ -14,10 +14,31 @@ extension Date {
         return Calendar.current.date(from:components)!.addingTimeInterval(TimeInterval(timeZoneOffset * 60 * 60))
     }
     
+    var endOfDay: Date? {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: self)
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        return calendar.date(from: components)
+    }
+    
+    var weekOfYear: Int {
+        let calendar = Calendar(identifier: .gregorian)
+        return calendar.component(.weekOfYear, from: self)
+    }
+    
     var month: Int {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.month], from: self)
         return components.month!
+    }
+
+    var day: Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: self)
+        return components.day!
     }
     
     static func monthsAgoThe1st(count months: Int) -> Date {
@@ -29,6 +50,27 @@ extension Date {
         return Date.from(year: year - Int(month.signum() > 0 ? 0 : 1),
                          month: month.signum() > 0 ? month : 12 + month,
                          day: 1)
+    }
+    
+    var startOfWeek: Date? {
+        let gregorian = Calendar(identifier: .gregorian)
+        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
+        return gregorian.date(byAdding: .day, value: 1, to: sunday)
+    }
+
+    static func monthsAgoSunday(count months: Int) -> Date {
+        let calendar = Calendar.current
+        let date = Date.monthsAgoThe1st(count: months)
+        let components = calendar.dateComponents([.year, .month], from: date)
+        
+        // Calculate start and end of the current year (or month with `.month`):
+        let interval = calendar.dateInterval(of: .month, for: date)!
+        // Compute difference in days:
+        let daysInMonth = calendar.dateComponents([.day], from: interval.start, to: interval.end).day!
+        
+        return Date.from(year: components.year!,
+                         month: components.month!,
+                         day: min(Date.now.day, daysInMonth)).startOfWeek!
     }
     
     func isSame(as date: Date, unit: Calendar.Component) -> Bool {
@@ -91,7 +133,6 @@ extension View {
 }
 
 public extension Color {
-
     #if os(macOS)
     static let backgroundColor = Color(NSColor.windowBackgroundColor)
     static let secondaryBackgroundColor = Color(NSColor.controlBackgroundColor)
