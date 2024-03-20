@@ -27,75 +27,16 @@ enum ChartScale: String, CaseIterable, Identifiable {
         }
     }
     
-    func calendarUnit() -> Calendar.Component {
+    var calendarUnit: Calendar.Component {
         switch self {
         case ChartScale.week:
             Calendar.Component.weekday
         case ChartScale.month:
-            Calendar.Component.weekOfMonth
+            Calendar.Component.weekOfYear
         case ChartScale.threeMonth:
             Calendar.Component.month
         case ChartScale.year:
             Calendar.Component.month
-        }
-    }
-    
-    func formatDate(_ date: Date) -> String {
-        if self == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6" {
-            print(date)
-            print(domain)
-        }
-        return switch self {
-        case ChartScale.week:
-            date.formatted(.dateTime.weekday())
-        case ChartScale.month:
-            "Week " + date.formatted(.dateTime.week(.weekOfMonth))
-        case ChartScale.threeMonth:
-            "Month " + String((
-                    Date.now.month - (date.month > Date.now.month ? date.month - 12 : date.month)
-                ) % 3 + 1)
-        case ChartScale.year:
-            date.formatted(.dateTime.month(.abbreviated))
-        }
-    }
-    
-    func formatAnnotationDate(_ date: Date, for lens: ChartLens) -> String {
-        if lens == .previous {
-            return switch self {
-            case ChartScale.week:
-                date.formatted(.dateTime.weekday(.wide))
-            case ChartScale.month:
-                "Week " + date.formatted(.dateTime.week(.weekOfMonth))
-            case ChartScale.threeMonth:
-                "Month \(3 + Int(date.timeIntervalSinceNow / ChartScale.month.timeInterval))"
-            case ChartScale.year:
-                date.formatted(.dateTime.month(.wide))
-            }
-        } else {
-            return switch self {
-            case ChartScale.week:
-                date.formatted(.dateTime.weekday(.wide).day())
-            case ChartScale.month:
-                "Week " + date.formatted(.dateTime.week(.weekOfMonth))
-//                date.formatted(.dateTime.weekday(.wide).month().day())
-            case ChartScale.threeMonth:
-                date.formatted(.dateTime.month(.wide))
-//                date.formatted(.dateTime.month()) + ", Week " + date.formatted(.dateTime.week(.weekOfMonth))
-            case ChartScale.year:
-                date.formatted(.dateTime.month(.wide).year())
-            }
-        }
-    }
-    
-    func subtitle(date: Date, for lens: ChartLens) -> String {
-        return switch self {
-        case ChartScale.week:
-            (self.containsDate(date) ? "This" : "Last") + " Week"
-        case ChartScale.year:
-            (self.containsDate(date) ? "This" : "Last") + " Year"
-//            date.formatted(.dateTime.year())
-        default:
-            date.formatted(.dateTime.month(.wide))
         }
     }
     
@@ -114,16 +55,6 @@ enum ChartScale: String, CaseIterable, Identifiable {
             return Date.monthsAgoThe1st(count: 2)
         } else {
             return Date.now.addingTimeInterval(-timeInterval)
-        }
-    }
-    
-    var previousDate: Date {
-        if self == .month {
-            return Date.monthsAgoSunday(count: 2)
-        } else if self == .threeMonth {
-            return Date.monthsAgoThe1st(count: 5)
-        } else {
-            return Date.now.addingTimeInterval(-2 * timeInterval)
         }
     }
 }

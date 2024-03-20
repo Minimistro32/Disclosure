@@ -17,7 +17,7 @@
 		D630B6C22B947509000F1169 /* DisclosureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C12B947509000F1169 /* DisclosureView.swift */; };
 		D630B6C42B947D37000F1169 /* Blahst.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C32B947D37000F1169 /* Blahst.swift */; };
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
-		D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* UIKit.swift */; };
+		D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* BlahstSelector.swift */; };
 		D650F7F02BA40ED000A90081 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D650F7EF2BA40ED000A90081 /* Entry.swift */; };
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
 		D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D2412B6F108F00904A59 /* TrackerView.swift */; };
@@ -25,6 +25,7 @@
 		D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C81F102B6869D50010CFED /* DisclosureApp.swift */; };
 		D6C81F132B6869D50010CFED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C81F122B6869D50010CFED /* ContentView.swift */; };
 		D6C81F172B6869D60010CFED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6C81F162B6869D60010CFED /* Assets.xcassets */; };
+		D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CED10D2BAA1F21002E1D23 /* LabeledPicker.swift */; };
 		D6CF2A742B9F786A00CB5F32 /* Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A732B9F786A00CB5F32 /* Segue.swift */; };
 		D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */; };
 		D6D9C22D2BA4F53A007973A0 /* AddEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */; };
@@ -48,7 +49,7 @@
 		D630B6C12B947509000F1169 /* DisclosureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureView.swift; sourceTree = "<group>"; };
 		D630B6C32B947D37000F1169 /* Blahst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blahst.swift; sourceTree = "<group>"; };
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
-		D6448CF82B74A0DD00C3DB72 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
+		D6448CF82B74A0DD00C3DB72 /* BlahstSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlahstSelector.swift; sourceTree = "<group>"; };
 		D650F7EF2BA40ED000A90081 /* Entry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
@@ -57,6 +58,7 @@
 		D6C81F102B6869D50010CFED /* DisclosureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureApp.swift; sourceTree = "<group>"; };
 		D6C81F122B6869D50010CFED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D6C81F162B6869D60010CFED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D6CED10D2BAA1F21002E1D23 /* LabeledPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledPicker.swift; sourceTree = "<group>"; };
 		D6CF2A732B9F786A00CB5F32 /* Segue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segue.swift; sourceTree = "<group>"; };
 		D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEntryView.swift; sourceTree = "<group>"; };
@@ -135,11 +137,10 @@
 			children = (
 				D61282B92B90369A00CB5642 /* Scrap.rtf */,
 				D6C81F102B6869D50010CFED /* DisclosureApp.swift */,
-				D6448CF82B74A0DD00C3DB72 /* UIKit.swift */,
+				D6FD92402B7FF49B006B74D3 /* Helpers.swift */,
 				D60969FA2B9F7799001B3A02 /* View */,
 				D6FD923D2B7F278A006B74D3 /* Model */,
-				D6FAC87C2BA22F430023227E /* macOS */,
-				D6FD92402B7FF49B006B74D3 /* Helpers.swift */,
+				D6FAC87C2BA22F430023227E /* UI Elements */,
 				D6C81F162B6869D60010CFED /* Assets.xcassets */,
 			);
 			path = Disclosure;
@@ -172,13 +173,15 @@
 			name = Chart;
 			sourceTree = "<group>";
 		};
-		D6FAC87C2BA22F430023227E /* macOS */ = {
+		D6FAC87C2BA22F430023227E /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				D6448CF82B74A0DD00C3DB72 /* BlahstSelector.swift */,
+				D6CED10D2BAA1F21002E1D23 /* LabeledPicker.swift */,
 				D6FAC87A2BA22F3E0023227E /* CustomTabView.swift */,
 				D6FAC87D2BA237B50023227E /* LinkButton.swift */,
 			);
-			name = macOS;
+			name = "UI Elements";
 			sourceTree = "<group>";
 		};
 		D6FD923B2B7F2752006B74D3 /* Tab 2 */ = {
@@ -293,12 +296,13 @@
 				D6FAC87B2BA22F3E0023227E /* CustomTabView.swift in Sources */,
 				D630B6C42B947D37000F1169 /* Blahst.swift in Sources */,
 				D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */,
+				D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */,
 				D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,
-				D6448CF92B74A0DD00C3DB72 /* UIKit.swift in Sources */,
+				D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */,
 				D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */,
 				D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */,
 				D6111E852B941B07003F0801 /* Person.swift in Sources */,

@@ -180,7 +180,7 @@ struct PersonView: View {
                 .bold()
                 .contextMenu {
                     Button("Edit", systemImage: "pencil") {
-                        Segue.perform(with: &path, to: .addPersonView, payload: person)
+                        path.segue(to: .addPersonView, payload: person)
                     }
                     Button("Delete", systemImage: "trash", role: .destructive) {
                         context.delete(person)

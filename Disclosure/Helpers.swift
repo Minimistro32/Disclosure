@@ -53,9 +53,28 @@ extension Date {
     }
     
     var startOfWeek: Date? {
-        let gregorian = Calendar(identifier: .gregorian)
+        let gregorian = Calendar.current
         guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 1, to: sunday)
+        
+        return sunday
+    }
+    
+    var endOfWeek: Date? {
+        let gregorian = Calendar.current
+        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
+        return gregorian.date(byAdding: .day, value: 7, to: sunday)?.advanced(by: -1)
+    }
+    
+    var endOfMonth: Date? {
+        let gregorian = Calendar.current
+        guard let this = gregorian.date(from: gregorian.dateComponents([.year, .month], from: self)) else { return nil }
+        return gregorian.date(byAdding: .month, value: 1, to: this)?.addingTimeInterval(-1)
+    }
+    
+    var endOfYear: Date? {
+        let gregorian = Calendar.current
+        guard let this = gregorian.date(from: gregorian.dateComponents([.year], from: self)) else { return nil }
+        return gregorian.date(byAdding: .year, value: 1, to: this)?.addingTimeInterval(-1)
     }
 
     static func monthsAgoSunday(count months: Int) -> Date {
@@ -73,9 +92,12 @@ extension Date {
                          day: min(Date.now.day, daysInMonth)).startOfWeek!
     }
     
-    func isSame(as date: Date, unit: Calendar.Component) -> Bool {
+    func isSame(_ units: Calendar.Component..., as date: Date) -> Bool {
         let calendar = Calendar.current
-        let comparisonComponents: Set<Calendar.Component> = [.year, .month, unit]
+        var comparisonComponents: Set<Calendar.Component> = Set(units)
+        if comparisonComponents == Set([Calendar.Component.day]) {
+            comparisonComponents.formUnion([.year, .month])
+        }
         let components1 = calendar.dateComponents(comparisonComponents, from: self)
         let components2 = calendar.dateComponents(comparisonComponents, from: date)
         

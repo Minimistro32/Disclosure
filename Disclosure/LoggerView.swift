@@ -103,7 +103,7 @@ struct LoggerView: View {
             
             if !relapseReminderProxy {
                 Section("Analyze") {
-                    BlahstSelectionList(selections: $relapse.triggers.array)
+                    BlahstSelector(selections: $relapse.triggers.array)
                         .tint(.white)
                     TextField("Notes",
                               text: $relapse.notes,
@@ -123,7 +123,7 @@ struct LoggerView: View {
                 Button {
                     relapse.reminder = relapseReminderProxy
                     context.insert(relapse)
-                    if relapse.date.isSame(as: Date.now, unit: .day) {
+                    if relapse.date.isSame(.day, as: Date.now) {
                         path.segue(to: .disclosureView, payload: relapse)
                     } else {
                         path.removeLast()
@@ -163,18 +163,7 @@ struct RelapseSlider: View {
     
     public enum SliderType: String {
         case intensity = "Intensity"
-        case compulsivity = "Compulsive Feeling"
-    }
-    
-    private var categoricalIntensity: String {
-        if value > 8 {
-            return "New Material"
-        } else if value > 4 {
-            return "Nudity"
-        } else if value > 2 {
-            return "Revealing Clothes"
-        }
-        return "Masturbation"
+        case compulsivity = "Urges"
     }
     
     private let range: ClosedRange<Double> = 1.0...10.0
@@ -197,14 +186,18 @@ struct RelapseSlider: View {
 #endif
                 Spacer()
                 if range.contains(value) {
-                    if isEditing && type == .intensity {
-                        Text(categoricalIntensity + " - \(Int(value))")
+                    if type == .intensity {
+                        Text("\(Int(value)) (\(Relapse.categoricalIntensity(for: value)))")
 #if !os(macOS)
                             .bold()
                             .foregroundStyle(.intense)
 #endif
-                    }   else {
+                    } else {
                         Text("\(Int(value))")
+#if !os(macOS)
+                            .bold()
+                            .foregroundStyle(.compulsion)
+#endif
                     }
                 }
             }
@@ -212,22 +205,20 @@ struct RelapseSlider: View {
 #if os(macOS)
             slider1to10()
 #else
-            if type == .compulsivity {
-                ZStack {
-                    SliderTicks()
-                    slider1to10()
-                }
-            } else {
-                ZStack {
-                    
-                    SliderTicks()
-                    slider1to10()
-                        .tint(.clear)
-                    
-                    slider1to10()
-                        .tint(.teal)
-                        .opacity((range.contains(value) ? value : 5.5) / 10)
-                }
+            ZStack {
+                
+                SliderTicks()
+                slider1to10()
+                    .tint(.clear)
+                
+                slider1to10()
+                    .if(type == .intensity) {
+                        $0.tint(.intense)
+                    }
+                    .if(type == .compulsivity) {
+                        $0.tint(.compulsion)
+                    }
+                    .opacity((range.contains(value) ? value : 5.5) / 10)
             }
 #endif
         }

@@ -25,9 +25,9 @@ struct TestData {
     ]
     
     static let spreadsheet: [Relapse] = [
-        Relapse(),
-        Relapse(),
-        Relapse(),
+//        Relapse(),
+//        Relapse(),
+//        Relapse(),
         Relapse(date: Date.from(year: 2024, month: 3, day: 16), intensity: 8, compulsivity: 6, notes: "I need to figure out a way to handle mental relapse. If I can wait it out I can get back to meeting and managing."),
         Relapse(date: Date.from(year: 2024, month: 3, day: 13), intensity: 1, compulsivity: 4, notes: "I think I was just tired, 7 or 6 hours instead of the ideal 9. Low shame, just got to keep moving forward. Chances are good Mar will be much better than Feb.", triggers: ["Tiredness", "Hunger"]),
         Relapse(date: Date.from(year: 2024, month: 3, day: 2), reminder: true, intensity: 5, compulsivity: 3, notes: "I was a little hungry, just finished taxes. Low compulsion, I just wanted to more than I didn’t. (TikTok)", triggers: ["Bored", "Hunger"]),

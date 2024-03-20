@@ -49,18 +49,9 @@ struct DashboardView: View {
     let data: [Relapse]
     @State private var selectedChartScale = ChartScale.month
     @State private var selectedChartLens = ChartLens.none
-    @State private var rawSelectedDate: Date? = nil
+    @State var rawSelectedDate: Date?
     @Binding var path: NavigationPath
-    private var lensPickerWidth: CGFloat {
-        switch selectedChartLens {
-        case .none:
-            108.0 + 10
-        case .compulsion:
-            155.0 + 10
-        default:
-            130.0 + 10
-        }
-    }
+    
     private var averageStreak: Int {
         //three month average streak
         let rollingThreeMonthCount = data.filter {
@@ -142,21 +133,12 @@ struct DashboardView: View {
             }
             .pickerStyle(.segmented)
             .padding()
-            .opacity(rawSelectedDate == nil ? 1.0 : 0.0) // to remove disappear for graded (|| selectedChartLens.isGraded)
+            .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
             
-            ChartView(rawSelectedDate: rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding()
+            ChartView(rawSelectedDate: $rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding(.init(top: 0, leading: 15, bottom: 10, trailing: 10))
             
             HStack(alignment: .bottom) {
-                Picker(selection: $selectedChartLens) {
-                    ForEach(ChartLens.allCases) { lens in
-                        Text(lens.rawValue)
-                    }
-                } label: {
-                    Text("View")
-                }
-                .pickerStyle(.navigationLink)
-                .frame(maxWidth: lensPickerWidth)
-                .padding(.init(top: 7, leading: 10, bottom: 7, trailing: 10))
+                LabeledPicker(title: "View", values: ChartLens.allCases, selection: $selectedChartLens, toString: { $0.rawValue })
                 .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
                 .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
                 .padding(.leading, 15)

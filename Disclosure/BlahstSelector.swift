@@ -1,18 +1,15 @@
 //
-//  UIKit.swift
+//  BlahstSelector.swift
 //  Disclosure
 //
 //  Created by Tyson Freeze on 2/7/24.
 //
 
 
-//import UIKit
-
-// MARK: - Multiple Selection List
 import SwiftUI
 
 //https://stackoverflow.com/questions/57022615/select-multiple-items-in-swiftui-list
-struct BlahstSelectionList: View {
+struct BlahstSelector: View {
     @State var items = Blahst.expansion
     @Binding var selections: [Bool]
     

@@ -5,10 +5,6 @@
 //  Created by Tyson Freeze on 2/27/24.
 //
 
-//TODO: FIX incorrect annotations
-//TODO: FIX the week labels on the month view to be rolling as well
-//TODO: FIX jank on date on left/right side on normal week view. Pretty sure it is caused by inexact day starts and stops. Needs to be 0hrs/mins
-//TODO: FIX labels on three months .previous view
 //TODO: Add title
 
 
@@ -17,20 +13,19 @@ import Charts
 
 struct ChartView: View {
     
-    @State var rawSelectedDate: Date?
+    @Binding var rawSelectedDate: Date?
     let data: [Relapse]
     let scale: ChartScale
     let lens: ChartLens
     let chartHeight: CGFloat = 250
     
     var chartData: [Relapse] {
-        //visibleData
-        var visibleData = data.filter { relapse in
-            relapse.date > (lens == .previous ? scale.previousDate : scale.startDate)
+        let chartData = data.filter { relapse in
+            relapse.date > scale.startDate
         }
         
         if lens.isGraded {
-            return visibleData.sorted {
+            return chartData.sorted {
                 if lens == .intensity {
                     $0.intensity > $1.intensity
                 } else {
@@ -38,29 +33,12 @@ struct ChartView: View {
                 }
             }
         }
-        if lens == .previous {
-            //            for date in stride(from: scale.previousDate, to: scale.startDate, by: 24*60*60) {
-            //                if !(scale == .month && date.formatted(.dateTime.week(.weekOfMonth)) == "6") {
-            //                    visibleData.append(Relapse(date: date, dummy: true))
-            //                }
-            //            }
-            
-            return visibleData.sorted {
-                if scale.containsDate($0.date) != scale.containsDate($1.date) && !$0.dummy{
-                    return scale.containsDate($0.date)
-                } else {
-                    return $0.date < $1.date
-                }
-            }
-        }
         
-        return visibleData
+        return chartData
     }
     
     var weekBucketMax: Int {
-        let test = Dictionary(grouping: chartData, by: { $0.date.endOfDay })
-        print(test)
-        return max(test
+        max(Dictionary(grouping: chartData, by: { $0.date.endOfDay })
             .map { (date, relapses) in relapses.count }.max() ?? 0, 2)
     }
     
@@ -89,30 +67,37 @@ struct ChartView: View {
                         }
                     }
                 }
-                .if(scale == ChartScale.week && lens != .previous) {
+                .if(scale == ChartScale.week) {
                     $0.chartXAxis {
                         AxisMarks(values: AxisMarkValues.stride(by: .day)) { value in
-                            AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                            if let date = value.as(Date.self) {
+                                Date.now.isSame(.day, as: date) ?
+                                AxisValueLabel("Today")
+                                :
+                                AxisValueLabel(date.formatted(.dateTime.weekday(.abbreviated)))
+                            }
                             AxisGridLine()
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [scale.startDate.endOfDay!, Date.now.endOfDay!])
+                    .chartXScale(domain: [scale.startDate.endOfDay!, Date.now.endOfDay!.advanced(by: 1)])
                     .chartYScale(domain: [0, weekBucketMax])
                 }
-                //                .if(lens == .previous) {
-                //                    $0.chartXAxis {
-                //                        AxisMarks(values: AxisMarkValues())
-                //                    }
-                //                }
-                .if(lens == .previous) {
-                    $0.chartForegroundStyleScale([
-                        "Current": ChartLens.none.color,
-                        "Previous": ChartLens.previous.color
-                    ])
-                    .chartLegend()
-                }
                 .chartXSelection(value: $rawSelectedDate)
+                .chartGesture { proxy in
+                    DragGesture(minimumDistance: 0)
+                        .onChanged {
+                            if let date = proxy.value(atX: $0.location.x, as: Date.self) {
+                                let chartDomain = proxy.xDomain(dataType: Date.self)
+                                if (chartDomain.first!...chartDomain.last!).contains(date) {
+                                    proxy.selectXValue(at: $0.location.x)
+                                    return
+                                }
+                            }
+                            rawSelectedDate = nil
+                        }
+                        .onEnded { _ in rawSelectedDate = nil }
+                }
                 
             } else {
                 ContentUnavailableView("Relapse Free", systemImage: "chart.line.uptrend.xyaxis", description: Text("What made \(scale == ChartScale.threeMonth ? "these" : "this") \(scale.rawValue.lowercased()) a success?"))
@@ -126,56 +111,143 @@ struct ChartView: View {
 
 struct InsideChartView: View {
     @Binding var rawSelectedDate: Date?
+    @State var legendDrag: CGPoint?
     let data: [Relapse]
     let scale: ChartScale
     let lens: ChartLens
     
-    var body: some View {
-        Chart {
-            if lens != .previous {
-                ForEach(data) { relapse in
-                    BarMark(
-                        x: .value("Day", relapse.date, unit: scale.calendarUnit()),
-                        y: .value("Count", relapse.dummy ? 0 : 1)
-                    )
-                    .foregroundStyle(
-                        lens.isGraded ? lens.color.opacity(Double(
-                            lens == .intensity ? relapse.intensity : relapse.compulsivity
-                        ) / 10) : ChartLens.none.color
-                    )
+    var dataWithDummies: [Relapse] {
+        var mutableData = data
+        for date in stride(from: scale.startDate, to: Date.now, by: 24*60*60) {
+            mutableData.append(Relapse(date: date, dummy: true))
+        }
+        return mutableData
+    }
+    
+    private func legend(segmentWidth: CGFloat, cornerRadius: CGFloat = 10) -> some View {
+        
+        let category: String = Relapse.categoricalIntensity(for: Double(legendDrag?.x ?? 0) / segmentWidth)
+        let annotationWidth: CGFloat = switch category {
+                case "New Material":
+                    120
+                case "Nudity":
+                    70
+                case "Revealing Clothes":
+                    160
+                case "Masturbation":
+                    130
+                default:
+                    0
+            }
+        
+        var dragLegend: some Gesture {
+            DragGesture(minimumDistance: 5)
+                .onChanged { value in
+                    if (0..<(segmentWidth * 10)).contains(value.location.x) {
+                        legendDrag = value.location
+                    } else {
+                        legendDrag = nil
+                    }
                 }
-            } else {
-                ForEach(data) { relapse in
-                    BarMark(
-                        x: .value("Unit", scale.formatDate(relapse.date)),
-                        y: .value("Count", relapse.dummy ? 0 : 1)
-                    )
-                    .foregroundStyle(by: .value(
-                        "Unit",
-                        scale.containsDate(relapse.date) ? "Current" : "Previous"
-                    ))
-                    .position(by: .value("Unit", scale.containsDate(relapse.date) ? "Current" : "Previous"))
+                .onEnded { _ in legendDrag = nil }
+        }
+        
+        
+        func gradation(index: Int) -> some View {
+            ZStack(alignment: .leading) {
+                UnevenRoundedRectangle(cornerRadii: .init(topLeading: index == 0 ? cornerRadius : 0,
+                                                          bottomLeading: index == 0 ? cornerRadius : 0,
+                                                          bottomTrailing: index == 9 ? cornerRadius : 0,
+                                                          topTrailing: index == 9 ? cornerRadius : 0),
+                                       style: .continuous)
+                .frame(width: segmentWidth, height: cornerRadius)
+                .foregroundStyle(lens.color)
+                .opacity(Double(index + 1) / 10)
+                
+                if lens == .intensity && [2,4,8].contains(index) {
+                    Rectangle()
+                        .fill(Color(UIColor.label).opacity(0.4))
+                        .frame(width: 2, height: cornerRadius)
                 }
             }
-            
-            if let rawSelectedDate {
-                RuleMark(
-                    x: .value("Selected", rawSelectedDate, unit: .day)
-                )
-                .foregroundStyle(Color.gray.opacity(0.3))
-                .offset(yStart: -10)
-                .zIndex(-1)
-                .annotation(
-                    position: .top, spacing: 0,
-                    overflowResolution: .init(
-                        x: .fit(to: .chart),
-                        y: .disabled
-                    )
-                ) {
-                    AnnotationView(data: data,
-                                   scale: scale,
-                                   lens: lens,
-                                   date: rawSelectedDate)
+        }
+        
+        return HStack {
+            Text("1").fontWeight(.ultraLight)
+            HStack(spacing: 0) {
+                ForEach(0..<10, id: \.self) { index in
+                    gradation(index: index)
+                }
+            }
+            .gesture(dragLegend)
+            Text("10").fontWeight(.ultraLight)
+        }
+        .padding(.top, 5)
+        .if(legendDrag != nil && lens == .intensity) {
+            $0.overlay(alignment: .leading) {
+                VStack(spacing: 0) {
+                    Text(category)
+                        .frame(width: annotationWidth, height: 40)
+//                        .background(Color(hue: 1, saturation: 0, brightness: 0.82))
+                        .background(.debugGray6)
+                        .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
+                    Rectangle()
+                        .foregroundStyle(Color.gray.opacity(0.3))
+                        .frame(width: 2, height: cornerRadius + 10)
+                    
+                }
+                .offset(x: legendDrag!.x - (annotationWidth / 2) + 15, y: -22)
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack (alignment: .leading, spacing: 0) {
+            //TODO: finish titles
+            Text("\(data.count) Relapses")
+                .font(.headline)
+                .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
+                .padding(.bottom, 5)
+            GeometryReader { geometry in
+                VStack (alignment: .center, spacing: 0) {
+                    Chart {
+                        ForEach(dataWithDummies) { relapse in
+                            BarMark(
+                                x: .value("Day", relapse.date, unit: scale.calendarUnit),
+                                y: .value("Count", relapse.dummy ? 0 : 1)
+                            )
+                            .foregroundStyle(
+                                lens.isGraded ? lens.color.opacity(Double(
+                                    lens == .intensity ? relapse.intensity : relapse.compulsivity
+                                ) / 10) : ChartLens.none.color
+                            )
+                        }
+                        
+                        if let rawSelectedDate {
+                            RuleMark(
+                                x: .value("Selected", rawSelectedDate, unit: scale.calendarUnit)
+                            )
+                            .foregroundStyle(Color.gray.opacity(0.3))
+                            .offset(yStart: -10)
+                            .zIndex(-1)
+                            .annotation(
+                                position: .top, spacing: 0,
+                                overflowResolution: .init(
+                                    x: .fit(to: .chart),
+                                    y: .disabled
+                                )
+                            ) {
+                                AnnotationView(data: data,
+                                               scale: scale,
+                                               lens: lens,
+                                               date: rawSelectedDate)
+                            }
+                        }
+                    }
+                    
+                    if lens.isGraded {
+                        legend(segmentWidth: geometry.size.width / 12)
+                    }
                 }
             }
         }
@@ -188,68 +260,80 @@ struct AnnotationView: View {
     let scale: ChartScale
     let lens: ChartLens
     let date: Date
-    var previousDate: Date {
-        date.addingTimeInterval(-scale.timeInterval)
+    
+    private var selectedData: [Relapse] {
+        data.filter { $0.date.isSame(scale.calendarUnit, as: date) }
     }
-    var count: Int {
-        data.reduce(0) { sum, relapse in
-            sum + (relapse.date.isSame(as: date, unit: scale.calendarUnit()) ? 1 : 0)
-        }
-    }
-    var previousCount: Int {
-        data.reduce(0) { sum, relapse in
-            sum + (relapse.date.isSame(as: previousDate, unit: scale.calendarUnit()) ? 1 : 0)
+    
+    private var dateString: String {
+        switch scale {
+        case .week:
+            date.formatted(.dateTime.month(.wide).day())
+        case .month:            date.startOfWeek!.formatted(.dateTime.month().day()) + " - " + date.endOfWeek!.formatted(.dateTime.month().day())
+        case .threeMonth:
+            date.formatted(.dateTime.month(.wide))
+        case .year:
+            date.formatted(.dateTime.month(.wide).year())
         }
     }
     
+    var average: Double {
+        selectedData.reduce(0.0) { sum, relapse in
+            sum + Double(lens == .intensity ? relapse.intensity : relapse.compulsivity)
+        } / (selectedData.count == 0 ? 1.0 : Double(selectedData.count))
+    }
+    
+    var numberFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0 // Minimum number of fractional digits
+        formatter.maximumFractionDigits = 1 // Maximum number of fractional digits
+        return formatter
+    }
+    
+    //    var intensityCounts: [String] {//Dictionary<String, [Relapse]> {
+    //        Dictionary(grouping: selectedData, by: { $0.categoricalIntensity })
+    //            .sorted(by: { Relapse.categoricalIntensity(for: $0.0) >  Relapse.categoricalIntensity(for: $1.0)})
+    //            .compactMap { grouping in
+    //                if grouping.value.count == 0 {
+    //                    return nil
+    //                } else {
+    //                    return grouping.key + ": " + String(grouping.value.count)
+    //                }
+    //            }
+    //    }
+    
     var body: some View {
         VStack {
-            Text(date.formatted(.dateTime.day().month().year()))
-            //            Text(scale.formatAnnotationDate(date, for: lens))
+            Text(dateString)
                 .bold()
-            if lens == .previous {
-                HStack (spacing: 5) {
-                    Group {
-                        Text(String(count))
-                            .foregroundStyle(ChartLens.none.color)
-                            .font(.system(size: 25))
-                            .bold()
-                        Text(scale.subtitle(date: date, for: lens))
-                            .font(.system(size: 15))
-                        Spacer()
-                        Text(String(previousCount))
-                            .foregroundStyle(ChartLens.none.color.opacity(0.7))
-                            .font(.system(size: 25))
-                            .bold()
-                        Text(scale.subtitle(date: previousDate, for: lens))
-                            .font(.system(size: 15))
-                    }
-                }
-            } else {
-                Text("\(count) Relapse\(count == 1 ? "" : "s")")
+            if lens == .none {
+                Text("\(selectedData.count) Relapse\(selectedData.count == 1 ? "" : "s")")
+            } else if average != 0 {
+                Text(numberFormatter.string(from: average as NSNumber)! + " on Average")
             }
         }
         .padding()
 #if os(macOS)
         .background(Color(hue: 1, saturation: 0, brightness: 0.82))
 #else
-        .background(.debugGray6)
+                .background(.debugGray6)
+//        .background(Color.gray.opacity(0.3))
 #endif
         .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
     }
 }
 
 #Preview("Chart") {
-    ChartView(rawSelectedDate: nil,
+    ChartView(rawSelectedDate: .constant(nil),
               data: TestData.spreadsheet,
               scale: ChartScale.month,
-              lens: ChartLens.previous)
+              lens: ChartLens.intensity)
 }
 
 #Preview("Annotation") {
     AnnotationView(data: TestData.spreadsheet,
                    scale: ChartScale.month,
-                   lens: ChartLens.previous,
+                   lens: ChartLens.intensity,
                    date: Date.now)
 }
 

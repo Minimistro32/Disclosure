@@ -14,7 +14,7 @@ struct PodiumView: View {
     enum PodiumLens: String, CaseIterable, Identifiable {
         var id: Self { return self }
         case frequency = "Frequency"
-        case compulsivity = "Compulsivity"
+        case compulsivity = "Urges"
     }
     
     private func aggregateTriggers(by: PodiumLens) -> [Double] {
@@ -61,16 +61,8 @@ struct PodiumView: View {
             Text(selectedLens == .frequency ? "These triggers appear most frequently." : "These triggers are correlated with strong urges.")
                 .font(.caption)
                 .padding(.bottom, 5)
-            HStack(spacing: 0) {
-                Spacer()
-                Text("Ranked by")
-                Picker("Ranked by", selection: $selectedLens) {
-                    ForEach(PodiumLens.allCases) { lens in
-                        Text(lens.rawValue)
-                    }
-                }
-                .pickerStyle(.menu)
-                Spacer()
+            LabeledPicker(title: "Ranked by", values: PodiumLens.allCases, selection: $selectedLens) {
+                $0.rawValue
             }
         }
         .padding(.bottom, 15)

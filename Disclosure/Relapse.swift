@@ -27,4 +27,38 @@ class Relapse {
         self.triggers = Blahst(triggers)
         self.dummy = dummy
     }
+    
+    static func categoricalIntensity(for intensity: Double) -> String {
+        if intensity > 8 {
+            return "New Material"
+        } else if intensity > 4 {
+            return "Nudity"
+        } else if intensity > 2 {
+            return "Revealing Clothes"
+        }
+        return "Masturbation"
+    }
+    
+//    static func categoricalIntensity(for category: String) -> Int {
+//        if category == "New Material" {
+//            return 8
+//        } else if category == "Nudity" {
+//            return 4
+//        } else if category == "Revealing Clothes" {
+//            return 2
+//        }
+//        return 0
+//    }
+    
+    var categoricalIntensity: String {
+        if intensity > 8 {
+            return "New Material"
+        } else if intensity > 4 {
+            return "Nudity"
+        } else if intensity > 2 {
+            return "Revealing Clothes"
+        }
+        return "Masturbation"
+    }
+    
 }
