@@ -5,14 +5,10 @@
 //  Created by Tyson Freeze on 2/27/24.
 //
 
-//TODO: Add title
-
-
 import SwiftUI
 import Charts
 
 struct ChartView: View {
-    
     @Binding var rawSelectedDate: Date?
     let data: [Relapse]
     let scale: ChartScale
@@ -45,7 +41,7 @@ struct ChartView: View {
     var body: some View {
         Group {
             if chartData.count != 0 {
-                InsideChartView(
+                ChartWrapperView(
                     rawSelectedDate: $rawSelectedDate,
                     data: chartData,
                     scale: scale,
@@ -109,9 +105,8 @@ struct ChartView: View {
     }
 }
 
-struct InsideChartView: View {
+struct ChartWrapperView: View {
     @Binding var rawSelectedDate: Date?
-    @State var legendDrag: CGPoint?
     let data: [Relapse]
     let scale: ChartScale
     let lens: ChartLens
@@ -124,87 +119,24 @@ struct InsideChartView: View {
         return mutableData
     }
     
-    private func legend(segmentWidth: CGFloat, cornerRadius: CGFloat = 10) -> some View {
-        
-        let category: String = Relapse.categoricalIntensity(for: Double(legendDrag?.x ?? 0) / segmentWidth)
-        let annotationWidth: CGFloat = switch category {
-                case "New Material":
-                    120
-                case "Nudity":
-                    70
-                case "Revealing Clothes":
-                    160
-                case "Masturbation":
-                    130
-                default:
-                    0
+    var chartTitle: String {
+        if lens == .none {
+            return switch scale {
+            case .week:
+                "\(data.count) Relapse\(data.count != 1 ? "s" : "") this Week"
+            default:
+                "Count of Relapses by \(scale.rawValue)"
             }
-        
-        var dragLegend: some Gesture {
-            DragGesture(minimumDistance: 5)
-                .onChanged { value in
-                    if (0..<(segmentWidth * 10)).contains(value.location.x) {
-                        legendDrag = value.location
-                    } else {
-                        legendDrag = nil
-                    }
-                }
-                .onEnded { _ in legendDrag = nil }
-        }
-        
-        
-        func gradation(index: Int) -> some View {
-            ZStack(alignment: .leading) {
-                UnevenRoundedRectangle(cornerRadii: .init(topLeading: index == 0 ? cornerRadius : 0,
-                                                          bottomLeading: index == 0 ? cornerRadius : 0,
-                                                          bottomTrailing: index == 9 ? cornerRadius : 0,
-                                                          topTrailing: index == 9 ? cornerRadius : 0),
-                                       style: .continuous)
-                .frame(width: segmentWidth, height: cornerRadius)
-                .foregroundStyle(lens.color)
-                .opacity(Double(index + 1) / 10)
-                
-                if lens == .intensity && [2,4,8].contains(index) {
-                    Rectangle()
-                        .fill(Color(UIColor.label).opacity(0.4))
-                        .frame(width: 2, height: cornerRadius)
-                }
-            }
-        }
-        
-        return HStack {
-            Text("1").fontWeight(.ultraLight)
-            HStack(spacing: 0) {
-                ForEach(0..<10, id: \.self) { index in
-                    gradation(index: index)
-                }
-            }
-            .gesture(dragLegend)
-            Text("10").fontWeight(.ultraLight)
-        }
-        .padding(.top, 5)
-        .if(legendDrag != nil && lens == .intensity) {
-            $0.overlay(alignment: .leading) {
-                VStack(spacing: 0) {
-                    Text(category)
-                        .frame(width: annotationWidth, height: 40)
-//                        .background(Color(hue: 1, saturation: 0, brightness: 0.82))
-                        .background(.debugGray6)
-                        .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
-                    Rectangle()
-                        .foregroundStyle(Color.gray.opacity(0.3))
-                        .frame(width: 2, height: cornerRadius + 10)
-                    
-                }
-                .offset(x: legendDrag!.x - (annotationWidth / 2) + 15, y: -22)
-            }
+        } else if lens == .intensity {
+            return "Relapse Intensity by \(scale.rawValue)"
+        } else { //lens == .compulsion {
+            return "Urge Strength by \(scale.rawValue)"
         }
     }
     
     var body: some View {
         VStack (alignment: .leading, spacing: 0) {
-            //TODO: finish titles
-            Text("\(data.count) Relapses")
+            Text(chartTitle)
                 .font(.headline)
                 .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
                 .padding(.bottom, 5)
@@ -246,80 +178,11 @@ struct InsideChartView: View {
                     }
                     
                     if lens.isGraded {
-                        legend(segmentWidth: geometry.size.width / 12)
+                        Legend(lens: lens, segmentWidth: geometry.size.width / 12)
                     }
                 }
             }
         }
-    }
-}
-
-
-struct AnnotationView: View {
-    let data: [Relapse]
-    let scale: ChartScale
-    let lens: ChartLens
-    let date: Date
-    
-    private var selectedData: [Relapse] {
-        data.filter { $0.date.isSame(scale.calendarUnit, as: date) }
-    }
-    
-    private var dateString: String {
-        switch scale {
-        case .week:
-            date.formatted(.dateTime.month(.wide).day())
-        case .month:            date.startOfWeek!.formatted(.dateTime.month().day()) + " - " + date.endOfWeek!.formatted(.dateTime.month().day())
-        case .threeMonth:
-            date.formatted(.dateTime.month(.wide))
-        case .year:
-            date.formatted(.dateTime.month(.wide).year())
-        }
-    }
-    
-    var average: Double {
-        selectedData.reduce(0.0) { sum, relapse in
-            sum + Double(lens == .intensity ? relapse.intensity : relapse.compulsivity)
-        } / (selectedData.count == 0 ? 1.0 : Double(selectedData.count))
-    }
-    
-    var numberFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0 // Minimum number of fractional digits
-        formatter.maximumFractionDigits = 1 // Maximum number of fractional digits
-        return formatter
-    }
-    
-    //    var intensityCounts: [String] {//Dictionary<String, [Relapse]> {
-    //        Dictionary(grouping: selectedData, by: { $0.categoricalIntensity })
-    //            .sorted(by: { Relapse.categoricalIntensity(for: $0.0) >  Relapse.categoricalIntensity(for: $1.0)})
-    //            .compactMap { grouping in
-    //                if grouping.value.count == 0 {
-    //                    return nil
-    //                } else {
-    //                    return grouping.key + ": " + String(grouping.value.count)
-    //                }
-    //            }
-    //    }
-    
-    var body: some View {
-        VStack {
-            Text(dateString)
-                .bold()
-            if lens == .none {
-                Text("\(selectedData.count) Relapse\(selectedData.count == 1 ? "" : "s")")
-            } else if average != 0 {
-                Text(numberFormatter.string(from: average as NSNumber)! + " on Average")
-            }
-        }
-        .padding()
-#if os(macOS)
-        .background(Color(hue: 1, saturation: 0, brightness: 0.82))
-#else
-                .background(.debugGray6)
-//        .background(Color.gray.opacity(0.3))
-#endif
-        .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
     }
 }
 
@@ -336,8 +199,3 @@ struct AnnotationView: View {
                    lens: ChartLens.intensity,
                    date: Date.now)
 }
-
-//func previousXValue<X>(scale: ChartScale, relapse: Relapse) -> PlottableValue<X> {
-//    return
-//    }
-//}

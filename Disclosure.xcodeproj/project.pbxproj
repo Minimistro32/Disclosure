@@ -22,6 +22,8 @@
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
 		D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D2412B6F108F00904A59 /* TrackerView.swift */; };
 		D69D71392B9FF809000B8E9E /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D71382B9FF809000B8E9E /* JournalView.swift */; };
+		D6C3ED772BAB9BFC0021B9FD /* Legend.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C3ED762BAB9BFC0021B9FD /* Legend.swift */; };
+		D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C3ED782BAB9C140021B9FD /* Annotation.swift */; };
 		D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C81F102B6869D50010CFED /* DisclosureApp.swift */; };
 		D6C81F132B6869D50010CFED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C81F122B6869D50010CFED /* ContentView.swift */; };
 		D6C81F172B6869D60010CFED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6C81F162B6869D60010CFED /* Assets.xcassets */; };
@@ -54,6 +56,8 @@
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
 		D69D71382B9FF809000B8E9E /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
+		D6C3ED762BAB9BFC0021B9FD /* Legend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Legend.swift; sourceTree = "<group>"; };
+		D6C3ED782BAB9C140021B9FD /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		D6C81F0D2B6869D50010CFED /* Disclosure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Disclosure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6C81F102B6869D50010CFED /* DisclosureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureApp.swift; sourceTree = "<group>"; };
 		D6C81F122B6869D50010CFED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -114,6 +118,16 @@
 				D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */,
 			);
 			name = "Tab 3";
+			sourceTree = "<group>";
+		};
+		D6C3ED752BAB9BE70021B9FD /* Chart */ = {
+			isa = PBXGroup;
+			children = (
+				D6E2A0202B8DC23C00354BE5 /* ChartView.swift */,
+				D6C3ED762BAB9BFC0021B9FD /* Legend.swift */,
+				D6C3ED782BAB9C140021B9FD /* Annotation.swift */,
+			);
+			name = Chart;
 			sourceTree = "<group>";
 		};
 		D6C81F042B6869D50010CFED = {
@@ -188,7 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				D698D2412B6F108F00904A59 /* TrackerView.swift */,
-				D6E2A0202B8DC23C00354BE5 /* ChartView.swift */,
+				D6C3ED752BAB9BE70021B9FD /* Chart */,
 				D6FD923E2B7F30B0006B74D3 /* LogView.swift */,
 				D6448CF62B745CBF00C3DB72 /* LoggerView.swift */,
 			);
@@ -294,6 +308,7 @@
 				D6E2A01F2B8DC1E900354BE5 /* ChartScale.swift in Sources */,
 				D6111E872B941BA0003F0801 /* Relation.swift in Sources */,
 				D6FAC87B2BA22F3E0023227E /* CustomTabView.swift in Sources */,
+				D6C3ED772BAB9BFC0021B9FD /* Legend.swift in Sources */,
 				D630B6C42B947D37000F1169 /* Blahst.swift in Sources */,
 				D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */,
 				D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */,
@@ -301,6 +316,7 @@
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
+				D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */,
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,
 				D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */,
 				D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */,

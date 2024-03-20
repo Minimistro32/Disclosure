@@ -14,7 +14,7 @@ struct PodiumView: View {
     enum PodiumLens: String, CaseIterable, Identifiable {
         var id: Self { return self }
         case frequency = "Frequency"
-        case compulsivity = "Urges"
+        case compulsivity = "Urge Strength"
     }
     
     private func aggregateTriggers(by: PodiumLens) -> [Double] {

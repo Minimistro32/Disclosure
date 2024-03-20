@@ -28,7 +28,9 @@ struct AddPersonView: View {
     //https://stackoverflow.com/questions/69397644/updating-tabview-badge-reloads-all-views-when-using-swiftui-3-badge-modifier
     //use value of `person.latestCall` on init. This field circumvents a bug updating the badge on the team tab bar icon. If the date is changed to update the badge the navigationStack reverts back to the teamView.
     
-    //TODO: implement form validation, see LoggerView
+    var isValidForm: Bool {
+        !person.name.isEmpty && !person.phone.isEmpty
+    }
     
     var body: some View {
         VStack {
@@ -100,6 +102,8 @@ struct AddPersonView: View {
                             Text("Submit")
                                 .frame(maxWidth: .infinity)
                         }
+                        .disabled(!isValidForm)
+                        
                         Button {
                             path.removeLast()
                         } label: {
@@ -119,6 +123,7 @@ struct AddPersonView: View {
                             Spacer()
                         }
                     }
+                    .disabled(!isValidForm)
 #endif
                 }
             }

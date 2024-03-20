@@ -8,6 +8,8 @@
 import SwiftUI
 import SwiftData
 
+//TODO: figure out database migrations for app store
+
 @main
 struct DisclosureApp: App {
     static let RELOAD_MODEL = true

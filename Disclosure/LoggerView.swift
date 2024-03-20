@@ -163,7 +163,7 @@ struct RelapseSlider: View {
     
     public enum SliderType: String {
         case intensity = "Intensity"
-        case compulsivity = "Urges"
+        case compulsivity = "Urge Strength"
     }
     
     private let range: ClosedRange<Double> = 1.0...10.0
