@@ -69,8 +69,38 @@ struct DashboardView: View {
         Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0) / (-24*60*60))
     }
     
-    private var reminderCount: Int {
+    var reminderCount: Int {
         data.filter { $0.reminder }.count
+    }
+    
+    @Environment(\.modelContext) private var context
+    @Query private var _settings: [Settings]
+    private var settings: Settings {
+        var s = _settings.first
+        if s == nil {
+            s = Settings()
+            context.insert(s!)
+        }
+        return s!
+    }
+    
+    @ViewBuilder
+    private var BadgeButton: some View {
+        ZStack {
+            LinkButton(title: "More", systemImage: "ellipsis.circle") {
+                path.segue(to: .logView)
+            }
+            
+            if reminderCount > 0 && settings.analyzeBadges {
+                Image(systemName: "\(reminderCount > 50 ? 50 : reminderCount).circle.fill")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.accent)
+                    .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
+                    .offset(x: 40, y: -13)
+            }
+        }
+        .padding(.trailing, 15 + (CGFloat(reminderCount) > 0 ? 5 : 0))
     }
     
 #if os(macOS)
@@ -144,7 +174,8 @@ struct DashboardView: View {
                 .padding(.leading, 15)
                 
                 Spacer()
-                BadgeButton(path: $path, count: reminderCount)
+                
+                BadgeButton
             }
             
             Spacer()
@@ -180,28 +211,6 @@ struct StreakView: View {
         Spacer()
         MetricView(count: current, name: "Days Sober")
         Spacer()
-    }
-}
-
-struct BadgeButton: View {
-    @Binding var path: NavigationPath
-    let count: Int
-    var body: some View {
-        ZStack {
-            LinkButton(title: "More", systemImage: "ellipsis.circle") {
-                path.segue(to: .logView)
-            }
-            
-            if count > 0 {
-                Image(systemName: "\(count > 50 ? 50 : count).circle.fill")
-                    .resizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundStyle(.accent)
-                    .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
-                    .offset(x: 40, y: -13)
-            }
-        }
-        .padding(.trailing, 15 + (count > 0 ? 5 : 0))
     }
 }
 

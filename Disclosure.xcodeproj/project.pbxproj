@@ -14,6 +14,8 @@
 		D6111E8C2B941E22003F0801 /* AddPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E8B2B941E22003F0801 /* AddPersonView.swift */; };
 		D6111E8E2B941FAA003F0801 /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E8D2B941FAA003F0801 /* TestData.swift */; };
 		D61282BA2B90369A00CB5642 /* Scrap.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D61282B92B90369A00CB5642 /* Scrap.rtf */; };
+		D618EEEF2BAC891700CD9D84 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D618EEEE2BAC891700CD9D84 /* SettingsView.swift */; };
+		D618EEF32BAC897A00CD9D84 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D618EEF22BAC897A00CD9D84 /* Settings.swift */; };
 		D630B6C22B947509000F1169 /* DisclosureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C12B947509000F1169 /* DisclosureView.swift */; };
 		D630B6C42B947D37000F1169 /* Blahst.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C32B947D37000F1169 /* Blahst.swift */; };
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
@@ -48,6 +50,8 @@
 		D6111E8B2B941E22003F0801 /* AddPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPersonView.swift; sourceTree = "<group>"; };
 		D6111E8D2B941FAA003F0801 /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		D61282B92B90369A00CB5642 /* Scrap.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Scrap.rtf; sourceTree = "<group>"; };
+		D618EEEE2BAC891700CD9D84 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D618EEF22BAC897A00CD9D84 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D630B6C12B947509000F1169 /* DisclosureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureView.swift; sourceTree = "<group>"; };
 		D630B6C32B947D37000F1169 /* Blahst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blahst.swift; sourceTree = "<group>"; };
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				D6111E832B9418CB003F0801 /* Tab 1 */,
 				D6FD923B2B7F2752006B74D3 /* Tab 2 */,
 				D69D713A2B9FF810000B8E9E /* Tab 3 */,
+				D618EEF12BAC893400CD9D84 /* Tab 5 */,
 				D630B6C12B947509000F1169 /* DisclosureView.swift */,
 				D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */,
 			);
@@ -108,6 +113,14 @@
 				D6111E8B2B941E22003F0801 /* AddPersonView.swift */,
 			);
 			name = "Tab 1";
+			sourceTree = "<group>";
+		};
+		D618EEF12BAC893400CD9D84 /* Tab 5 */ = {
+			isa = PBXGroup;
+			children = (
+				D618EEEE2BAC891700CD9D84 /* SettingsView.swift */,
+			);
+			name = "Tab 5";
 			sourceTree = "<group>";
 		};
 		D69D713A2B9FF810000B8E9E /* Tab 3 */ = {
@@ -217,6 +230,7 @@
 				D6CF2A712B9F783000CB5F32 /* Person */,
 				D6CF2A722B9F784300CB5F32 /* Chart */,
 				D650F7EF2BA40ED000A90081 /* Entry.swift */,
+				D618EEF22BAC897A00CD9D84 /* Settings.swift */,
 				D6CF2A732B9F786A00CB5F32 /* Segue.swift */,
 			);
 			name = Model;
@@ -313,11 +327,13 @@
 				D6E2A0212B8DC23C00354BE5 /* ChartView.swift in Sources */,
 				D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */,
 				D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */,
+				D618EEEF2BAC891700CD9D84 /* SettingsView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
 				D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */,
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,
+				D618EEF32BAC897A00CD9D84 /* Settings.swift in Sources */,
 				D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */,
 				D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */,
 				D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */,

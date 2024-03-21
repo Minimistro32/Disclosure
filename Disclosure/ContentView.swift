@@ -9,10 +9,21 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) var context
-    @Query(sort: \Relapse.date, order: .reverse) var relapses: [Relapse]
-    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) var team: [Person]
-    @Query(sort: \Entry.date, order: .reverse) var entries: [Entry]
+    @Environment(\.modelContext) private var context
+    @Query(sort: \Relapse.date, order: .reverse) private var relapses: [Relapse]
+    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) private var team: [Person]
+    @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
+    @Query private var _settings: [Settings]
+    private var settings: Settings {
+        var s = _settings.first
+        if s == nil {
+            s = Settings()
+            context.insert(s!)
+        }
+        return s!
+    }
+    
+
     
 #if !os(macOS)
     init() {
@@ -32,13 +43,17 @@ struct ContentView: View {
         TabView {
             TeamView(data: team)
                 .tabItem { Label("Team", systemImage: "person.3") }
-                .if((team.min { $0.daysSinceCall ?? Int.max < $1.daysSinceCall ?? Int.max}?.daysSinceCall ?? Int.max) != 0) {
+                .if(settings.callBadge && (team.min { $0.daysSinceCall ?? Int.max < $1.daysSinceCall ?? Int.max}?.daysSinceCall ?? Int.max) != 0) {
                     $0.badge("Call")
                 }
             TrackerView(data: relapses)
                 .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
             JournalView(relapses: relapses, entries: entries)
                 .tabItem { Label("Journal", systemImage: "book.pages") }
+//            Rectangle().fill(.indigo)
+//                .tabItem { Label("Practice", systemImage: "brain.fill") }
+            SettingsView(settings: settings)
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
 #endif
     }

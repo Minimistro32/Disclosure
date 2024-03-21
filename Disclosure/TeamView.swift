@@ -28,6 +28,17 @@ struct TeamView: View {
     }
     @State private var path = NavigationPath()
     
+    @Environment(\.modelContext) var context
+    @Query private var _settings: [Settings]
+    private var settings: Settings {
+        var s = _settings.first
+        if s == nil {
+            s = Settings()
+            context.insert(s!)
+        }
+        return s!
+    }
+    
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
@@ -41,7 +52,7 @@ struct TeamView: View {
 #else
                                 .padding(.leading)
 #endif
-                                .if(daysSinceCheckIn != 0) {
+                                .if(daysSinceCheckIn != 0 && settings.callBadge) {
                                     $0.bold()
                                         .foregroundStyle(.accent)
                                 }
@@ -146,7 +157,7 @@ struct TeamListView: View {
     }
     
     func teamRow(relation: Relation, relationData: [Person]) -> some View {
-        return ForEach(Array(zip(relationData.indices, relationData)), id: \.0) { index, person in
+        ForEach(Array(zip(relationData.indices, relationData)), id: \.0) { index, person in
             PersonView(path: $path, person: person, relapse: relapse, daysSinceCheckIn: daysSinceCheckIn, isFirst: index == 0)
                 .onTapGesture {
                     if editEnabled {
@@ -172,6 +183,15 @@ struct PersonView: View {
     let relapse: Relapse?
     let daysSinceCheckIn: Int?
     let isFirst: Bool
+    @Query private var _settings: [Settings]
+    private var settings: Settings {
+        var s = _settings.first
+        if s == nil {
+            s = Settings()
+            context.insert(s!)
+        }
+        return s!
+    }
     
 #if os(macOS)
     var body: some View {
@@ -193,22 +213,6 @@ struct PersonView: View {
                 Text(daysSinceToString(daysSince))
             }
             
-//            Group {
-//                if person.canText {
-//                    Image(systemName: "message.fill")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                }
-//                Image(systemName: "phone.fill")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .padding(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
-//                    .if(daysSinceCheckIn != 0) {
-//                        $0.bold()
-//                            .foregroundStyle(.accent)
-//                    }
-//            }
-//            .frame(width: 30)
         }
         .if(person.daysSinceCall == nil) {
             $0.padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -240,7 +244,7 @@ struct PersonView: View {
                     path.removeLast(2)
                 }
             }
-            .if(daysSinceCheckIn != 0 && isFirst) {
+            .if(daysSinceCheckIn != 0 && isFirst && settings.animatedCallSuggestions) {
                 $0.bold()
                     .foregroundStyle(.accent)
                     .phaseAnimator(RattleAnimation) { content, phase in
