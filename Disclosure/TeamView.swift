@@ -52,7 +52,7 @@ struct TeamView: View {
 #else
                                 .padding(.leading)
 #endif
-                                .if(daysSinceCheckIn != 0 && settings.callBadge) {
+                                .if(daysSinceCheckIn != 0 && (settings.callBadge || settings.animatedCallSuggestions)) {
                                     $0.bold()
                                         .foregroundStyle(.accent)
                                 }

@@ -142,6 +142,10 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
     )
 }
 
+func Int(_ boolean: Bool) -> Int {
+    boolean ? 1 : 0
+}
+
 func Double(_ boolean: Bool) -> Double {
     boolean ? 1.0 : 0.0
 }

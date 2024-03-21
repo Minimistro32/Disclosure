@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
@@ -22,8 +23,14 @@ struct ContentView: View {
         }
         return s!
     }
+    var appIsActivePublisher = NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
     
-
+    func setBadge() {
+        let callBadge = Int(settings.callBadge && (team.min { $0.daysSinceCall ?? Int.max < $1.daysSinceCall ?? Int.max}?.daysSinceCall ?? Int.max) != 0)
+        let analyzeBadges = settings.analyzeBadges ? relapses.filter { $0.reminder }.count : 0
+        UNUserNotificationCenter.current().setBadgeCount(analyzeBadges + callBadge)
+    }
     
 #if !os(macOS)
     init() {
@@ -60,6 +67,12 @@ struct ContentView: View {
     
     var body: some View {
         PlatformManagedTabView
+            .onAppear {
+                setBadge()
+            }
+            .onReceive(appIsActivePublisher) { _ in
+                setBadge()
+            }
             .onAppear {
                 if DisclosureApp.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
                     do {

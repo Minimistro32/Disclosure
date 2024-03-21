@@ -11,17 +11,23 @@ import SwiftData
 
 @Model
 class Settings {
-    var analyzeBadges: Bool
+    //tab1
     var callBadge: Bool
     var callReminders: Bool
     var callReminderTime: Date
     var animatedCallSuggestions: Bool
     
-    init(analyzeBadges: Bool=true, callBadge: Bool=true, callReminders: Bool=false, callReminderTime: Date=Date.now, animatedCallSuggestions: Bool=true) {
-        self.analyzeBadges = analyzeBadges
+    //tab2
+    var analyzeBadges: Bool
+    
+    init(callBadge: Bool=true, callReminders: Bool=true, callReminderTime: Date=Date.from(year: 2023, month: 3, day: 21, hour: 9), animatedCallSuggestions: Bool=true, analyzeBadges: Bool=true) {
+        //tab1
         self.callBadge = callBadge
         self.callReminders = callReminders
         self.callReminderTime = callReminderTime
         self.animatedCallSuggestions = animatedCallSuggestions
+        
+        //tab2
+        self.analyzeBadges = analyzeBadges
     }
 }
