@@ -15,8 +15,8 @@ struct SettingsView: View {
             .publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var alertPermission: Bool?
     @State private var badgePermission: Bool?
-    private var alertPermissionGranted: Bool { alertPermission ?? false }
-    private var badgePermissionGranted: Bool { badgePermission ?? false }
+    private var alertPermissionGranted: Bool { alertPermission ?? true }
+    private var badgePermissionGranted: Bool { badgePermission ?? true }
     
     private func requestPermissions() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
