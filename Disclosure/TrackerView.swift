@@ -200,37 +200,6 @@ struct DashboardView: View {
 #endif
 }
 
-struct StreakView: View {
-    let average: Int
-    let current: Int
-    
-    var body: some View {
-        Spacer()
-        MetricView(count: average,
-                   name: "Average Streak")
-        Spacer()
-        MetricView(count: current, name: "Days Sober")
-        Spacer()
-    }
-}
-
-struct MetricView: View {
-    let count: Int
-    let name: String
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Text(String(count))
-                    .font(.system(size: 70))
-                Text("Days")
-            }
-            Text(name)
-                .multilineTextAlignment(.center)
-        }
-    }
-}
-
 #Preview {
     TrackerView(data: TestData.spreadsheet)
 }

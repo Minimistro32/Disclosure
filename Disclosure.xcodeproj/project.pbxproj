@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D6097F772BAD491F001405AE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D60AEC812BAD0ED000220EF5 /* WidgetKit.framework */; };
+		D6097F782BAD491F001405AE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D60AEC832BAD0ED000220EF5 /* SwiftUI.framework */; };
+		D6097F7B2BAD491F001405AE /* DisclosureWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6097F7A2BAD491F001405AE /* DisclosureWidgetsBundle.swift */; };
+		D6097F7D2BAD491F001405AE /* DisclosureWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6097F7C2BAD491F001405AE /* DisclosureWidgets.swift */; };
+		D6097F7F2BAD491F001405AE /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6097F7E2BAD491F001405AE /* AppIntent.swift */; };
+		D6097F812BAD4920001405AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6097F802BAD4920001405AE /* Assets.xcassets */; };
+		D6097F862BAD4920001405AE /* DisclosureWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D6097F762BAD491F001405AE /* DisclosureWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D6097F8A2BAD4AFB001405AE /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
+		D6097F8B2BAD4AFE001405AE /* Blahst.swift in Sources */ = {isa = PBXBuildFile; fileRef = D630B6C32B947D37000F1169 /* Blahst.swift */; };
+		D60AEC9A2BAD1BAB00220EF5 /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60AEC992BAD1BAB00220EF5 /* StreakView.swift */; };
 		D6111E822B9418C1003F0801 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E812B9418C1003F0801 /* TeamView.swift */; };
 		D6111E852B941B07003F0801 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E842B941B07003F0801 /* Person.swift */; };
 		D6111E872B941BA0003F0801 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E862B941BA0003F0801 /* Relation.swift */; };
@@ -32,6 +42,9 @@
 		D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CED10D2BAA1F21002E1D23 /* LabeledPicker.swift */; };
 		D6CF2A742B9F786A00CB5F32 /* Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A732B9F786A00CB5F32 /* Segue.swift */; };
 		D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */; };
+		D6D5FCE52BAD4F5B009D4397 /* ChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E2A01E2B8DC1E900354BE5 /* ChartScale.swift */; };
+		D6D5FCE62BAD4F9B009D4397 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6FD92402B7FF49B006B74D3 /* Helpers.swift */; };
+		D6D5FCE72BAD50F6009D4397 /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60AEC992BAD1BAB00220EF5 /* StreakView.swift */; };
 		D6D9C22D2BA4F53A007973A0 /* AddEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9C22C2BA4F53A007973A0 /* AddEntryView.swift */; };
 		D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9C22E2BA4FDE4007973A0 /* PodiumView.swift */; };
 		D6E2A01F2B8DC1E900354BE5 /* ChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E2A01E2B8DC1E900354BE5 /* ChartScale.swift */; };
@@ -43,7 +56,41 @@
 		D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6FD92402B7FF49B006B74D3 /* Helpers.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D6097F842BAD4920001405AE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6C81F052B6869D50010CFED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D6097F752BAD491F001405AE;
+			remoteInfo = DisclosureWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D60AEC942BAD0ED100220EF5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D6097F862BAD4920001405AE /* DisclosureWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		D6097F762BAD491F001405AE /* DisclosureWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisclosureWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6097F7A2BAD491F001405AE /* DisclosureWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureWidgetsBundle.swift; sourceTree = "<group>"; };
+		D6097F7C2BAD491F001405AE /* DisclosureWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureWidgets.swift; sourceTree = "<group>"; };
+		D6097F7E2BAD491F001405AE /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		D6097F802BAD4920001405AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D6097F822BAD4920001405AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D6097F832BAD4920001405AE /* DisclosureWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DisclosureWidgets.entitlements; sourceTree = "<group>"; };
+		D60AEC812BAD0ED000220EF5 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		D60AEC832BAD0ED000220EF5 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
+		D60AEC992BAD1BAB00220EF5 /* StreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakView.swift; sourceTree = "<group>"; };
 		D6111E812B9418C1003F0801 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		D6111E842B941B07003F0801 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		D6111E862B941BA0003F0801 /* Relation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
@@ -81,6 +128,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D6097F732BAD491F001405AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6097F782BAD491F001405AE /* SwiftUI.framework in Frameworks */,
+				D6097F772BAD491F001405AE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6C81F0A2B6869D50010CFED /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -104,6 +160,28 @@
 				D6CF2A752B9F7DF700CB5F32 /* ErrorView.swift */,
 			);
 			name = View;
+			sourceTree = "<group>";
+		};
+		D6097F792BAD491F001405AE /* DisclosureWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				D6097F7A2BAD491F001405AE /* DisclosureWidgetsBundle.swift */,
+				D6097F7C2BAD491F001405AE /* DisclosureWidgets.swift */,
+				D6097F7E2BAD491F001405AE /* AppIntent.swift */,
+				D6097F802BAD4920001405AE /* Assets.xcassets */,
+				D6097F822BAD4920001405AE /* Info.plist */,
+				D6097F832BAD4920001405AE /* DisclosureWidgets.entitlements */,
+			);
+			path = DisclosureWidgets;
+			sourceTree = "<group>";
+		};
+		D60AEC802BAD0ED000220EF5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D60AEC812BAD0ED000220EF5 /* WidgetKit.framework */,
+				D60AEC832BAD0ED000220EF5 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D6111E832B9418CB003F0801 /* Tab 1 */ = {
@@ -147,6 +225,8 @@
 			isa = PBXGroup;
 			children = (
 				D6C81F0F2B6869D50010CFED /* Disclosure */,
+				D6097F792BAD491F001405AE /* DisclosureWidgets */,
+				D60AEC802BAD0ED000220EF5 /* Frameworks */,
 				D6C81F0E2B6869D50010CFED /* Products */,
 			);
 			sourceTree = "<group>";
@@ -155,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				D6C81F0D2B6869D50010CFED /* Disclosure.app */,
+				D6097F762BAD491F001405AE /* DisclosureWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -215,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				D698D2412B6F108F00904A59 /* TrackerView.swift */,
+				D60AEC992BAD1BAB00220EF5 /* StreakView.swift */,
 				D6C3ED752BAB9BE70021B9FD /* Chart */,
 				D6FD923E2B7F30B0006B74D3 /* LogView.swift */,
 				D6448CF62B745CBF00C3DB72 /* LoggerView.swift */,
@@ -239,6 +321,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D6097F752BAD491F001405AE /* DisclosureWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6097F872BAD4920001405AE /* Build configuration list for PBXNativeTarget "DisclosureWidgetsExtension" */;
+			buildPhases = (
+				D6097F722BAD491F001405AE /* Sources */,
+				D6097F732BAD491F001405AE /* Frameworks */,
+				D6097F742BAD491F001405AE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DisclosureWidgetsExtension;
+			productName = DisclosureWidgetsExtension;
+			productReference = D6097F762BAD491F001405AE /* DisclosureWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D6C81F0C2B6869D50010CFED /* Disclosure */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D6C81F1E2B6869D60010CFED /* Build configuration list for PBXNativeTarget "Disclosure" */;
@@ -246,10 +345,12 @@
 				D6C81F092B6869D50010CFED /* Sources */,
 				D6C81F0A2B6869D50010CFED /* Frameworks */,
 				D6C81F0B2B6869D50010CFED /* Resources */,
+				D60AEC942BAD0ED100220EF5 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D6097F852BAD4920001405AE /* PBXTargetDependency */,
 			);
 			name = Disclosure;
 			packageProductDependencies = (
@@ -269,6 +370,9 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					D6097F752BAD491F001405AE = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					D6C81F0C2B6869D50010CFED = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -291,11 +395,20 @@
 			projectRoot = "";
 			targets = (
 				D6C81F0C2B6869D50010CFED /* Disclosure */,
+				D6097F752BAD491F001405AE /* DisclosureWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D6097F742BAD491F001405AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6097F812BAD4920001405AE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6C81F0B2B6869D50010CFED /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -308,6 +421,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D6097F722BAD491F001405AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6D5FCE72BAD50F6009D4397 /* StreakView.swift in Sources */,
+				D6097F8A2BAD4AFB001405AE /* Relapse.swift in Sources */,
+				D6D5FCE62BAD4F9B009D4397 /* Helpers.swift in Sources */,
+				D6097F8B2BAD4AFE001405AE /* Blahst.swift in Sources */,
+				D6097F7D2BAD491F001405AE /* DisclosureWidgets.swift in Sources */,
+				D6097F7B2BAD491F001405AE /* DisclosureWidgetsBundle.swift in Sources */,
+				D6097F7F2BAD491F001405AE /* AppIntent.swift in Sources */,
+				D6D5FCE52BAD4F5B009D4397 /* ChartScale.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6C81F092B6869D50010CFED /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -328,6 +456,7 @@
 				D6CED10E2BAA1F21002E1D23 /* LabeledPicker.swift in Sources */,
 				D6D9C22F2BA4FDE4007973A0 /* PodiumView.swift in Sources */,
 				D618EEEF2BAC891700CD9D84 /* SettingsView.swift in Sources */,
+				D60AEC9A2BAD1BAB00220EF5 /* StreakView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
@@ -348,7 +477,91 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D6097F852BAD4920001405AE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D6097F752BAD491F001405AE /* DisclosureWidgetsExtension */;
+			targetProxy = D6097F842BAD4920001405AE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		D6097F882BAD4920001405AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DisclosureWidgets/DisclosureWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RZ775S6QM6;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DisclosureWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DisclosureWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Tyson-Freeze.Disclosure.DisclosureWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D6097F892BAD4920001405AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DisclosureWidgets/DisclosureWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RZ775S6QM6;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DisclosureWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DisclosureWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Tyson-Freeze.Disclosure.DisclosureWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		D6C81F1C2B6869D60010CFED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -466,6 +679,7 @@
 		D6C81F1F2B6869D60010CFED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Disclosure/Disclosure.entitlements;
@@ -504,6 +718,7 @@
 		D6C81F202B6869D60010CFED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Disclosure/Disclosure.entitlements;
@@ -542,6 +757,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D6097F872BAD4920001405AE /* Build configuration list for PBXNativeTarget "DisclosureWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6097F882BAD4920001405AE /* Debug */,
+				D6097F892BAD4920001405AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D6C81F082B6869D50010CFED /* Build configuration list for PBXProject "Disclosure" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

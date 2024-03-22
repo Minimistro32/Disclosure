@@ -8,6 +8,7 @@
 import Foundation
 
 struct TestData {
+    
     static let journal: [Entry] = [
         Entry(isGoal: true, title: "I need to", body: "Go to sleep\nAnd stop “screening” my needs", date: Date.from(year: 2023, month: 12, day: 11)),
         Entry(isGoal: false, title: "'I know what I need you to do. Just trust me and go along with it ❤️' - God", body: "In fast and testimony meeting 3/3/24", date: Date.from(year: 2024, month: 3, day: 3)),

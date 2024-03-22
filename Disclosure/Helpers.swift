@@ -167,9 +167,3 @@ public extension Color {
     static let secondaryBackgroundColor = Color(UIColor.secondarySystemBackground)
     #endif
 }
-
-extension NavigationPath {
-    mutating func segue(to destination: Segue.destinationView, payload: AnyHashable? = nil) -> Void {
-        self.append(Segue(to: destination, payload: payload))
-    }
-}
