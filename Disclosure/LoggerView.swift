@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct LoggerView: View {
     @Environment(\.modelContext) var context
@@ -123,6 +124,9 @@ struct LoggerView: View {
                 Button {
                     relapse.reminder = relapseReminderProxy
                     context.insert(relapse)
+                    
+                    WidgetCenter.shared.reloadTimelines(ofKind: "DisclosureWidgets")
+                    
                     if relapse.date.isSame(.day, as: Date.now) {
                         path.segue(to: .disclosureView, payload: relapse)
                     } else {

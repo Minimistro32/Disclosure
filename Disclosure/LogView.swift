@@ -7,11 +7,17 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct LogView: View {
     @Environment(\.modelContext) var context
     @Binding var path: NavigationPath
     let relapses: [Relapse]
+    
+    func deleteRelapse(_ relapse: Relapse) {
+        context.delete(relapse)
+        WidgetCenter.shared.reloadTimelines(ofKind: "DisclosureWidgets")
+    }
     
     var body: some View {
         VStack {
@@ -44,7 +50,7 @@ struct LogView: View {
                                 path.segue(to: .loggerView, payload: relapse)
                             }
                             Button("Delete", systemImage: "trash", role: .destructive) {
-                                context.delete(relapse)
+                                deleteRelapse(relapse)
                             }
                         }
                     
@@ -58,7 +64,7 @@ struct LogView: View {
                 }
                 .onDelete { indexSet in
                     for index in indexSet {
-                        context.delete(relapses[index])
+                        deleteRelapse(relapses[index])
                     }
                 }
             }
