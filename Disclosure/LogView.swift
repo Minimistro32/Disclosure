@@ -17,6 +17,7 @@ struct LogView: View {
     func deleteRelapse(_ relapse: Relapse) {
         context.delete(relapse)
         WidgetCenter.shared.reloadTimelines(ofKind: "DisclosureWidgets")
+        print("reached")
     }
     
     var body: some View {

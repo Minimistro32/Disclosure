@@ -9,12 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct DisclosureView: View {
-    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) var team: [Person] = []
     @Binding var path: NavigationPath
     let relapse: Relapse
     
     var body: some View {
-            TeamListView(data: team, path: $path, relapse: relapse, editEnabled: false, daysSinceCheckIn: nil)
+            TeamListView(data: nil, path: $path, relapse: relapse, editEnabled: false, daysSinceCheckIn: nil)
                 .navigationTitle("Disclose Latest")
                 .navigationBarBackButtonHidden()
                 .toolbar {

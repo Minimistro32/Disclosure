@@ -21,7 +21,8 @@ struct AnnotationView: View {
         switch scale {
         case .week:
             date.formatted(.dateTime.month(.wide).day())
-        case .month:            date.startOfWeek!.formatted(.dateTime.month().day()) + " - " + date.endOfWeek!.formatted(.dateTime.month().day())
+        case .month:
+            date.startOfWeek!.formatted(.dateTime.month().day()) + " - " + date.endOfWeek!.formatted(.dateTime.month().day())
         case .threeMonth:
             date.formatted(.dateTime.month(.wide))
         case .year:
@@ -56,8 +57,8 @@ struct AnnotationView: View {
 #if os(macOS)
         .background(Color(hue: 1, saturation: 0, brightness: 0.82))
 #else
-                .background(.debugGray6)
-//        .background(Color.gray.opacity(0.3))
+        .background(.debugGray6)
+        //        .background(Color.gray.opacity(0.3))
 #endif
         .clipShape(.rect(cornerSize: CGSize(width: 15, height: 15)))
     }

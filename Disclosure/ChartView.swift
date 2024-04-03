@@ -169,10 +169,12 @@ struct ChartWrapperView: View {
                                     y: .disabled
                                 )
                             ) {
-                                AnnotationView(data: data,
-                                               scale: scale,
-                                               lens: lens,
-                                               date: rawSelectedDate)
+                                if scale.containsDate(rawSelectedDate) {
+                                    AnnotationView(data: data,
+                                                   scale: scale,
+                                                   lens: lens,
+                                                   date: rawSelectedDate)
+                                }
                             }
                         }
                     }

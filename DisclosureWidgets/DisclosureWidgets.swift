@@ -26,18 +26,17 @@ struct Provider: AppIntentTimelineProvider {
     
     @MainActor
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
-        Timeline(entries: [
-            Entry(date: .now, configuration: configuration, streaks: getStreaks())
+        let streaks = getStreaks()
+        print(streaks)
+        return Timeline(entries: [
+            Entry(date: .now, configuration: configuration, streaks: streaks)
         ], policy: .never)
     }
     
     @MainActor
     private func getStreaks() -> (Int, Int) {
-        guard let modelContainer = try? ModelContainer(for: Relapse.self) else {
-            return (0, 0)
-        }
         let descriptor = FetchDescriptor<Relapse>(sortBy: [SortDescriptor(\Relapse.date, order: .reverse)])
-        let data = try? modelContainer.mainContext.fetch(descriptor)
+        let data = try? Shared.modelContainer.mainContext.fetch(descriptor)
         
         if let data {
             //three month average streak
@@ -127,6 +126,8 @@ struct DisclosureWidgets: Widget {
             DisclosureWidgetsEntryView(entry: entry)
                 .containerBackground(entry.configuration.color.get, for: .widget)
         }
+        .configurationDisplayName("Streak")
+        .description("Monitor sobriety with discretion available upon edit.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular])
     }
 }

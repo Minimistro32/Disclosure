@@ -110,17 +110,23 @@ struct TeamView: View {
 
 struct TeamListView: View {
     @Environment(\.modelContext) var context
-    let data: [Person]
+    let data: [Person]?
     @Binding var path: NavigationPath
     @State private var selection = Set<Person.ID>()
     let relapse: Relapse?
     var editEnabled: Bool = true
     let daysSinceCheckIn: Int?
     
+    //pushing multiple disclosure views to the stack locks up the db. Moving this query to execute as needed here.
+    @Query(sort: [SortDescriptor(\Person.sortValue), SortDescriptor(\Person.latestCall)]) var team: [Person] = []
+    private var _data: [Person] {
+        data ?? team
+    }
+    
     var body: some View {
         List(selection: $selection) {
             ForEach(Relation.allCases) { relation in
-                let relationData = data.filter({ $0.relation == relation})
+                let relationData = _data.filter({ $0.relation == relation})
                 if !relationData.isEmpty {
                     Section(header: Text(relation.rawValue)) {
                         teamRow(relation: relation, relationData: relationData)
@@ -137,7 +143,7 @@ struct TeamListView: View {
                     path.segue(to: .addPersonView)
                 }
             } else {
-                let people = data.filter { ids.contains($0.id) }
+                let people = _data.filter { ids.contains($0.id) }
                 if ids.count == 1 {
                     Button("Edit", systemImage: "pencil") {
                         path.segue(to: .addPersonView, payload: people.first!)
@@ -168,7 +174,7 @@ struct TeamListView: View {
         .if(editEnabled) {
             $0.onDelete { indexSet in
                 for index in indexSet {
-                    context.delete(data.filter { $0.relation == relation }[index])
+                    context.delete(_data.filter { $0.relation == relation }[index])
                 }
             }
         }

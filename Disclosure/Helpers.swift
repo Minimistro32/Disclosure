@@ -95,9 +95,8 @@ extension Date {
     func isSame(_ units: Calendar.Component..., as date: Date) -> Bool {
         let calendar = Calendar.current
         var comparisonComponents: Set<Calendar.Component> = Set(units)
-        if comparisonComponents == Set([Calendar.Component.day]) {
-            comparisonComponents.formUnion([.year, .month])
-        }
+        comparisonComponents.formUnion([.year, .month])
+
         let components1 = calendar.dateComponents(comparisonComponents, from: self)
         let components2 = calendar.dateComponents(comparisonComponents, from: date)
         

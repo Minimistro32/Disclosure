@@ -32,9 +32,15 @@ struct Legend: View {
         }
     }
     
-    private var dragLegend: some Gesture {
-        DragGesture(minimumDistance: 5)
+    var dragLegend: some Gesture {
+        DragGesture(minimumDistance: 0)
             .onChanged { value in
+                print("value.location")
+                print(value.location)
+                print("value.translation")
+                print(value.translation)
+                print("value.startLocation")
+                print(value.startLocation)
                 if (0..<(segmentWidth * 10)).contains(value.location.x) {
                     legendDrag = value.location
                 } else {
@@ -75,7 +81,7 @@ struct Legend: View {
             Text("10").fontWeight(.ultraLight)
         }
         .padding(.top, 5)
-        .if(legendDrag != nil && lens == .intensity) {
+        .if(lens == .intensity) {
             $0.overlay(alignment: .leading) {
                 VStack(spacing: 0) {
                     Text(categoricalIntensity)
@@ -87,7 +93,8 @@ struct Legend: View {
                         .frame(width: 2, height: cornerRadius + 10)
                     
                 }
-                .offset(x: legendDrag!.x - (intensityAnnotationWidth / 2) + 15, y: -22)
+                .offset(x: (legendDrag?.x ?? 0) - (intensityAnnotationWidth / 2) + 15, y: -22)
+                .opacity(legendDrag == nil ? 0 : 1) //can't be included in the if because updating the condition causes the view to reload interupting the drag gesture
             }
         }
     }

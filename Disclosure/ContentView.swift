@@ -67,14 +67,14 @@ struct ContentView: View {
     
     var body: some View {
         PlatformManagedTabView
+//            .onAppear {
+//                setBadge()
+//            }
+//            .onReceive(appIsActivePublisher) { _ in
+//                setBadge()
+//            }
             .onAppear {
-                setBadge()
-            }
-            .onReceive(appIsActivePublisher) { _ in
-                setBadge()
-            }
-            .onAppear {
-                if DisclosureApp.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
+                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
                     do {
                         try context.delete(model: Relapse.self)
                     } catch {

@@ -31,6 +31,13 @@
 		D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF62B745CBF00C3DB72 /* LoggerView.swift */; };
 		D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6448CF82B74A0DD00C3DB72 /* BlahstSelector.swift */; };
 		D650F7F02BA40ED000A90081 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D650F7EF2BA40ED000A90081 /* Entry.swift */; };
+		D660B0BE2BBC5EAD008084AF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6097F7E2BAD491F001405AE /* AppIntent.swift */; };
+		D660B0C02BBC68F7008084AF /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = D660B0BF2BBC68F7008084AF /* Shared.swift */; };
+		D660B0C12BBC68F7008084AF /* Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = D660B0BF2BBC68F7008084AF /* Shared.swift */; };
+		D660B0C22BBC6B15008084AF /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E842B941B07003F0801 /* Person.swift */; };
+		D660B0C32BBC6B19008084AF /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6111E862B941BA0003F0801 /* Relation.swift */; };
+		D660B0C42BBC6B1E008084AF /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D650F7EF2BA40ED000A90081 /* Entry.swift */; };
+		D660B0C52BBC6B25008084AF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D618EEF22BAC897A00CD9D84 /* Settings.swift */; };
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
 		D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D2412B6F108F00904A59 /* TrackerView.swift */; };
 		D69D71392B9FF809000B8E9E /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D71382B9FF809000B8E9E /* JournalView.swift */; };
@@ -104,6 +111,7 @@
 		D6448CF62B745CBF00C3DB72 /* LoggerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerView.swift; sourceTree = "<group>"; };
 		D6448CF82B74A0DD00C3DB72 /* BlahstSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlahstSelector.swift; sourceTree = "<group>"; };
 		D650F7EF2BA40ED000A90081 /* Entry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
+		D660B0BF2BBC68F7008084AF /* Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared.swift; sourceTree = "<group>"; };
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
 		D69D71382B9FF809000B8E9E /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
@@ -307,6 +315,7 @@
 		D6FD923D2B7F278A006B74D3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D660B0BF2BBC68F7008084AF /* Shared.swift */,
 				D6111E8D2B941FAA003F0801 /* TestData.swift */,
 				D6CF2A702B9F77FD00CB5F32 /* Relapse */,
 				D6CF2A712B9F783000CB5F32 /* Person */,
@@ -425,14 +434,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D660B0C42BBC6B1E008084AF /* Entry.swift in Sources */,
+				D660B0C22BBC6B15008084AF /* Person.swift in Sources */,
+				D660B0C52BBC6B25008084AF /* Settings.swift in Sources */,
 				D6D5FCE72BAD50F6009D4397 /* StreakView.swift in Sources */,
 				D6097F8A2BAD4AFB001405AE /* Relapse.swift in Sources */,
 				D6D5FCE62BAD4F9B009D4397 /* Helpers.swift in Sources */,
 				D6097F8B2BAD4AFE001405AE /* Blahst.swift in Sources */,
+				D660B0C12BBC68F7008084AF /* Shared.swift in Sources */,
 				D6097F7D2BAD491F001405AE /* DisclosureWidgets.swift in Sources */,
 				D6097F7B2BAD491F001405AE /* DisclosureWidgetsBundle.swift in Sources */,
 				D6097F7F2BAD491F001405AE /* AppIntent.swift in Sources */,
 				D6D5FCE52BAD4F5B009D4397 /* ChartScale.swift in Sources */,
+				D660B0C32BBC6B19008084AF /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,10 +476,12 @@
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
 				D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */,
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,
+				D660B0C02BBC68F7008084AF /* Shared.swift in Sources */,
 				D618EEF32BAC897A00CD9D84 /* Settings.swift in Sources */,
 				D6448CF92B74A0DD00C3DB72 /* BlahstSelector.swift in Sources */,
 				D6448CF72B745CBF00C3DB72 /* LoggerView.swift in Sources */,
 				D6CF2A762B9F7DF700CB5F32 /* ErrorView.swift in Sources */,
+				D660B0BE2BBC5EAD008084AF /* AppIntent.swift in Sources */,
 				D6111E852B941B07003F0801 /* Person.swift in Sources */,
 				D6FAC87E2BA237B50023227E /* LinkButton.swift in Sources */,
 				D6FD923F2B7F30B0006B74D3 /* LogView.swift in Sources */,
