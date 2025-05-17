@@ -10,11 +10,8 @@ import SwiftUI
 import SwiftData
 
 struct Provider: AppIntentTimelineProvider {
-    @MainActor
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(),
-                    configuration: ConfigurationAppIntent(),
-                    streaks: getStreaks())
+        SimpleEntry.placeholder
     }
     
     @MainActor
@@ -71,6 +68,15 @@ struct SimpleEntry: TimelineEntry {
     var current: Int { streaks.1 }
     var discreet: Bool { configuration.discreet }
     var metric: MetricType { configuration.metric }
+    
+    static var placeholder: SimpleEntry {
+        let year = Calendar.current.component(.year, from: .now)
+        let jan1 = Calendar.current.date(from: .init(year: year, month: 1, day: 1))!
+        
+        return .init(date: jan1,
+                    configuration: ConfigurationAppIntent(),
+                    streaks: (3, 5))
+    }
 }
 
 struct DisclosureWidgetsEntryView : View {
@@ -98,7 +104,7 @@ struct DisclosureWidgetsEntryView : View {
                 HStack {
                     VStack(alignment: .trailing, spacing: 6) {
                         Text("Days" + (entry.discreet ? "" : " Sober"))
-                        Text("Average" + (entry.discreet ? "" : " Days"))
+                        Text("Average" + (entry.discreet || entry.average > 99 ? "" : " Days"))
                     }
                     VStack(alignment: .leading) {
                         Text(String(entry.current))
@@ -127,7 +133,7 @@ struct DisclosureWidgets: Widget {
                 .containerBackground(entry.configuration.color.get, for: .widget)
         }
         .configurationDisplayName("Streak")
-        .description("Monitor sobriety with discretion available upon edit.")
+        .description("Monitor sobriety discretely and at a glance.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular])
     }
 }
@@ -140,11 +146,23 @@ extension ConfigurationAppIntent {
 
     fileprivate static var sample2: ConfigurationAppIntent {
         let intent = ConfigurationAppIntent()
-        intent.discreet = true
+        intent.discreet = false
         intent.color = .indigo
         intent.metric = .average
         return intent
     }
+    
+    fileprivate static var sample3: ConfigurationAppIntent {
+        let intent = ConfigurationAppIntent()
+        intent.metric = .average
+        return intent
+    }
+}
+
+#Preview("placeholder", as: .systemSmall) {
+    DisclosureWidgets()
+} timeline: {
+    SimpleEntry.placeholder
 }
 
 #Preview("small", as: .systemSmall) {
@@ -154,6 +172,10 @@ extension ConfigurationAppIntent {
     SimpleEntry(date: .now, configuration: .sample1, streaks: (102, 105))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (2, 5))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (102, 105))
+    SimpleEntry(date: .now, configuration: .sample3, streaks: (2, 5))
+    SimpleEntry(date: .now, configuration: .sample3, streaks: (102, 105))
+    SimpleEntry(date: .now, configuration: .sample1, streaks: (10, 77))
+    SimpleEntry(date: .now, configuration: .sample3, streaks: (10, 77))
 }
 
 #Preview("med", as: .systemMedium) {
@@ -163,6 +185,7 @@ extension ConfigurationAppIntent {
     SimpleEntry(date: .now, configuration: .sample1, streaks: (102, 105))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (2, 5))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (102, 105))
+    SimpleEntry(date: .now, configuration: .sample3, streaks: (10, 105))
 }
 
 #Preview("lock", as: .accessoryRectangular) {
@@ -172,4 +195,5 @@ extension ConfigurationAppIntent {
     SimpleEntry(date: .now, configuration: .sample1, streaks: (102, 105))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (2, 5))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (102, 105))
+    SimpleEntry(date: .now, configuration: .sample2, streaks: (10, 99))
 }

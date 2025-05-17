@@ -10,8 +10,8 @@ import SwiftData
 
 @Model
 class Entry {
-    let isGoal: Bool //could be an enum, but they don't play nice with SwiftData
-    let type: String
+    private(set) var isGoal: Bool //could be an enum, but they don't play nice with SwiftData
+    private(set) var type: String
     var title: String
     var body: String
     var date: Date

@@ -41,6 +41,8 @@
 		D698D2402B6F0BFC00904A59 /* Relapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D23F2B6F0BFC00904A59 /* Relapse.swift */; };
 		D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D698D2412B6F108F00904A59 /* TrackerView.swift */; };
 		D69D71392B9FF809000B8E9E /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D71382B9FF809000B8E9E /* JournalView.swift */; };
+		D6B902CA2DD915AF00F15D00 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B902C92DD9155500F15D00 /* MigrationPlan.swift */; };
+		D6B902CB2DD915AF00F15D00 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B902C92DD9155500F15D00 /* MigrationPlan.swift */; };
 		D6C3ED772BAB9BFC0021B9FD /* Legend.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C3ED762BAB9BFC0021B9FD /* Legend.swift */; };
 		D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C3ED782BAB9C140021B9FD /* Annotation.swift */; };
 		D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C81F102B6869D50010CFED /* DisclosureApp.swift */; };
@@ -115,6 +117,7 @@
 		D698D23F2B6F0BFC00904A59 /* Relapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relapse.swift; sourceTree = "<group>"; };
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
 		D69D71382B9FF809000B8E9E /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
+		D6B902C92DD9155500F15D00 /* MigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationPlan.swift; sourceTree = "<group>"; };
 		D6C3ED762BAB9BFC0021B9FD /* Legend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Legend.swift; sourceTree = "<group>"; };
 		D6C3ED782BAB9C140021B9FD /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		D6C81F0D2B6869D50010CFED /* Disclosure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Disclosure.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -315,6 +318,7 @@
 		D6FD923D2B7F278A006B74D3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D6B902C92DD9155500F15D00 /* MigrationPlan.swift */,
 				D660B0BF2BBC68F7008084AF /* Shared.swift */,
 				D6111E8D2B941FAA003F0801 /* TestData.swift */,
 				D6CF2A702B9F77FD00CB5F32 /* Relapse */,
@@ -446,6 +450,7 @@
 				D6097F7B2BAD491F001405AE /* DisclosureWidgetsBundle.swift in Sources */,
 				D6097F7F2BAD491F001405AE /* AppIntent.swift in Sources */,
 				D6D5FCE52BAD4F5B009D4397 /* ChartScale.swift in Sources */,
+				D6B902CB2DD915AF00F15D00 /* MigrationPlan.swift in Sources */,
 				D660B0C32BBC6B19008084AF /* Relation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,6 +478,7 @@
 				D60AEC9A2BAD1BAB00220EF5 /* StreakView.swift in Sources */,
 				D6C81F112B6869D50010CFED /* DisclosureApp.swift in Sources */,
 				D6FD92412B7FF49B006B74D3 /* Helpers.swift in Sources */,
+				D6B902CA2DD915AF00F15D00 /* MigrationPlan.swift in Sources */,
 				D6E2A0232B8DC9E800354BE5 /* ChartLens.swift in Sources */,
 				D6C3ED792BAB9C140021B9FD /* Annotation.swift in Sources */,
 				D698D2422B6F108F00904A59 /* TrackerView.swift in Sources */,

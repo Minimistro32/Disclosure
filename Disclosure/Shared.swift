@@ -16,7 +16,7 @@ struct Shared {
         let schema = Schema([Relapse.self, Person.self, Entry.self, Settings.self])
         let config: ModelConfiguration = ModelConfiguration(groupContainer: .identifier("group.Tyson-Freeze.Disclosure"))
         do {
-            return try ModelContainer(for: schema, configurations: config)
+            return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
         } catch {
              fatalError("Could not initialize ModelContainer")
         }

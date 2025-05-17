@@ -34,7 +34,7 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
     static var description = IntentDescription("Selects settings to alter the display.")
     
     // An example configurable parameter.
-    @Parameter(title: "Discreet", default: false)
+    @Parameter(title: "Discreet", default: true)
     var discreet: Bool
     
     @Parameter(title: "Preferred Metric", default: MetricType.current)
