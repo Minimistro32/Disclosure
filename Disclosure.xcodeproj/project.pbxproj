@@ -118,6 +118,7 @@
 		D698D2412B6F108F00904A59 /* TrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerView.swift; sourceTree = "<group>"; };
 		D69D71382B9FF809000B8E9E /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		D6B902C92DD9155500F15D00 /* MigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationPlan.swift; sourceTree = "<group>"; };
+		D6B902CC2DD91D9D00F15D00 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		D6C3ED762BAB9BFC0021B9FD /* Legend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Legend.swift; sourceTree = "<group>"; };
 		D6C3ED782BAB9C140021B9FD /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		D6C81F0D2B6869D50010CFED /* Disclosure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Disclosure.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -235,6 +236,7 @@
 		D6C81F042B6869D50010CFED = {
 			isa = PBXGroup;
 			children = (
+				D6B902CC2DD91D9D00F15D00 /* .gitignore */,
 				D6C81F0F2B6869D50010CFED /* Disclosure */,
 				D6097F792BAD491F001405AE /* DisclosureWidgets */,
 				D60AEC802BAD0ED000220EF5 /* Frameworks */,
