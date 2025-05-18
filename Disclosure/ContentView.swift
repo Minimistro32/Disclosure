@@ -73,34 +73,39 @@ struct ContentView: View {
 //            .onReceive(appIsActivePublisher) { _ in
 //                setBadge()
 //            }
-            .onAppear {
-                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
-                    do {
-                        try context.delete(model: Relapse.self)
-                    } catch {
-                        print("Failed to delete relapses.")
-                    }
-                    for relapse in TestData.spreadsheet {
-                        context.insert(relapse)
-                    }
-                    do {
-                        try context.delete(model: Person.self)
-                    } catch {
-                        print("Failed to delete people.")
-                    }
-                    for person in TestData.myTeam {
-                        context.insert(person)
-                    }
-                    do {
-                        try context.delete(model: Entry.self)
-                    } catch {
-                        print("Failed to delete entries.")
-                    }
-                    for entry in TestData.journal {
-                        context.insert(entry)
-                    }
+            .overlay {
+                if let first = relapses.first {
+                    Text(first.test)
                 }
             }
+//            .onAppear {
+//                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
+//                    do {
+//                        try context.delete(model: Relapse.self)
+//                    } catch {
+//                        print("Failed to delete relapses.")
+//                    }
+//                    for relapse in TestData.spreadsheet {
+//                        context.insert(relapse)
+//                    }
+//                    do {
+//                        try context.delete(model: Person.self)
+//                    } catch {
+//                        print("Failed to delete people.")
+//                    }
+//                    for person in TestData.myTeam {
+//                        context.insert(person)
+//                    }
+//                    do {
+//                        try context.delete(model: Entry.self)
+//                    } catch {
+//                        print("Failed to delete entries.")
+//                    }
+//                    for entry in TestData.journal {
+//                        context.insert(entry)
+//                    }
+//                }
+//            }
     }
     
 }

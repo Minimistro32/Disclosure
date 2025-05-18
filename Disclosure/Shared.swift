@@ -7,16 +7,18 @@
 
 import SwiftData
 
-//TODO: figure out database migrations for app store
-
 struct Shared {
-    static let RELOAD_MODEL = true
+    static let RELOAD_MODEL = false
     
     static var modelContainer: ModelContainer = {
-        let schema = Schema([Relapse.self, Person.self, Entry.self, Settings.self])
         let config: ModelConfiguration = ModelConfiguration(groupContainer: .identifier("group.Tyson-Freeze.Disclosure"))
         do {
-            return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: config)
+            return try ModelContainer(
+//                for: Relapse.self, Person.self, Entry.self, Settings.self,
+                for: Schema(versionedSchema: LatestSchema.self),
+                migrationPlan: MigrationPlan.self,
+                configurations: config
+            )
         } catch {
              fatalError("Could not initialize ModelContainer")
         }
