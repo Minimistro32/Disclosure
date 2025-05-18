@@ -14,7 +14,6 @@ struct Shared {
         let config: ModelConfiguration = ModelConfiguration(groupContainer: .identifier("group.Tyson-Freeze.Disclosure"))
         do {
             return try ModelContainer(
-//                for: Relapse.self, Person.self, Entry.self, Settings.self,
                 for: Schema(versionedSchema: LatestSchema.self),
                 migrationPlan: MigrationPlan.self,
                 configurations: config

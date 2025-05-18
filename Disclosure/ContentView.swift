@@ -73,11 +73,6 @@ struct ContentView: View {
 //            .onReceive(appIsActivePublisher) { _ in
 //                setBadge()
 //            }
-            .overlay {
-                if let first = relapses.first {
-                    Text(first.test)
-                }
-            }
 //            .onAppear {
 //                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
 //                    do {
