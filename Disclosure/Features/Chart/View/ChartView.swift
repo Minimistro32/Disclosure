@@ -137,7 +137,7 @@ struct ChartWrapperView: View {
         if lens == .none {
             return switch scale {
             case .week:
-                "\(data.count) Relapse\(data.count != 1 ? "s" : "") this Week"
+                "\(data.count) Relapse\(data.count != 1 ? "s" : "") in the Last Week"
             case .month:
                 "Weekly Relapses (Rolling Month)"
             case .threeMonth:
@@ -214,13 +214,13 @@ struct ChartWrapperView: View {
 
 #Preview("Chart") {
     ChartView(rawSelectedDate: .constant(nil),
-              data: TestData.spreadsheet,
+              data: SampleData.relapses,
               scale: ChartScale.month,
               lens: ChartLens.intensity)
 }
 
 #Preview("Annotation") {
-    AnnotationView(data: TestData.spreadsheet,
+    AnnotationView(data: SampleData.relapses,
                    scale: ChartScale.month,
                    lens: ChartLens.intensity,
                    date: Date.now)

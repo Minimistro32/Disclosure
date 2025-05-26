@@ -66,4 +66,13 @@ struct Blahst: Codable, Identifiable {
         self.stress = triggers.contains(Blahst.expansion[4])
         self.tiredness = triggers.contains(Blahst.expansion[5])
     }
+    
+    init(_ triggers: [Bool]) {
+        self.bored = triggers[0]
+        self.loneliness = triggers[1]
+        self.anger = triggers[2]
+        self.hunger = triggers[3]
+        self.stress = triggers[4]
+        self.tiredness = triggers[5]
+    }
 }

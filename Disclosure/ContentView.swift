@@ -63,7 +63,7 @@ struct ContentView: View {
 //            Rectangle().fill(.indigo)
 //                .tabItem { Label("Practice", systemImage: "brain.fill") }
             Tab("Settings", systemImage: "gearshape.fill") {
-                SettingsView(settings: settings)
+                SettingsView(settings: settings, relapses: relapses, entries: entries)
             }
         }
 #endif

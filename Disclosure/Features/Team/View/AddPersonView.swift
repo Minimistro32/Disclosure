@@ -175,7 +175,7 @@ struct PreviewTextView: View {
 }
 
 #Preview("Sponsor") {
-    AddPersonView(path: .constant(NavigationPath()), person: TestData.myTeam[0])
+    AddPersonView(path: .constant(NavigationPath()), person: SampleData.team[0])
 }
 #Preview {
     AddPersonView(path: .constant(NavigationPath()))

@@ -28,6 +28,16 @@ struct PrivacyView: View {
 
 
 // MARK: - Extensions
+extension Bool {
+    init(TorF: String) {
+        self.init(TorF == "T")
+    }
+    
+    var TorF: String {
+        self ? "T" : "F"
+    }
+}
+
 extension Date {
     static func monthName(_ month: Int) -> String {
         return switch month {

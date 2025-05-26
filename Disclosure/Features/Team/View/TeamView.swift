@@ -316,13 +316,13 @@ struct PersonView: View {
 }
 
 #Preview {
-    TeamView(data: TestData.myTeam)
+    TeamView(data: SampleData.team)
 }
 #Preview("Empty TeamView") {
     TeamView(data: [])
 }
 //#Preview("TeamListView") {
-//    TeamListView(data: TestData.myTeam, daysSinceCheckIn: 0)
+//    TeamListView(data: TestData.team, daysSinceCheckIn: 0)
 //}
 
 #if !os(macOS)

@@ -56,5 +56,5 @@ struct DisclosureView: View {
 }
 
 #Preview {
-    DisclosureView(path: .constant(NavigationPath()), relapse: TestData.spreadsheet.first!)
+    DisclosureView(path: .constant(NavigationPath()), relapse: SampleData.relapses.first!)
 }

@@ -27,5 +27,32 @@ extension DisclosureSchema.v1_0_0 {
             self.body = body
             self.date = date
         }
+        
+        private static let dateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd"
+            return df
+        }()
+        
+        static func csvHeader() -> String {
+            "IsGoal,Title,Body,Date\n"
+        }
+        
+        func csvLine() -> String {
+            "\(isGoal ? "T" : "F"),\(CSV.escape(title)),\(CSV.escape(body)),\(Entry.dateFormatter.string(from: date))\n"
+        }
+        
+        convenience init?(csvLine: String) {
+            let values = CSV.parse(csvLine).map { $0.trimmingCharacters(in: .whitespaces) }
+            guard values.count == 4 else { return nil }
+            guard let date = Entry.dateFormatter.date(from: values[3]) else { return nil }
+            
+            self.init(
+                isGoal: Bool(TorF: values[0]),
+                title: values[1],
+                body: values[2],
+                date: date
+            )
+        }
     }
 }

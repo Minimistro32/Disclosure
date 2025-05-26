@@ -135,5 +135,5 @@ struct JournalEntry: View {
 }
 
 #Preview {
-    JournalView(relapses: TestData.spreadsheet, entries: [])
+    JournalView(relapses: SampleData.relapses, entries: [])
 }

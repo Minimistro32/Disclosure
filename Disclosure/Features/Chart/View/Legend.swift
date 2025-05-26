@@ -35,12 +35,6 @@ struct Legend: View {
     var dragLegend: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
-                print("value.location")
-                print(value.location)
-                print("value.translation")
-                print(value.translation)
-                print("value.startLocation")
-                print(value.startLocation)
                 if (0..<(segmentWidth * 10)).contains(value.location.x) {
                     legendDrag = value.location
                 } else {
