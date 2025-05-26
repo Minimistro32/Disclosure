@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+struct PrivacyView: View {
+    let description: String
+    var body: some View {
+        HStack {
+            Image(systemName: "lock.shield")
+                .font(.title)
+            Text("Your data never leaves your device.\n\(description)")
+                .font(.caption2)
+                .multilineTextAlignment(.leading)
+        }
+        .padding(7)
+        .foregroundStyle(.secondary)
+        .background {
+            RoundedRectangle(cornerRadius: 10).fill(Color.secondaryBackgroundColor)
+        }
+        .padding(.bottom, 30)
+    }
+}
+
+
 // MARK: - Extensions
 extension Date {
     static func from(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil, timeZoneOffset: Int = 7) -> Date {

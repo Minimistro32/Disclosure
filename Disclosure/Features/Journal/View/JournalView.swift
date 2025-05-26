@@ -31,45 +31,47 @@ struct JournalView: View {
     
     var body: some View {
         NavigationStack (path: $path) {
-            VStack(spacing: 0) {
-                List {
-                    ForEach(entriesByRelavance) { entry in
-                        JournalEntry(path: $path, entry: entry)
-                        #if !os(macOS)
-                            .onTapGesture {
-                                path.segue(to: .addEntryView, payload: entry)
+            VStack {
+                if entries.isEmpty {
+                    ContentUnavailableView(label: {
+                        Label("No Entries", systemImage: "doc")
+                    }, description: {
+                        Text("Add goals or write entries to see them here.")
+                    }, actions: {
+                        HStack(spacing: 40) {
+                            Button("New Goal", image: ImageResource(name:"flag.fill.badge.plus", bundle: Bundle.main)) {
+                                path.segue(to: .addEntryView, payload: Entry(isGoal: true))
                             }
-                        #endif
-                    }
-                    .onDelete { indexSet in
-                        for index in indexSet {
-                            context.delete(entriesByRelavance[index])
+                            Button("New Entry", systemImage: "plus") {
+                                path.segue(to: .addEntryView, payload: Entry(isGoal: false))
+                            }
+                        }
+                    })
+                    .offset(y: -40)
+                    PrivacyView(description: "Entries remain fully local and private.")
+                } else {
+                    VStack(spacing: 0) {
+                        List {
+                            ForEach(entriesByRelavance) { entry in
+                                JournalEntry(path: $path, entry: entry)
+#if !os(macOS)
+                                    .onTapGesture {
+                                        path.segue(to: .addEntryView, payload: entry)
+                                    }
+#endif
+                            }
+                            .onDelete { indexSet in
+                                for index in indexSet {
+                                    context.delete(entriesByRelavance[index])
+                                }
+                            }
+                        }
+                        .listStyle(.inset)
+                        
+                        if !rollingThreeMonths.isEmpty {
+                            PodiumView(data: rollingThreeMonths)
                         }
                     }
-                }
-                .listStyle(.inset)
-                .overlay {
-                    if entries.isEmpty {
-                        ContentUnavailableView(label: {
-                            Label("No Entries", systemImage: "doc")
-                        }, description: {
-                            Text("Add goals or write entries to see them here.")
-                        }, actions: {
-                            HStack(spacing: 40) {
-                                Button("New Goal") {
-                                    path.segue(to: .addEntryView, payload: Entry(isGoal: true))
-                                }
-                                Button("New Entry") {
-                                    path.segue(to: .addEntryView, payload: Entry(isGoal: false))
-                                }
-                            }
-                        })
-                        .offset(y: -30)
-                    }
-                }
-                
-                if !rollingThreeMonths.isEmpty {
-                    PodiumView(data: rollingThreeMonths)
                 }
             }
 #if !os(macOS)

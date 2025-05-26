@@ -94,14 +94,18 @@ struct TeamView: View {
             }
             
             if data.isEmpty {
-                ContentUnavailableView(label: {
-                    Label("Recovery is a Team Effort", systemImage: "person.3")
-                }, description: {
-                    Text("Disclosure intends to make reaching out\nto your team easier. People added here won't be contacted except by you.")
-                }, actions: {
-                    Button("Add a Trusted Person") { path.segue(to: .addPersonView) }
-                })
-                .offset(y: -60)
+                ZStack(alignment: .bottom) {
+                    ContentUnavailableView(label: {
+                        Label("Recovery is a Team Effort", systemImage: "person.3")
+                    }, description: {
+                        Text("People you trust can help break through shame. They should refocus you on learning from a relapse and meeting needs.")
+                    }, actions: {
+                        Button("Add a Trusted Person") { path.segue(to: .addPersonView) }
+                            .buttonStyle(.borderedProminent)
+                    })
+                    .offset(y: -60)
+                    PrivacyView(description: "People added here won't be contacted except by you.")
+                }
             }
         }
     }

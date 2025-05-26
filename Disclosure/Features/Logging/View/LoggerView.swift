@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import WidgetKit
 
 struct LoggerView: View {
