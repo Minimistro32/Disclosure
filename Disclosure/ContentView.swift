@@ -48,19 +48,23 @@ struct ContentView: View {
         ])
 #else
         TabView {
-            TeamView(data: team)
-                .tabItem { Label("Team", systemImage: "person.3") }
-                .if(settings.callBadge && (team.min { $0.daysSinceCall ?? Int.max < $1.daysSinceCall ?? Int.max}?.daysSinceCall ?? Int.max) != 0) {
-                    $0.badge("Call")
-                }
-            TrackerView(data: relapses)
-                .tabItem { Label("Tracker", systemImage: "chart.line.uptrend.xyaxis") }
-            JournalView(relapses: relapses, entries: entries)
-                .tabItem { Label("Journal", systemImage: "book.pages") }
+            Tab("Team", systemImage: "person.3") {
+                TeamView(data: team)
+                    .if(settings.callBadge && (team.min { $0.daysSinceCall ?? Int.max < $1.daysSinceCall ?? Int.max}?.daysSinceCall ?? Int.max) != 0) {
+                        $0.badge("Call")
+                    }
+            }
+            Tab("Tracker", systemImage: "chart.line.uptrend.xyaxis") {
+                TrackerView(data: relapses)
+            }
+            Tab("Journal", systemImage: "book.pages") {
+                JournalView(relapses: relapses, entries: entries)
+            }
 //            Rectangle().fill(.indigo)
 //                .tabItem { Label("Practice", systemImage: "brain.fill") }
-            SettingsView(settings: settings)
-                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+            Tab("Settings", systemImage: "gearshape.fill") {
+                SettingsView(settings: settings)
+            }
         }
 #endif
     }
