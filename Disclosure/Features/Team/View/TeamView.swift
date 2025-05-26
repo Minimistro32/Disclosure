@@ -232,19 +232,27 @@ struct PersonView: View {
 #else
     private let messageComposeDelegate = MessageComposerDelegate()
     
+    private var animatePhone: Bool {
+        daysSinceCheckIn != 0 && isFirst && settings.animatedCallSuggestions
+    }
+    
     private enum RattlePhases: Double, CaseIterable {
-        case ring = 6
-        case shake = -6
+        case ring = 10
+        case shake = -10
         case settle = 0.0001
         case rest = 0
     }
     
-    private let RattleAnimation: [RattlePhases] = [.rest, .ring, .shake, .ring, .shake, .settle]
+    private let RattleAnimation: [RattlePhases] = [
+        .rest, .ring, .shake, .ring, .shake, .settle,
+        .rest, .shake, .ring, .shake, .ring, .settle
+    ]
     
     func phone() -> some View {
-        Image(systemName: "phone.fill")
+        Image(systemName: animatePhone ? "phone.down.waves.left.and.right" : "phone.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
+            .frame(width: animatePhone ? 65 : nil, height: animatePhone ? 40 : nil)
             .padding(.init(top: 5, leading: 0, bottom: 5, trailing: 0))
             .onTapGesture {
                 guard let url = URL(string: "tel://" + person.phone) else { return }
@@ -254,11 +262,12 @@ struct PersonView: View {
                     path.removeLast(2)
                 }
             }
-            .if(daysSinceCheckIn != 0 && isFirst && settings.animatedCallSuggestions) {
-                $0.bold()
-                    .foregroundStyle(.accent)
-                    .phaseAnimator(RattleAnimation) { content, phase in
-                        content.rotationEffect(.degrees(phase.rawValue+135))
+            .symbolEffect(.pulse, options: .default, isActive: animatePhone)
+            .bold(animatePhone)
+            .foregroundStyle(animatePhone ? .accent : .primary)
+            .if(animatePhone) {
+                    $0.phaseAnimator(RattleAnimation) { content, phase in
+                        content.rotationEffect(.degrees(phase.rawValue))
                         
                     } animation: { phase in
                         switch phase {
