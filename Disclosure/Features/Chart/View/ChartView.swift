@@ -33,8 +33,8 @@ struct ChartView: View {
         return chartData
     }
     
-    var weekBucketMax: Int {
-        max(Dictionary(grouping: chartData, by: { $0.date.endOfDay })
+    private func maxByBucket(_ bucketKeyPath: KeyPath<Date, Date>) -> Int {
+        max(Dictionary(grouping: chartData, by: { $0.date[keyPath: bucketKeyPath] })
             .map { (date, relapses) in relapses.count }.max() ?? 0, 2)
     }
     
@@ -47,6 +47,19 @@ struct ChartView: View {
                     scale: scale,
                     lens: lens
                 )
+                .if(scale == .year) {
+                    $0.chartXAxis {
+                        AxisMarks(values: .automatic) { value in
+                            if let date = value.as(Date.self), date.endOfMonth != Date.now.endOfMonth {
+                                AxisValueLabel()
+                            } else {
+                                AxisValueLabel("Now")
+                            }
+                            AxisGridLine()
+                            AxisTick()
+                        }
+                    }
+                }
                 .if(scale == .month) {
                     $0.chartXAxis {
                         AxisMarks(values: AxisMarkValues.stride(by: .day, count: 7)) { value in
@@ -62,6 +75,7 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
+                    .chartYScale(domain: [0, maxByBucket(\.endOfWeek)])
                 }
                 .if(scale == ChartScale.week) {
                     $0.chartXAxis {
@@ -76,8 +90,8 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [scale.startDate.endOfDay!, Date.now.endOfDay!.advanced(by: 1)])
-                    .chartYScale(domain: [0, weekBucketMax])
+                    .chartXScale(domain: [scale.startDate.endOfDay, Date.now.endOfDay.advanced(by: 1)])
+                    .chartYScale(domain: [0, maxByBucket(\.endOfDay)])
                 }
                 .chartXSelection(value: $rawSelectedDate)
                 .chartGesture { proxy in
@@ -124,13 +138,25 @@ struct ChartWrapperView: View {
             return switch scale {
             case .week:
                 "\(data.count) Relapse\(data.count != 1 ? "s" : "") this Week"
-            default:
-                "Count of Relapses by \(scale.rawValue)"
+            case .month:
+                "Weekly Relapses (Rolling Month)"
+            case .threeMonth:
+                "Relapses from \(Date.monthName(scale.startDate.month)) to \(Date.monthName(Date.now.month))"
+            case .year:
+                "Relapses the Last 12 Months"
             }
         } else if lens == .intensity {
-            return "Relapse Intensity by \(scale.rawValue)"
+            if scale == .threeMonth {
+                return "Relapse Intensity these \(scale.rawValue)"
+            } else {
+                return "Relapse Intensity this \(scale.rawValue)"
+            }
         } else { //lens == .compulsion {
-            return "Urge Strength by \(scale.rawValue)"
+            if scale == .threeMonth {
+                return "Urge Strength these \(scale.rawValue)"
+            } else {
+                return "Urge Strength this \(scale.rawValue)"
+            }
         }
     }
     
@@ -138,7 +164,7 @@ struct ChartWrapperView: View {
         VStack (alignment: .leading, spacing: 0) {
             Text(chartTitle)
                 .font(.headline)
-                .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
+                .opacity(scale.containsDate(rawSelectedDate) ? 0.0 : 1.0)
                 .padding(.bottom, 5)
             GeometryReader { geometry in
                 VStack (alignment: .center, spacing: 0) {
@@ -155,7 +181,7 @@ struct ChartWrapperView: View {
                             )
                         }
                         
-                        if let rawSelectedDate {
+                        if let rawSelectedDate, scale.containsDate(rawSelectedDate) {
                             RuleMark(
                                 x: .value("Selected", rawSelectedDate, unit: scale.calendarUnit)
                             )
@@ -169,12 +195,10 @@ struct ChartWrapperView: View {
                                     y: .disabled
                                 )
                             ) {
-                                if scale.containsDate(rawSelectedDate) {
-                                    AnnotationView(data: data,
-                                                   scale: scale,
-                                                   lens: lens,
-                                                   date: rawSelectedDate)
-                                }
+                                AnnotationView(data: data,
+                                               scale: scale,
+                                               lens: lens,
+                                               date: rawSelectedDate)
                             }
                         }
                     }

@@ -37,69 +37,6 @@ struct LogView: View {
             }
             .padding(.top)
 #endif
-            
-            List {
-                ForEach(relapses) { relapse in
-                    LogCell(relapse: relapse)
-                    #if !os(macOS)
-                        .onTapGesture {
-                            path.segue(to: .loggerView, payload: relapse)
-                        }
-                    #endif
-                        .contextMenu {
-                            Button("Edit", systemImage: "pencil") {
-                                path.segue(to: .loggerView, payload: relapse)
-                            }
-                            Button("Delete", systemImage: "trash", role: .destructive) {
-                                deleteRelapse(relapse)
-                            }
-                        }
-                    
-                    //TODO: Make this dynamic and functional
-                    //also make separate sections for relapses to disclose or analyze
-                    
-                    //Section (header: Text("February 2024")) {
-                    //  LogCell(relapse: relapse)
-                    //}
-                    
-                }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        deleteRelapse(relapses[index])
-                    }
-                }
-            }
-#if os(macOS)
-            .navigationBarBackButtonHidden(true)
-#else
-            .navigationTitle("Logs")
-            .toolbar {
-                if !relapses.isEmpty {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            //duplicated on purpose so that the disclosureView back button always works
-                            path.segue(to: .disclosureView, payload: relapses.first!)
-                            path.segue(to: .disclosureView, payload: relapses.first!)
-                        } label: {
-                            Label("Disclose Latest", systemImage: "person.3")
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .primaryAction) {
-                    if !relapses.isEmpty {
-                        Button("Log Relapse", systemImage: "plus") {
-                            path.segue(to: .loggerView)
-                        }
-                    }
-                }
-            }
-#endif
-        }
-#if !os(macOS)
-        .background(.debugGray6)
-#endif
-        .overlay {
             if relapses.isEmpty {
                 ContentUnavailableView(label: {
                     Label("No Relapses", systemImage: "list.bullet.rectangle.portrait")
@@ -110,9 +47,68 @@ struct LogView: View {
                         path.segue(to: .loggerView)
                     }
                 })
-                .offset(y: -60)
+                .offset(y: -40)
+                PrivacyView(description: "Relapse data is enitirely private and offline.")
+            } else {
+                List {
+                    ForEach(relapses) { relapse in
+                        LogCell(relapse: relapse)
+#if !os(macOS)
+                            .onTapGesture {
+                                path.segue(to: .loggerView, payload: relapse)
+                            }
+#endif
+                            .contextMenu {
+                                Button("Edit", systemImage: "pencil") {
+                                    path.segue(to: .loggerView, payload: relapse)
+                                }
+                                Button("Delete", systemImage: "trash", role: .destructive) {
+                                    deleteRelapse(relapse)
+                                }
+                            }
+                        
+                        //TODO: Make this dynamic and functional
+                        //also make separate sections for relapses to disclose or analyze
+                        
+                        //Section (header: Text("February 2024")) {
+                        //  LogCell(relapse: relapse)
+                        //}
+                        
+                    }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            deleteRelapse(relapses[index])
+                        }
+                    }
+                }
             }
         }
+#if os(macOS)
+        .navigationBarBackButtonHidden(true)
+#else
+        .navigationTitle("Logs")
+        .toolbar {
+            if !relapses.isEmpty {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        //duplicated on purpose so that the disclosureView back button always works
+                        path.segue(to: .disclosureView, payload: relapses.first!)
+                        path.segue(to: .disclosureView, payload: relapses.first!)
+                    } label: {
+                        Label("Disclose Latest", systemImage: "person.3")
+                    }
+                }
+            }
+            
+            ToolbarItem(placement: .primaryAction) {
+                if !relapses.isEmpty {
+                    Button("Log Relapse", systemImage: "plus") {
+                        path.segue(to: .loggerView)
+                    }
+                }
+            }
+        }
+#endif
     }
     
 }

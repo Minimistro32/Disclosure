@@ -13,7 +13,7 @@ struct StreakView: View {
     let current: Int
     var discreet: Bool = false
     private var useBottomLabel: Bool? {
-        average > 99 || current > 99 ? true : nil
+        average > 9 || current > 99 ? true : nil
     }
     
     var body: some View {

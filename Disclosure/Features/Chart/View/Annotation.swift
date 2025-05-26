@@ -22,7 +22,7 @@ struct AnnotationView: View {
         case .week:
             date.formatted(.dateTime.month(.wide).day())
         case .month:
-            date.startOfWeek!.formatted(.dateTime.month().day()) + " - " + date.endOfWeek!.formatted(.dateTime.month().day())
+            date.startOfWeek.formatted(.dateTime.month().day()) + " - " + date.endOfWeek.formatted(.dateTime.month().day())
         case .threeMonth:
             date.formatted(.dateTime.month(.wide))
         case .year:

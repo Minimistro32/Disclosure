@@ -18,10 +18,19 @@ struct TrackerView: View {
 #if !os(macOS)
                 .navigationTitle("Tracker")
                 .toolbar {
-                    Button {
-                        path.segue(to: .loggerView)
-                    } label: {
-                        Label("Log Relapse", systemImage: "plus")
+                    ToolbarItem {
+                        Button {
+                            path.segue(to: .loggerView)
+                        } label: {
+                            Label("Log Relapse", systemImage: "plus")
+                        }
+                    }
+                    ToolbarItem {
+                        Button {
+                            path.segue(to: .logView)
+                        } label: {
+                            Label("More", systemImage: "list.bullet.rectangle") //list.bullet.rectangle //tray.full
+                        }
                     }
                 }
 #endif
@@ -62,11 +71,11 @@ struct DashboardView: View {
             return 0
         } else {
             // either rolling or the furthest the data goes
-            return min(ChartScale.month.domain * 3, Int(data.last!.date.timeIntervalSinceNow / -89600)) / rollingThreeMonthCount
+            return min(ChartScale.month.domain * 3, Int(data.last!.date.timeIntervalSinceNow / -89600.0)) / rollingThreeMonthCount
         }
     }
     private var currentStreak: Int {
-        Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0) / (-24*60*60))
+        Int((data.max(by: { $0.date < $1.date })?.date.timeIntervalSinceNow ?? 0.0) / (-24.0*60*60))
     }
     
     var reminderCount: Int {
@@ -86,9 +95,9 @@ struct DashboardView: View {
     
     @ViewBuilder
     private var BadgeButton: some View {
-        ZStack {
-            LinkButton(title: "More", systemImage: "ellipsis.circle") {
-                path.segue(to: .logView)
+        ZStack(alignment: .topTrailing) {
+            LinkButton(title: "Analyze", systemImage: "brain") {
+                path.segue(to: .loggerView, payload: data.first { $0.reminder })
             }
             
             if reminderCount > 0 && settings.analyzeBadges {
@@ -97,10 +106,10 @@ struct DashboardView: View {
                     .frame(width: 20, height: 20)
                     .foregroundStyle(.accent)
                     .background(.white, in: .circle.inset(by: 3), fillStyle: FillStyle(eoFill: false, antialiased: false))
-                    .offset(x: 40, y: -13)
+                    .offset(x: 5, y: -5)
             }
         }
-        .padding(.trailing, 15 + (CGFloat(reminderCount) > 0 ? 5 : 0))
+        .padding(.trailing, CGFloat(reminderCount) > 0 ? 5 : 0)
     }
     
 #if os(macOS)
@@ -169,14 +178,14 @@ struct DashboardView: View {
             
             HStack(alignment: .bottom) {
                 LabeledPicker(title: "View", values: ChartLens.allCases, selection: $selectedChartLens, toString: { $0.rawValue })
-                .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
-                .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
-                .padding(.leading, 15)
+                    .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
+                    .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
                 
                 Spacer()
                 
                 BadgeButton
             }
+            .padding(.horizontal, 15)
             
             Spacer()
             
@@ -190,7 +199,7 @@ struct DashboardView: View {
                 path.segue(to: .loggerView)
             } label: {
                 Label("Log Relapse", systemImage: "arrow.counterclockwise")
-                    .frame(width: 240)
+                    .padding(5)
             }
             .buttonStyle(.borderedProminent)
             
@@ -201,7 +210,7 @@ struct DashboardView: View {
 }
 
 #Preview {
-    TrackerView(data: TestData.spreadsheet)
+    TrackerView(data: [])
 }
 
 

@@ -44,17 +44,31 @@ enum ChartScale: String, CaseIterable, Identifiable {
         TimeInterval(domain * 24 * 60 * 60)
     }
      
-    func containsDate(_ date: Date) -> Bool {
-        return date >= startDate
+    func containsDate(_ date: Date?) -> Bool {
+        guard let date else { return false }
+        
+        let endDate = switch self {
+        case .week:
+            Date.now.endOfDay
+        case .month:
+            Date.now.endOfWeek
+        default:
+            Date.now.endOfMonth
+        }
+        
+        return date >= startDate && date <= (endDate ?? Date.now)
     }
     
     var startDate: Date {
-        if self == .month {
+        switch self {
+        case .week:
+            return Date.now.addingTimeInterval(-timeInterval).startOfWeek
+        case .month:
             return Date.monthsAgoSunday(count: 1)
-        } else if self == .threeMonth {
+        case .threeMonth:
             return Date.monthsAgoThe1st(count: 2)
-        } else {
-            return Date.now.addingTimeInterval(-timeInterval)
+        case .year:
+            return Date.now.addingTimeInterval(-timeInterval).startOfMonth
         }
     }
 }

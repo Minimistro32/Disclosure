@@ -29,19 +29,38 @@ struct PrivacyView: View {
 
 // MARK: - Extensions
 extension Date {
+    static func monthName(_ month: Int) -> String {
+        return switch month {
+        case 1: "January"
+        case 2: "February"
+        case 3: "March"
+        case 4: "April"
+        case 5: "May"
+        case 6: "June"
+        case 7: "July"
+        case 8: "August"
+        case 9: "September"
+        case 10: "October"
+        case 11: "November"
+        case 12: "December"
+        default:
+            fatalError("Invalid month")
+        }
+    }
+    
     static func from(year: Int, month: Int, day: Int, hour: Int? = nil, minute: Int? = nil, timeZoneOffset: Int = 7) -> Date {
         let components = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
         return Calendar.current.date(from:components)!.addingTimeInterval(TimeInterval(timeZoneOffset * 60 * 60))
     }
     
-    var endOfDay: Date? {
+    var endOfDay: Date {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.year, .month, .day], from: self)
         components.hour = 23
         components.minute = 59
         components.second = 59
         
-        return calendar.date(from: components)
+        return calendar.date(from: components)!
     }
     
     var weekOfYear: Int {
@@ -72,30 +91,32 @@ extension Date {
                          day: 1)
     }
     
-    var startOfWeek: Date? {
+    var startOfWeek: Date {
         let gregorian = Calendar.current
-        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        
-        return sunday
+        return gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))!
     }
     
-    var endOfWeek: Date? {
+    var endOfWeek: Date {
         let gregorian = Calendar.current
-        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 7, to: sunday)?.advanced(by: -1)
+        let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))!
+        return gregorian.date(byAdding: .day, value: 7, to: sunday)!.advanced(by: -1)
+    }
+    
+    var startOfMonth: Date {
+        let gregorian = Calendar.current
+        return gregorian.date(from: gregorian.dateComponents([.year, .month], from: self))!
     }
     
     var endOfMonth: Date? {
         let gregorian = Calendar.current
-        guard let this = gregorian.date(from: gregorian.dateComponents([.year, .month], from: self)) else { return nil }
-        return gregorian.date(byAdding: .month, value: 1, to: this)?.addingTimeInterval(-1)
+        return gregorian.date(byAdding: .month, value: 1, to: self.startOfMonth)?.addingTimeInterval(-1)
     }
     
-    var endOfYear: Date? {
-        let gregorian = Calendar.current
-        guard let this = gregorian.date(from: gregorian.dateComponents([.year], from: self)) else { return nil }
-        return gregorian.date(byAdding: .year, value: 1, to: this)?.addingTimeInterval(-1)
-    }
+//    var endOfYear: Date? {
+//        let gregorian = Calendar.current
+//        guard let this = gregorian.date(from: gregorian.dateComponents([.year], from: self)) else { return nil }
+//        return gregorian.date(byAdding: .year, value: 1, to: this)?.addingTimeInterval(-1)
+//    }
 
     static func monthsAgoSunday(count months: Int) -> Date {
         let calendar = Calendar.current
@@ -109,7 +130,7 @@ extension Date {
         
         return Date.from(year: components.year!,
                          month: components.month!,
-                         day: min(Date.now.day, daysInMonth)).startOfWeek!
+                         day: min(Date.now.day, daysInMonth)).startOfWeek
     }
     
     func isSame(_ units: Calendar.Component..., as date: Date) -> Bool {

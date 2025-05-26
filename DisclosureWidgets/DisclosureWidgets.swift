@@ -186,6 +186,7 @@ extension ConfigurationAppIntent {
     SimpleEntry(date: .now, configuration: .sample2, streaks: (2, 5))
     SimpleEntry(date: .now, configuration: .sample2, streaks: (102, 105))
     SimpleEntry(date: .now, configuration: .sample3, streaks: (10, 105))
+    SimpleEntry(date: .now, configuration: .sample3, streaks: (13, 0))
 }
 
 #Preview("lock", as: .accessoryRectangular) {
