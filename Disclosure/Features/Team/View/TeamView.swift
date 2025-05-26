@@ -262,7 +262,7 @@ struct PersonView: View {
                     path.removeLast(2)
                 }
             }
-            .symbolEffect(.pulse, options: .default, isActive: animatePhone)
+            .symbolEffect(.wiggle, options: .default, isActive: animatePhone)
             .bold(animatePhone)
             .foregroundStyle(animatePhone ? .accent : .primary)
             .if(animatePhone) {

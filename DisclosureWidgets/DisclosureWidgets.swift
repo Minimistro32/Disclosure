@@ -27,7 +27,7 @@ struct Provider: AppIntentTimelineProvider {
         print(streaks)
         return Timeline(entries: [
             Entry(date: .now, configuration: configuration, streaks: streaks)
-        ], policy: .never)
+        ], policy: .after(Date.now.endOfDay.advanced(by: 1)))
     }
     
     @MainActor
