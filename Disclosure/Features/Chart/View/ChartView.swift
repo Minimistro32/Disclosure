@@ -8,6 +8,7 @@
 import SwiftUI
 import Charts
 
+// MARK: - CHARTVIEW
 struct ChartView: View {
     @Binding var rawSelectedDate: Date?
     let data: [Relapse]
@@ -17,7 +18,7 @@ struct ChartView: View {
     
     var chartData: [Relapse] {
         let chartData = data.filter { relapse in
-            relapse.date > scale.startDate
+            relapse.date > (lens == .compare ? scale.previousDate(scale.startDate) : scale.startDate)
         }
         
         if lens.isGraded {
@@ -38,27 +39,19 @@ struct ChartView: View {
             .map { (date, relapses) in relapses.count }.max() ?? 0, 2)
     }
     
+    // MARK: body
     var body: some View {
         Group {
-            if chartData.count != 0 {
+            if chartData.count != 0 || scale == .week {
                 ChartWrapperView(
                     rawSelectedDate: $rawSelectedDate,
                     data: chartData,
                     scale: scale,
                     lens: lens
                 )
-                .if(scale == .year) {
-                    $0.chartXAxis {
-                        AxisMarks(values: .automatic) { value in
-                            if let date = value.as(Date.self), date.endOfMonth != Date.now.endOfMonth {
-                                AxisValueLabel()
-                            } else {
-                                AxisValueLabel("Now")
-                            }
-                            AxisGridLine()
-                            AxisTick()
-                        }
-                    }
+                // MARK: axes
+                .if(scale == .threeMonth || scale == .year) {
+                    $0.chartYScale(domain: [0, maxByBucket(\.endOfMonth)])
                 }
                 .if(scale == .month) {
                     $0.chartXAxis {
@@ -90,10 +83,11 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [scale.startDate.endOfDay, Date.now.endOfDay.advanced(by: 1)])
+                    .chartXScale(domain: [Date.now.startOfWeek, Date.now.endOfWeek.advanced(by: 1)])
                     .chartYScale(domain: [0, maxByBucket(\.endOfDay)])
                 }
                 .chartXSelection(value: $rawSelectedDate)
+                // MARK: chartGesture
                 .chartGesture { proxy in
                     DragGesture(minimumDistance: 0)
                         .onChanged {
@@ -119,12 +113,14 @@ struct ChartView: View {
     }
 }
 
+// MARK: - CHARTWRAPPERVIEW
 struct ChartWrapperView: View {
     @Binding var rawSelectedDate: Date?
     let data: [Relapse]
     let scale: ChartScale
     let lens: ChartLens
     
+    //dummies make certain every day displays even if empty
     var dataWithDummies: [Relapse] {
         var mutableData = data
         for date in stride(from: scale.startDate, to: Date.now, by: 24*60*60) {
@@ -133,53 +129,113 @@ struct ChartWrapperView: View {
         return mutableData
     }
     
+    // MARK: chartTitle
     var chartTitle: String {
+        let demonstrative = scale == .threeMonth ? "these" : "this"
+        
         if lens == .none {
             return switch scale {
             case .week:
-                "\(data.count) Relapse\(data.count != 1 ? "s" : "") in the Last Week"
+                data.count == 0 ? "No Relapses to Show" : "\(data.count) Relapse\(data.count != 1 ? "s" : "") this Week"
             case .month:
-                "Weekly Relapses (Rolling Month)"
+                "Relapses over the Recent Month"
             case .threeMonth:
                 "Relapses from \(Date.monthName(scale.startDate.month)) to \(Date.monthName(Date.now.month))"
             case .year:
                 "Relapses the Last 12 Months"
             }
-        } else if lens == .intensity {
-            if scale == .threeMonth {
-                return "Relapse Intensity these \(scale.rawValue)"
-            } else {
-                return "Relapse Intensity this \(scale.rawValue)"
-            }
-        } else { //lens == .compulsion {
-            if scale == .threeMonth {
-                return "Urge Strength these \(scale.rawValue)"
-            } else {
-                return "Urge Strength this \(scale.rawValue)"
+        }
+        
+        if lens == .intensity {
+            return "Relapse Intensity \(demonstrative) \(scale.rawValue)"
+        }
+        
+        if lens == .compulsion {
+            return "Urge Strength \(demonstrative) \(scale.rawValue)"
+        }
+        
+        if scale == .threeMonth {
+            return "Latest Months vs Prior Months"
+        }
+        
+        return "T\(demonstrative.dropFirst()) \(scale.rawValue) vs Last \(scale.rawValue)"
+    }
+    
+    // MARK: barMarks
+    private func barMarks(_ width: CGFloat) -> some ChartContent {
+        let markWidth = switch scale {
+        case .week:
+            17.0
+        case .month:
+            20.0
+        case .threeMonth:
+            45.0
+        case .year:
+            10.0
+        }
+        
+        let bucketWidth = switch scale {
+        case .week:
+            22.0
+        case .month:
+            26.0
+        case .threeMonth:
+            55.0
+        case .year:
+            6.0
+        }
+        
+        return ForEach(dataWithDummies) { relapse in
+            BarMark(
+                x: .value("Day", relapse.date < scale.startDate ? scale.nextDate(relapse.date) : relapse.date, unit: scale.calendarUnit),
+                y: .value("Count", relapse.dummy ? 0 : 1),
+                width: lens == .compare ? .fixed(markWidth) : .automatic
+            )
+            .foregroundStyle(barMarkColor(relapse: relapse))
+            .if(lens == .compare) {
+                $0.position(by: .value("Period", Int(relapse.date < scale.startDate)), span: MarkDimension(floatLiteral: bucketWidth))
             }
         }
     }
     
+    private func barMarkColor(relapse: Relapse) -> Color {
+        if relapse.date < scale.startDate {
+            return .accent.opacity(0.2)
+        }
+
+        if lens.isGraded {
+            return lens.color.opacity(Double(
+                lens == .intensity ? relapse.intensity : relapse.compulsivity
+            ) / 10)
+        }
+
+        return ChartLens.none.color
+    }
+    
+    // MARK: body
     var body: some View {
         VStack (alignment: .leading, spacing: 0) {
-            Text(chartTitle)
-                .font(.headline)
-                .opacity(scale.containsDate(rawSelectedDate) ? 0.0 : 1.0)
-                .padding(.bottom, 5)
+            HStack(alignment: .firstTextBaseline) {
+                Text(chartTitle)
+                    .font(.headline)
+                    .opacity(scale.containsDate(rawSelectedDate) ? 0.0 : 1.0)
+                    .padding(.bottom, 5)
+            }
+            
             GeometryReader { geometry in
-                VStack (alignment: .center, spacing: 0) {
+                VStack(alignment: .center, spacing: 0) {
                     Chart {
-                        ForEach(dataWithDummies) { relapse in
-                            BarMark(
-                                x: .value("Day", relapse.date, unit: scale.calendarUnit),
-                                y: .value("Count", relapse.dummy ? 0 : 1)
+                        if scale == .week {
+                            RectangleMark(
+                                xStart: .value("Day", Date.now.endOfDay),
+                                xEnd: .value("Day", Date.now.endOfWeek),
+                                yStart: nil,
+                                yEnd: nil
                             )
-                            .foregroundStyle(
-                                lens.isGraded ? lens.color.opacity(Double(
-                                    lens == .intensity ? relapse.intensity : relapse.compulsivity
-                                ) / 10) : ChartLens.none.color
-                            )
+                            .foregroundStyle(.gray.opacity(0.125))
                         }
+                        
+                        barMarks(geometry.size.width)
                         
                         if let rawSelectedDate, scale.containsDate(rawSelectedDate) {
                             RuleMark(
@@ -205,6 +261,47 @@ struct ChartWrapperView: View {
                     
                     if lens.isGraded {
                         Legend(lens: lens, segmentWidth: geometry.size.width / 12)
+                    } else if lens == .compare {
+                        HStack {
+                            Text("Totals:")
+                            Text("\(data.count { $0.date >= scale.startDate })")
+                                .padding(2)
+                                .padding(.horizontal, 5)
+                                .foregroundStyle(.white)
+                                .background {
+                                    Capsule()
+                                        .fill(.accent)
+                                }
+                            Text("\(data.count { $0.date < scale.startDate })")
+                                .padding(2)
+                                .padding(.horizontal, 5)
+                                .background {
+                                    Capsule()
+                                        .fill(.accent.opacity(0.2))
+                                }
+                            
+                            Spacer()
+                            
+                            Text("Latest")
+                                .padding(2)
+                                .padding(.horizontal, 5)
+                                .foregroundStyle(.white)
+                                .background {
+                                    Capsule()
+                                        .fill(.accent)
+                                }
+                                .padding(.trailing, 2)
+                            Text("Prior")
+                                .padding(2)
+                                .padding(.horizontal, 5)
+                                .background {
+                                    Capsule()
+                                        .fill(.accent.opacity(0.2))
+                                }
+                                .padding(.trailing)
+                        }
+                        .font(.caption)
+                        .padding(.top, 5)
                     }
                 }
             }

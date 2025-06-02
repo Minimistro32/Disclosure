@@ -117,16 +117,10 @@ extension Date {
         return gregorian.date(from: gregorian.dateComponents([.year, .month], from: self))!
     }
     
-    var endOfMonth: Date? {
+    var endOfMonth: Date {
         let gregorian = Calendar.current
-        return gregorian.date(byAdding: .month, value: 1, to: self.startOfMonth)?.addingTimeInterval(-1)
+        return gregorian.date(byAdding: .month, value: 1, to: self.startOfMonth)!.addingTimeInterval(-1)
     }
-    
-//    var endOfYear: Date? {
-//        let gregorian = Calendar.current
-//        guard let this = gregorian.date(from: gregorian.dateComponents([.year], from: self)) else { return nil }
-//        return gregorian.date(byAdding: .year, value: 1, to: this)?.addingTimeInterval(-1)
-//    }
 
     static func monthsAgoSunday(count months: Int) -> Date {
         let calendar = Calendar.current
@@ -203,6 +197,15 @@ func Double(_ boolean: Bool) -> Double {
 extension View {
     @ViewBuilder
     func `if`<Transform: View>(_ condition: Bool, transform: (Self) -> Transform) -> some View {
+        if condition { transform(self) }
+        else { self }
+    }
+}
+
+import Charts
+extension ChartContent {
+    @ChartContentBuilder
+    func `if`<Transform: ChartContent>(_ condition: Bool, transform: (Self) -> Transform) -> some ChartContent {
         if condition { transform(self) }
         else { self }
     }

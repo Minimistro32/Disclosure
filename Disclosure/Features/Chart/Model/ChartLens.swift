@@ -12,6 +12,7 @@ enum ChartLens: String, CaseIterable, Identifiable {
     case none = "Count"
     case intensity = "Intensity"
     case compulsion = "Urges"
+    case compare = "Compare"
     
     var isGraded: Bool {
         self == .intensity || self == .compulsion
@@ -19,12 +20,12 @@ enum ChartLens: String, CaseIterable, Identifiable {
     
     var color: Color {
         switch self {
-        case ChartLens.none:
-            Color.accent
         case ChartLens.intensity:
             Color.intense
         case ChartLens.compulsion:
             Color.purple
+        default:
+            Color.accent
         }
     }
 }

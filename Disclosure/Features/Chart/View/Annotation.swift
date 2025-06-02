@@ -16,17 +16,33 @@ struct AnnotationView: View {
     private var selectedData: [Relapse] {
         data.filter { $0.date.isSame(scale.calendarUnit, as: date) }
     }
+    private var previousSelectedData: [Relapse] {
+        data.filter { $0.date.isSame(scale.calendarUnit, as: scale.previousDate(date)) }
+    }
     
-    private var dateString: String {
-        switch scale {
-        case .week:
-            date.formatted(.dateTime.month(.wide).day())
-        case .month:
-            date.startOfWeek.formatted(.dateTime.month().day()) + " - " + date.endOfWeek.formatted(.dateTime.month().day())
-        case .threeMonth:
-            date.formatted(.dateTime.month(.wide))
-        case .year:
-            date.formatted(.dateTime.month(.wide).year())
+    private func asTitle(date: Date) -> String {
+        if scale == .threeMonth {
+            return date.formatted(.dateTime.month(.wide))
+        }
+        
+        if lens == .compare {
+            return switch scale {
+            case .week:
+                date.formatted(.dateTime.weekday(.wide))
+            case .month:
+                "Week \(Date.now.weekOfYear + 1 - date.weekOfYear)"
+            default: //.year
+                date.formatted(.dateTime.month(.wide))
+            }
+        } else {
+            return switch scale {
+            case .week:
+                date.formatted(.dateTime.month(.wide).day())
+            case .month:
+                date.startOfWeek.formatted(.dateTime.month().day()) + " - " + date.endOfWeek.formatted(.dateTime.month().day())
+            default: //.year
+                date.formatted(.dateTime.month(.wide).year())
+            }
         }
     }
     
@@ -45,10 +61,37 @@ struct AnnotationView: View {
     
     var body: some View {
         VStack {
-            Text(dateString)
-                .bold()
+            HStack(spacing: 5) {
+                Text(asTitle(date: date))
+                if lens == .compare && scale == .threeMonth {
+                    Text("vs")
+                    Text(asTitle(date: scale.previousDate(date)))
+                }
+            }
+            .bold()
             if lens == .none {
                 Text("\(selectedData.count) Relapse\(selectedData.count == 1 ? "" : "s")")
+            } else if lens == .compare {
+                HStack {
+                    Spacer()
+                    Text("\(selectedData.count)")
+                        .padding(2)
+                        .padding(.horizontal, 10)
+                        .foregroundStyle(.white)
+                        .background {
+                            Capsule()
+                                .fill(.accent)
+                        }
+                    Spacer()
+                    Text("\(previousSelectedData.count)")
+                        .padding(2)
+                        .padding(.horizontal, 10)
+                        .background {
+                            Capsule()
+                                .fill(.accent.opacity(0.2))
+                        }
+                    Spacer()
+                }
             } else if average != 0 {
                 Text(numberFormatter.string(from: average as NSNumber)! + " on Average")
             }
