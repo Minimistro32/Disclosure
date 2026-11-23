@@ -161,6 +161,14 @@ struct DashboardView: View {
         }
     }
 #else
+    private var chartLensPicker: some View {
+        LabeledPicker(title: "View", values: ChartLens.allCases, selection: $selectedChartLens, toString: { $0.rawValue })
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
+            .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
+    }
+
     var body: some View { //iOS
         VStack {
             Picker(selection: $selectedChartScale) {
@@ -176,17 +184,21 @@ struct DashboardView: View {
             
             ChartView(rawSelectedDate: $rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding(.init(top: 0, leading: 15, bottom: 10, trailing: 10))
             
-            HStack(alignment: .bottom) {
-                LabeledPicker(title: "View", values: ChartLens.allCases, selection: $selectedChartLens, toString: { $0.rawValue })
-                    .tint(selectedChartLens.isGraded ? selectedChartLens.color : .accent)
-                    .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
-                
-                Spacer()
-                
-                BadgeButton
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .bottom) {
+                    chartLensPicker
+                    Spacer(minLength: 8)
+                    BadgeButton
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    chartLensPicker
+                    BadgeButton
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
             }
             .padding(.horizontal, 15)
-            
             Spacer()
             
             HStack {
