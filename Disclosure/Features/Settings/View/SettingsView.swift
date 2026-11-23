@@ -278,8 +278,9 @@ struct SettingsView: View {
                 
                 dataManagementSection
             }
+            .navigationTitle("Settings")
+            .toolbarTitleDisplayMode(.inlineLarge)
         }
-        .navigationTitle("Settings")
         .onAppear {
             updateNotificationPermissions()
         }

@@ -86,6 +86,7 @@ struct LogView: View {
         .navigationBarBackButtonHidden(true)
 #else
         .navigationTitle("Logs")
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if !relapses.isEmpty {
                 ToolbarItem(placement: .primaryAction) {

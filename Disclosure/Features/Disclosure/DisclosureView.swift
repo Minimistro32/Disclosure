@@ -33,6 +33,7 @@ struct DisclosureView: View {
             }
         }
         .navigationTitle("Disclose a Relapse")
+        .toolbarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

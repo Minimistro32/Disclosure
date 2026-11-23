@@ -71,6 +71,7 @@ struct AddEntryView: View {
                 }
                 .formStyle(.grouped)
                 .navigationTitle("New " + entry.type)
+                .toolbarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         Button("List", systemImage: "list.bullet") { entry.body.append("\u{2022} ") }

@@ -17,6 +17,7 @@ struct TrackerView: View {
             DashboardView(data: data, path: $path)
 #if !os(macOS)
                 .navigationTitle("Tracker")
+                .toolbarTitleDisplayMode(.inlineLarge)
                 .toolbar {
                     ToolbarItem {
                         Button {
@@ -171,6 +172,8 @@ struct DashboardView: View {
 
     var body: some View { //iOS
         VStack {
+            Spacer()
+            
             Picker(selection: $selectedChartScale) {
                 ForEach(ChartScale.allCases) { interval in
                     Text(interval.rawValue)
@@ -222,7 +225,7 @@ struct DashboardView: View {
 }
 
 #Preview {
-    TrackerView(data: [])
+    TrackerView(data: SampleData.relapses)
 }
 
 

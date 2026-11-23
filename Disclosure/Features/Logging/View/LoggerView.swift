@@ -144,6 +144,7 @@ struct LoggerView: View {
             }
         })
         .navigationTitle("Logger")
+        .toolbarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .keyboard) {
                 HStack{

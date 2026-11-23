@@ -76,6 +76,7 @@ struct JournalView: View {
             }
 #if !os(macOS)
             .navigationTitle("Journal")
+            .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("New Goal", image: ImageResource(name:"flag.fill.badge.plus", bundle: Bundle.main)) {

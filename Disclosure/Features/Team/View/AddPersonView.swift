@@ -132,6 +132,7 @@ struct AddPersonView: View {
             .navigationBarBackButtonHidden(true)
 #else
             .navigationTitle("Add Person")
+            .toolbarTitleDisplayMode(.inline)
 #endif
             
 #if !os(macOS)

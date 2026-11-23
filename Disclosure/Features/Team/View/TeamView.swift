@@ -77,6 +77,7 @@ struct TeamView: View {
             .frame(maxWidth: 425)
 #else
             .navigationTitle("Team")
+            .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 if !data.isEmpty {
                     Button("Add Person", systemImage: "plus") {

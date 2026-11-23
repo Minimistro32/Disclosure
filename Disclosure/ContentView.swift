@@ -92,17 +92,17 @@ struct ContentView: View {
                     } catch {
                         print("Failed to delete people.")
                     }
-//                    for person in TestData.myTeam {
-//                        context.insert(person)
-//                    }
-//                    do {
-//                        try context.delete(model: Entry.self)
-//                    } catch {
-//                        print("Failed to delete entries.")
-//                    }
-//                    for entry in TestData.journal {
-//                        context.insert(entry)
-//                    }
+                    for person in SampleData.team {
+                        context.insert(person)
+                    }
+                    do {
+                        try context.delete(model: Entry.self)
+                    } catch {
+                        print("Failed to delete entries.")
+                    }
+                    for entry in SampleData.entries {
+                        context.insert(entry)
+                    }
                 }
             }
     }
