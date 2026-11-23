@@ -34,24 +34,34 @@ struct ChartView: View {
         return chartData
     }
     
-    private func maxByBucket(_ bucketKeyPath: KeyPath<Date, Date>) -> Int {
-        max(Dictionary(grouping: chartData, by: { $0.date[keyPath: bucketKeyPath] })
-            .map { (date, relapses) in relapses.count }.max() ?? 0, 2)
+    private func tallestBar(in relapses: [Relapse]) -> Int {
+        let calendar = Calendar.current
+        let buckets = Dictionary(grouping: relapses) {
+            calendar.dateInterval(of: scale.calendarUnit, for: $0.date)?.start ?? $0.date
+        }
+        return buckets.values.map(\.count).max() ?? 0
     }
-    
+
     // MARK: body
     var body: some View {
         Group {
-            if chartData.count != 0 || scale == .week {
+            let relapses = chartData
+            if !relapses.isEmpty || scale == .week {
+                let peak = tallestBar(in: relapses)
+                let minimumYMaximum = scale == .week ? 2.0 : 0.0
+                let yMaximum = max(minimumYMaximum, Double(peak) / 0.9)
+                let tickStep = (max(peak, 1) - 1) / 4 + 1
+                let ticks = Array(stride(from: 0, through: Int(yMaximum), by: tickStep))
                 ChartWrapperView(
                     rawSelectedDate: $rawSelectedDate,
-                    data: chartData,
+                    data: relapses,
                     scale: scale,
                     lens: lens
                 )
                 // MARK: axes
-                .if(scale == .threeMonth || scale == .year) {
-                    $0.chartYScale(domain: [0, maxByBucket(\.endOfMonth)])
+                .chartYScale(domain: 0.0...yMaximum)
+                .chartYAxis {
+                    AxisMarks(values: ticks)
                 }
                 .if(scale == .month) {
                     $0.chartXAxis {
@@ -70,7 +80,6 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
-                    .chartYScale(domain: [0, maxByBucket(\.endOfWeek)])
                 }
                 .if(scale == ChartScale.week) {
                     $0.chartXAxis {
@@ -86,7 +95,6 @@ struct ChartView: View {
                         }
                     }
                     .chartXScale(domain: scale.startDate...scale.endDate)
-                    .chartYScale(domain: [0, maxByBucket(\.endOfDay)])
                 }
                 .chartXSelection(value: $rawSelectedDate)
                 // MARK: chartGesture
