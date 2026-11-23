@@ -170,7 +170,15 @@ struct DashboardView: View {
             .background(.gray.opacity(0.2), in: .buttonBorder, fillStyle: FillStyle(eoFill: false, antialiased: false))
     }
 
-    var body: some View { //iOS
+    var body: some View {
+        GeometryReader { geometry in
+            // Use 280 points on a dashboard with 700 points of usable height.
+            let preferredHeight = geometry.size.height * 0.4
+            dashboard(chartHeight: min(max(preferredHeight, 160), 350))
+        }
+    }
+
+    private func dashboard(chartHeight: CGFloat) -> some View {
         VStack {
             Spacer()
             
@@ -185,7 +193,14 @@ struct DashboardView: View {
             .padding()
             .opacity(rawSelectedDate == nil ? 1.0 : 0.0)
             
-            ChartView(rawSelectedDate: $rawSelectedDate, data: data, scale: selectedChartScale, lens: selectedChartLens).padding(.init(top: 0, leading: 15, bottom: 10, trailing: 10))
+            ChartView(
+                rawSelectedDate: $rawSelectedDate,
+                data: data,
+                scale: selectedChartScale,
+                lens: selectedChartLens,
+                chartHeight: chartHeight
+            )
+            .padding(.init(top: 0, leading: 15, bottom: 0, trailing: 10))
             
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .bottom) {

@@ -14,7 +14,8 @@ struct ChartView: View {
     let data: [Relapse]
     let scale: ChartScale
     let lens: ChartLens
-    let chartHeight: CGFloat = 250
+    var chartHeight: CGFloat = 280
+    @ScaledMetric(relativeTo: .body) private var infoBarHeight: CGFloat = 32
     
     var chartData: [Relapse] {
         let start = lens == .compare ? scale.previousDate(scale.startDate) : scale.startDate
@@ -44,9 +45,21 @@ struct ChartView: View {
 
     // MARK: body
     var body: some View {
+        let relapses = chartData
+        let showsChart = !relapses.isEmpty || scale == .week
+
+        VStack(spacing: 0) {
+            chartRegion(relapses: relapses, showsChart: showsChart)
+#if !os(macOS)
+                .frame(height: chartHeight)
+#endif
+            infoBar(relapses: relapses, showsChart: showsChart)
+        }
+    }
+
+    private func chartRegion(relapses: [Relapse], showsChart: Bool) -> some View {
         Group {
-            let relapses = chartData
-            if !relapses.isEmpty || scale == .week {
+            if showsChart {
                 let peak = tallestBar(in: relapses)
                 let minimumYMaximum = scale == .week ? 2.0 : 0.0
                 let yMaximum = max(minimumYMaximum, Double(peak) / 0.9)
@@ -117,9 +130,59 @@ struct ChartView: View {
                 ContentUnavailableView("Relapse Free", systemImage: "chart.line.uptrend.xyaxis", description: Text("What made \(scale == ChartScale.threeMonth ? "these" : "this") \(scale.rawValue.lowercased()) a success?"))
             }
         }
-#if !os(macOS)
-        .frame(height: chartHeight)
-#endif
+    }
+
+    private func infoBar(relapses: [Relapse], showsChart: Bool) -> some View {
+        GeometryReader { geometry in
+            if showsChart {
+                if lens.isGraded {
+                    Legend(lens: lens, segmentWidth: geometry.size.width / 12)
+                        .frame(maxWidth: .infinity)
+                } else if lens == .compare {
+                    HStack {
+                        Text("Totals:")
+                        Text("\(relapses.count { $0.date >= scale.startDate })")
+                            .padding(2)
+                            .padding(.horizontal, 5)
+                            .foregroundStyle(.white)
+                            .background {
+                                Capsule()
+                                    .fill(.accent)
+                            }
+                        Text("\(relapses.count { $0.date < scale.startDate })")
+                            .padding(2)
+                            .padding(.horizontal, 5)
+                            .background {
+                                Capsule()
+                                    .fill(.accent.opacity(0.2))
+                            }
+
+                        Spacer()
+
+                        Text("Latest")
+                            .padding(2)
+                            .padding(.horizontal, 5)
+                            .foregroundStyle(.white)
+                            .background {
+                                Capsule()
+                                    .fill(.accent)
+                            }
+                            .padding(.trailing, 2)
+                        Text("Prior")
+                            .padding(2)
+                            .padding(.horizontal, 5)
+                            .background {
+                                Capsule()
+                                    .fill(.accent.opacity(0.2))
+                            }
+                            .padding(.trailing)
+                    }
+                    .font(.caption)
+                    .padding(.top, 5)
+                }
+            }
+        }
+        .frame(height: infoBarHeight)
     }
 }
 
@@ -237,96 +300,47 @@ struct ChartWrapperView: View {
                     .padding(.bottom, 5)
             }
             
-            GeometryReader { geometry in
-                VStack(alignment: .center, spacing: 0) {
-                    Chart {
-                        if scale == .week {
-                            RectangleMark(
-                                xStart: .value("Day", Date.now.endOfDay),
-                                xEnd: .value("Day", Date.now.endOfWeek),
-                                yStart: nil,
-                                yEnd: nil
-                            )
-                            .foregroundStyle(.gray.opacity(0.125))
-                        }
-                        
-                        if lens == .compare {
-                            comparisonMarks()
-                        } else {
-                            barMarks()
-                        }
-                        
-                        if let rawSelectedDate, scale.containsDate(rawSelectedDate) {
-                            RuleMark(
-                                x: .value("Selected", rawSelectedDate, unit: scale.calendarUnit)
-                            )
-                            .foregroundStyle(Color.gray.opacity(0.3))
-                            .offset(yStart: -10)
-                            .zIndex(-1)
-                            .annotation(
-                                position: .top, spacing: 0,
-                                overflowResolution: .init(
-                                    x: .fit(to: .chart),
-                                    y: .disabled
-                                )
-                            ) {
-                                AnnotationView(data: data,
-                                               scale: scale,
-                                               lens: lens,
-                                               date: rawSelectedDate)
-                            }
-                        }
-                    }
-                    
-                    .if(lens == .compare && scale != .week) {
-                        $0.chartXScale(domain: scale.startDate...scale.endDate)
-                    }
+            Chart {
+                if scale == .week {
+                    RectangleMark(
+                        xStart: .value("Day", Date.now.endOfDay),
+                        xEnd: .value("Day", Date.now.endOfWeek),
+                        yStart: nil,
+                        yEnd: nil
+                    )
+                    .foregroundStyle(.gray.opacity(0.125))
+                }
 
-                    if lens.isGraded {
-                        Legend(lens: lens, segmentWidth: geometry.size.width / 12)
-                    } else if lens == .compare {
-                        HStack {
-                            Text("Totals:")
-                            Text("\(data.count { $0.date >= scale.startDate })")
-                                .padding(2)
-                                .padding(.horizontal, 5)
-                                .foregroundStyle(.white)
-                                .background {
-                                    Capsule()
-                                        .fill(.accent)
-                                }
-                            Text("\(data.count { $0.date < scale.startDate })")
-                                .padding(2)
-                                .padding(.horizontal, 5)
-                                .background {
-                                    Capsule()
-                                        .fill(.accent.opacity(0.2))
-                                }
-                            
-                            Spacer()
-                            
-                            Text("Latest")
-                                .padding(2)
-                                .padding(.horizontal, 5)
-                                .foregroundStyle(.white)
-                                .background {
-                                    Capsule()
-                                        .fill(.accent)
-                                }
-                                .padding(.trailing, 2)
-                            Text("Prior")
-                                .padding(2)
-                                .padding(.horizontal, 5)
-                                .background {
-                                    Capsule()
-                                        .fill(.accent.opacity(0.2))
-                                }
-                                .padding(.trailing)
-                        }
-                        .font(.caption)
-                        .padding(.top, 5)
+                if lens == .compare {
+                    comparisonMarks()
+                } else {
+                    barMarks()
+                }
+
+                if let rawSelectedDate, scale.containsDate(rawSelectedDate) {
+                    RuleMark(
+                        x: .value("Selected", rawSelectedDate, unit: scale.calendarUnit)
+                    )
+                    .foregroundStyle(Color.gray.opacity(0.3))
+                    .offset(yStart: -10)
+                    .zIndex(-1)
+                    .annotation(
+                        position: .top, spacing: 0,
+                        overflowResolution: .init(
+                            x: .fit(to: .chart),
+                            y: .disabled
+                        )
+                    ) {
+                        AnnotationView(data: data,
+                                       scale: scale,
+                                       lens: lens,
+                                       date: rawSelectedDate)
                     }
                 }
+            }
+
+            .if(lens == .compare && scale != .week) {
+                $0.chartXScale(domain: scale.startDate...scale.endDate)
             }
         }
     }
