@@ -17,9 +17,9 @@ struct ChartView: View {
     let chartHeight: CGFloat = 250
     
     var chartData: [Relapse] {
-        let chartData = data.filter { relapse in
-            relapse.date > (lens == .compare ? scale.previousDate(scale.startDate) : scale.startDate)
-        }
+        let start = lens == .compare ? scale.previousDate(scale.startDate) : scale.startDate
+        let end = scale.endDate
+        let chartData = data.filter { $0.date >= start && $0.date < end }
         
         if lens.isGraded {
             return chartData.sorted {
@@ -57,12 +57,14 @@ struct ChartView: View {
                     $0.chartXAxis {
                         AxisMarks(values: AxisMarkValues.stride(by: .day, count: 7)) { value in
                             if let date = value.as(Date.self) {
-                                Date.now.weekOfYear - date.weekOfYear == 0 ?
-                                AxisValueLabel("This Week")
-                                : Date.now.weekOfYear - date.weekOfYear == 1 ?
-                                AxisValueLabel("Last Week")
-                                :
-                                AxisValueLabel(date.formatted(.dateTime.month(.abbreviated).day()))
+                                if scale.isSameBucket(date, as: .now) {
+                                    AxisValueLabel("This Week")
+                                } else if let lastWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: .now),
+                                          scale.isSameBucket(date, as: lastWeek) {
+                                    AxisValueLabel("Last Week")
+                                } else {
+                                    AxisValueLabel(date.formatted(.dateTime.month(.abbreviated).day()))
+                                }
                             }
                             AxisGridLine()
                             AxisTick()
@@ -83,7 +85,7 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [Date.now.startOfWeek, Date.now.endOfWeek.advanced(by: 1)])
+                    .chartXScale(domain: [scale.startDate, scale.endDate])
                     .chartYScale(domain: [0, maxByBucket(\.endOfDay)])
                 }
                 .chartXSelection(value: $rawSelectedDate)
@@ -123,8 +125,12 @@ struct ChartWrapperView: View {
     //dummies make certain every day displays even if empty
     var dataWithDummies: [Relapse] {
         var mutableData = data
-        for date in stride(from: scale.startDate, to: Date.now, by: 24*60*60) {
+        let calendar = Calendar.current
+        let end = scale.endDate
+        var date = scale.startDate
+        while date < end {
             mutableData.append(Relapse(date: date, dummy: true))
+            date = calendar.date(byAdding: scale.calendarUnit, value: 1, to: date)!
         }
         return mutableData
     }

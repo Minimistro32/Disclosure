@@ -14,10 +14,11 @@ struct AnnotationView: View {
     let date: Date
     
     private var selectedData: [Relapse] {
-        data.filter { $0.date.isSame(scale.calendarUnit, as: date) }
+        data.filter { scale.isSameBucket($0.date, as: date) }
     }
     private var previousSelectedData: [Relapse] {
-        data.filter { $0.date.isSame(scale.calendarUnit, as: scale.previousDate(date)) }
+        let previous = scale.previousDate(date)
+        return data.filter { scale.isSameBucket($0.date, as: previous) }
     }
     
     private func asTitle(date: Date) -> String {
@@ -30,7 +31,8 @@ struct AnnotationView: View {
             case .week:
                 date.formatted(.dateTime.weekday(.wide))
             case .month:
-                "Week \(Date.now.weekOfYear + 1 - date.weekOfYear)"
+                date.startOfWeek.formatted(.dateTime.month(.abbreviated).day()) + " – " +
+                    date.endOfWeek.formatted(.dateTime.month(.abbreviated).day())
             default: //.year
                 date.formatted(.dateTime.month(.wide))
             }

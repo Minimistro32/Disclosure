@@ -77,21 +77,21 @@ struct ContentView: View {
 //            .onReceive(appIsActivePublisher) { _ in
 //                setBadge()
 //            }
-//            .onAppear {
-//                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
-//                    do {
-//                        try context.delete(model: Relapse.self)
-//                    } catch {
-//                        print("Failed to delete relapses.")
-//                    }
-//                    for relapse in TestData.spreadsheet {
-//                        context.insert(relapse)
-//                    }
-//                    do {
-//                        try context.delete(model: Person.self)
-//                    } catch {
-//                        print("Failed to delete people.")
-//                    }
+            .onAppear {
+                if Shared.RELOAD_MODEL || relapses.isEmpty || team.isEmpty || entries.isEmpty {
+                    do {
+                        try context.delete(model: Relapse.self)
+                    } catch {
+                        print("Failed to delete relapses.")
+                    }
+                    for relapse in SampleData.relapses {
+                        context.insert(relapse)
+                    }
+                    do {
+                        try context.delete(model: Person.self)
+                    } catch {
+                        print("Failed to delete people.")
+                    }
 //                    for person in TestData.myTeam {
 //                        context.insert(person)
 //                    }
@@ -103,8 +103,8 @@ struct ContentView: View {
 //                    for entry in TestData.journal {
 //                        context.insert(entry)
 //                    }
-//                }
-//            }
+                }
+            }
     }
     
 }
