@@ -85,7 +85,7 @@ struct ChartView: View {
                             AxisTick()
                         }
                     }
-                    .chartXScale(domain: [scale.startDate, scale.endDate])
+                    .chartXScale(domain: scale.startDate...scale.endDate)
                     .chartYScale(domain: [0, maxByBucket(\.endOfDay)])
                 }
                 .chartXSelection(value: $rawSelectedDate)
@@ -122,19 +122,23 @@ struct ChartWrapperView: View {
     let scale: ChartScale
     let lens: ChartLens
     
-    //dummies make certain every day displays even if empty
-    var dataWithDummies: [Relapse] {
-        var mutableData = data
+    private var bucketDates: [Date] {
         let calendar = Calendar.current
         let end = scale.endDate
         var date = scale.startDate
+        var dates: [Date] = []
         while date < end {
-            mutableData.append(Relapse(date: date, dummy: true))
+            dates.append(date)
             date = calendar.date(byAdding: scale.calendarUnit, value: 1, to: date)!
         }
-        return mutableData
+        return dates
     }
-    
+
+    // Keep empty buckets visible in the standard chart.
+    private var dataWithDummies: [Relapse] {
+        data + bucketDates.map { Relapse(date: $0, dummy: true) }
+    }
+
     // MARK: chartTitle
     var chartTitle: String {
         let demonstrative = scale == .threeMonth ? "these" : "this"
@@ -168,47 +172,44 @@ struct ChartWrapperView: View {
     }
     
     // MARK: barMarks
-    private func barMarks(_ width: CGFloat) -> some ChartContent {
-        let markWidth = switch scale {
-        case .week:
-            17.0
-        case .month:
-            20.0
-        case .threeMonth:
-            45.0
-        case .year:
-            10.0
-        }
-        
-        let bucketWidth = switch scale {
-        case .week:
-            22.0
-        case .month:
-            26.0
-        case .threeMonth:
-            55.0
-        case .year:
-            6.0
-        }
-        
-        return ForEach(dataWithDummies) { relapse in
+    private func barMarks() -> some ChartContent {
+        ForEach(dataWithDummies) { relapse in
             BarMark(
-                x: .value("Day", relapse.date < scale.startDate ? scale.nextDate(relapse.date) : relapse.date, unit: scale.calendarUnit),
-                y: .value("Count", relapse.dummy ? 0 : 1),
-                width: lens == .compare ? .fixed(markWidth) : .automatic
+                x: .value("Date", relapse.date, unit: scale.calendarUnit),
+                y: .value("Count", relapse.dummy ? 0 : 1)
             )
             .foregroundStyle(barMarkColor(relapse: relapse))
-            .if(lens == .compare) {
-                $0.position(by: .value("Period", Int(relapse.date < scale.startDate)), span: MarkDimension(floatLiteral: bucketWidth))
-            }
         }
     }
-    
-    private func barMarkColor(relapse: Relapse) -> Color {
-        if relapse.date < scale.startDate {
-            return .accent.opacity(0.2)
-        }
 
+    private func comparisonMarks() -> some ChartContent {
+        let calendar = Calendar.current
+        return ForEach(bucketDates, id: \.self) { date in
+            let bucket = calendar.dateInterval(of: scale.calendarUnit, for: date)!
+            let priorDate = scale.previousDate(date)
+            let latestCount = data.count { scale.isSameBucket($0.date, as: date) }
+            let priorCount = data.count { scale.isSameBucket($0.date, as: priorDate) }
+
+            // Each pair occupies the middle 80% of its calendar bucket.
+            RectangleMark(
+                xStart: .value("Start", bucket.start.addingTimeInterval(bucket.duration * 0.10)),
+                xEnd: .value("End", bucket.start.addingTimeInterval(bucket.duration * 0.47)),
+                yStart: .value("Baseline", 0),
+                yEnd: .value("Latest", latestCount)
+            )
+            .foregroundStyle(Color.accentColor)
+
+            RectangleMark(
+                xStart: .value("Start", bucket.start.addingTimeInterval(bucket.duration * 0.53)),
+                xEnd: .value("End", bucket.start.addingTimeInterval(bucket.duration * 0.90)),
+                yStart: .value("Baseline", 0),
+                yEnd: .value("Prior", priorCount)
+            )
+            .foregroundStyle(Color.accentColor.opacity(0.2))
+        }
+    }
+
+    private func barMarkColor(relapse: Relapse) -> Color {
         if lens.isGraded {
             return lens.color.opacity(Double(
                 lens == .intensity ? relapse.intensity : relapse.compulsivity
@@ -241,7 +242,11 @@ struct ChartWrapperView: View {
                             .foregroundStyle(.gray.opacity(0.125))
                         }
                         
-                        barMarks(geometry.size.width)
+                        if lens == .compare {
+                            comparisonMarks()
+                        } else {
+                            barMarks()
+                        }
                         
                         if let rawSelectedDate, scale.containsDate(rawSelectedDate) {
                             RuleMark(
@@ -265,6 +270,10 @@ struct ChartWrapperView: View {
                         }
                     }
                     
+                    .if(lens == .compare && scale != .week) {
+                        $0.chartXScale(domain: scale.startDate...scale.endDate)
+                    }
+
                     if lens.isGraded {
                         Legend(lens: lens, segmentWidth: geometry.size.width / 12)
                     } else if lens == .compare {
